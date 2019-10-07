@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.852
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D4B43EB3-688B-4EEE-86BD-088F0B28ABB3}") = "AlertManagement", "AlertManagement\AlertManagement.mpproj", "{90586037-A07C-47FE-A15D-083F9D28AAB4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90586037-A07C-47FE-A15D-083F9D28AAB4}.Debug|x86.ActiveCfg = Debug|x86
+		{90586037-A07C-47FE-A15D-083F9D28AAB4}.Debug|x86.Build.0 = Debug|x86
+		{90586037-A07C-47FE-A15D-083F9D28AAB4}.Release|x86.ActiveCfg = Release|x86
+		{90586037-A07C-47FE-A15D-083F9D28AAB4}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A43960F5-1B92-4AD7-8922-6C44C7728FF9}
+	EndGlobalSection
+EndGlobal
