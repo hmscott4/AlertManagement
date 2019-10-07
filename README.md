@@ -1,7 +1,6 @@
 # AlertManagement
-Manage SCOM Alerts
 
-Management Pack for Alert Workflow
+##Management Pack for Alert Workflow
 
 1. Includes owner assignment of alert based on Management Pack and custom rules (configurable).
 2. Includes configuration for handling alert storms
