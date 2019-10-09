@@ -30,7 +30,6 @@
     <Content Include="escalate.alert.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlertManagement.PS.ps1" />
     <Compile Include="assign.alert.ps1" />
     <Compile Include="Escalate-SCOMAlert.ps1" />
   </ItemGroup>
