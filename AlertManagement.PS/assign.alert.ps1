@@ -16,8 +16,8 @@
 # Modifications:
 # Date         Initials    Description
 # 2016/05/09   HMS         -Original
-# 2017/02/28   HMS    - Modified to write J64 - VDI to Custom Field 10
-# 2018/02/20   HMS    - Modified to write Queue information to Owner field
+# 2018/02/20   HMS         - Modified to write Queue information to Owner field
+# 2019/10/09   HMS         - Significant re-write; added variables for Resolution State, Default Owner and Log Level
 #
 ########################################################################
 
@@ -39,6 +39,27 @@ param (
        return $value;
     }
 }
+
+                  # Constants section - modify stuff here:
+                  #=================================================================================
+                  # Assign script name variable for use in event logging.
+                  # ScriptName should be the same as the ID of the module that the script is contained in
+                  $ScriptName = "Microsoft.Alert.Management.Alert.Management.Assign.Alert.TimedPowerShell.Rule.WA.ps1"
+                  $EventID = "9931"
+                  #=================================================================================
+
+
+                  # Starting Script section - All scripts get this
+                  #=================================================================================
+                  # Gather the start time of the script
+                  $StartTime = Get-Date
+                  #Set variable to be used in logging events
+                  $whoami = whoami
+                  # Load MOMScript API
+                  $momapi = New-Object -comObject MOM.ScriptAPI
+                  #Log script event that we are starting task
+                  $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n Script is starting. `n Running as ($whoami).")
+                  #=================================================================================
 
 #region Initialize
 [xml]$configFile= Get-Content '.\assign.alert.config' -ErrorAction SilentlyContinue
@@ -113,19 +134,13 @@ Else
 
 			$alertName = XPathExpression $AlertName
 
+			#region Exceptions by Alert Name
 			###### FIRST PASS; GET QUEUE ASSIGNMENT EXCEPTIONS BY ALERT NAME ######
 			Try
 			{
-				$assignmentRule = $configFile.SelectSingleNode("
-					//Config/Exceptions/Exception[
-						AlertName='$alertName'
-						and @enabled='true'
-						and contains(
-							'$($NewAlert.($assignmentRule.AlertProperty))',
-							AlertPropertyContains
-						)
-					]"
-				)
+				$searchString = "//Config/Exceptions/Exception[AlertName='$alertName' and @enabled='true' "
+
+				$assignmentRule = $configFile.SelectSingleNode($searchString)
 			}
 			Catch [System.Exception]
 			{
@@ -134,14 +149,54 @@ Else
 				# Write-Host $msg
 				Add-Content $unroutedLogFile $msg
 			}
+			#endregion
 
+			#region Exceptions By MP Name
+			###### SECOND PASS; GET QUEUE ASSIGNMENT EXCEPTIONS BY MP NAME ######
+			if($assignmentRule)
+			{
+				[string]$assignedTo=$assignmentRule.Owner
+			}
+			Else
+			{
+				Try
+				{
+				$searchString = @(
+					"//Config/Exceptions/Exception[ManagementPackName='$mpName' and @enabled='true' "
+				   " and ("
+				   "     AlertProperty = 'MonitoringObjectFullName' "
+				   "     or AlertProperty = 'MonitoringObjectPath' "
+				   "     or AlertProperty = 'MonitoringObjectDisplayName' "
+				   "  )]"
+				)
+
+				$assignmentRule = $configFile.SelectSingleNode($searchString)
+				$Prop = $assignmentRule.AlertProperty
+				$PropValue = $assignmentRule.AlertPropertyContains
+
+				If($newAlert."$Prop" -notlike "*$AlertPropertyContains*")
+				{
+					$assignmentRule = $null
+				}
+				}
+				Catch [System.Exception]
+				{
+					$timeNow = Get-Date -f "yyyy/MM/dd hh:mm:ss"
+					$msg = "$timeNow : WARN : " + $_.Exception.Message
+					# Write-Host $msg
+					Add-Content $unroutedLogFile $msg
+				}
+			}
+			#endregion
+
+			#region Rules
 			if($assignmentRule)
 			{
 				[string]$assignedTo=$assignmentRule.Owner
 			}
 			else
 			{
-				###### SECOND PASS; GET ALERT ASSIGNMENTS FROM OBJECT CLASS ######
+				###### THIRD PASS; GET ALERT ASSIGNMENTS FROM OBJECT CLASS ######
 				Try
 				{
 					$assignmentRule = $configFile.SelectSingleNode("
@@ -165,9 +220,11 @@ Else
 					[string]$assignedTo=$defaultUnassignedOwner
 				}
 			}
+			#endregion
 
+			#region Set Alert
 			# Define a comment for Set-SCOMAlert
-			$comment = 'Alert automation assigned to: {0}'
+			[string]$comment = 'Alert automation assigned to: {0}'
 
 			If($assignedTo -ne $defaultUnassignedOwner)
 			{
@@ -193,6 +250,16 @@ Else
 				# Write-Host $msg
 				Add-Content $unroutedLogFile $msg
 			}
-		}
+			#endregion
 		}
 	}
+}
+
+                  # End of script section
+                  #=================================================================================
+                  #Log an event for script ending and total execution time.
+                  $EndTime = Get-Date
+                  $ScriptTime = ($EndTime - $StartTime).TotalSeconds
+                  $momapi.LogScriptEvent($ScriptName,9931,0,"`n Script Completed. `n Script Runtime: ($ScriptTime) seconds.")
+                  #=================================================================================
+                  # End of script

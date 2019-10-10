@@ -50,5 +50,16 @@
       <PackageToBundle>false</PackageToBundle>
     </ManagementPackReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Monitors" />
+    <Folder Include="Discoveries" />
+    <Folder Include="Tasks" />
+    <Folder Include="Rules" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Rules\AlertAssignment.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
 </Project>
