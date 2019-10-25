@@ -206,7 +206,7 @@ If($Connection.IsActive)
             $ticketId = ( Get-Date -Format 'MM/dd/yyyy hh:mm:ss {0}' ) -f $alertName
             
             # Mark the alert as being part of an alert storm
-            $stormAlert.Group | Set-SCOMAlert -ResolutionState 18 -Comment $alertStormRule.Comment -TicketId $ticketId
+            $stormAlert.Group | Set-SCOMAlert -ResolutionState 18 -Comment $alertStormRule.Comment.InnerText -TicketId $ticketId
             
             # Get a unique list of monitoring objects
             $monitoringObjects = $stormAlert.Group |
