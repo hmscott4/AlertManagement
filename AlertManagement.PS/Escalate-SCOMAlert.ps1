@@ -192,40 +192,105 @@ If($Connection.IsActive)
 
     foreach ( $alertStormRule in $alertStormRules )
     {
-        # Get the new through assigned alerts and group them by the defined property
-        $stormAlerts = Get-SCOMAlert -ResolutionState @(0..5) |
+        # Get the alerts defined by the criteria and group them by the defined property
+        $potentialStormAlertGroups = Get-SCOMAlert -Criteria $alertStormRule.Criteria.InnerText |
             Group-Object -Property $alertStormRule.Property |
-            Where-Object -FilterScript { $_.Count -gt $alertStormRule.count }
+            Where-Object -FilterScript { $_.Count -gt 1 }
 
-        foreach ( $stormAlert in $stormAlerts )
+        # Define a counter which will be used to further subdivide the alerts into groups
+        $groupCounter = 0
+
+        # Create a hashtable to store the new groups of alerts
+        $stormAlertGroups = @{$groupCounter = @()}
+
+        foreach ( $potentialStormAlertGroup in $potentialStormAlertGroups )
         {
-            # Get the alert name
-            $alertName = $stormAlert.Group | Select-Object -ExpandProperty Name -Unique
+            # Create a variable to base the time elapsed calcluations off of
+            $previousDateTime = [System.DateTime]::MinValue
+            
+            foreach ( $alert in ( $potentialStormAlertGroup.Group | Sort-Object -Property TimeRaised ) )
+            {
+                # If the alert was raised less than the defined window from the previous alert
+                if ( ( $alert.TimeRaised - $previousDateTime ).TotalMinutes -lt $alertStormRule.Window )
+                {
+                    # Add the alert to the current group
+                    $stormAlertGroups[$groupCounter] += $alert
+                }
+                else
+                {
+                    # Increment the group counter
+                    $groupCounter++
 
-            # Define the "ticket id"
-            $ticketId = ( Get-Date -Format 'MM/dd/yyyy hh:mm:ss {0}' ) -f $alertName
+                    # Create a new group
+                    $stormAlertGroups[$groupCounter] = @($alert)
+                }
+
+                # Update the Previous Date/Time variable
+                $previousDateTime = $alert.TimeRaised
+            }
+        }
+        
+        # Get the groups which meet the threshold for number of the same alert
+        $stormAlerts = $stormAlertGroups.GetEnumerator() |
+            Where-Object -FilterScript { $_.Value.Count -ge $alertStormRule.Count }
+
+        foreach ( $stormAlert in $stormAlerts.GetEnumerator() )
+        {
+            # Get the alerts which were previously tagged as an alert storm
+            $oldAlertStormAlerts = $stormAlert.Value |
+                Where-Object -FilterScript { ( $_.ResolutionState -eq 18 ) -and $_.TicketID }
+            
+            if ( $oldAlertStormAlerts.Count -gt 0 )
+            {
+                # Get the existing "ticket id"
+                $ticketId = $oldAlertStormAlerts | Select-Object -ExpandProperty TicketId -Unique
+            }
+            else
+            {
+                # Get the alert name
+                $alertName = $stormAlert.Value | Select-Object -ExpandProperty Name -Unique
+
+                # Define the "ticket id"
+                $ticketId = ( Get-Date -Format 'MM/dd/yyyy hh:mm:ss {0}' ) -f $alertName
+
+                # Create an array of alerts which should be passed into a storm alert
+                $createStormAlert = @()
+
+                foreach ( $alert in $stormAlert.Value )
+                {
+                    # Get the associated monitoring object
+                    $alertMonitoringObject = Get-ScomMonitoringObject -Id $alert.MonitoringObjectId
+
+                    if ( $alertMonitoringObject.'[System.ConfigItem].AssetStatus'.Value -eq 'Deployed' )
+                    {
+                        $createStormAlert += $alert
+                    }
+                }
+                
+                # Get a unique list of monitoring objects
+                $monitoringObjects = $createStormAlert |
+                    Select-Object -ExpandProperty MonitoringObjectFullName -Unique |
+                    Sort-Object
+            
+                # Define the string which will be passed in as the "script name" property for LogScriptEvent
+                $stormDescription = "The alert ""$alertName"" was triggered $($createStormAlert.Count) times for the following objects:"
+            
+                # Define the event details
+                $eventDetails = New-Object -TypeName System.Text.StringBuilder
+                $eventDetails.AppendLine() > $null
+                $eventDetails.AppendLine() > $null
+                $monitoringObjects | ForEach-Object -Process { $eventDetails.AppendLine($_) > $null }
+                $eventDetails.AppendLine() > $null
+                $eventDetails.AppendLine("Internal ticket id: $ticketId") > $null
+
+                # Raise an event indicating an alert storm was detected
+                $momApi.LogScriptEvent($stormDescription, 9908, 2, $eventDetails.ToString())
+            }
             
             # Mark the alert as being part of an alert storm
-            $stormAlert.Group | Set-SCOMAlert -ResolutionState 18 -Comment $alertStormRule.Comment.InnerText -TicketId $ticketId
-            
-            # Get a unique list of monitoring objects
-            $monitoringObjects = $stormAlert.Group |
-                Select-Object -ExpandProperty MonitoringObjectFullName -Unique |
-                Sort-Object
-            
-            # Define the string which will be passed in as the "script name" property for LogScriptEvent
-            $stormDescription = "The alert ""$alertName"" was triggered $($stormAlert.Count) times for the following objects."
-            
-            # Define the event details
-            $eventDetails = New-Object -TypeName System.Text.StringBuilder
-            $eventDetails.AppendLine() > $null
-            $eventDetails.AppendLine() > $null
-            $monitoringObjects | ForEach-Object -Process { $eventDetails.AppendLine($_) > $null }
-            $eventDetails.AppendLine() > $null
-            $eventDetails.AppendLine("Internal ticket id: $ticketId") > $null
-
-            # Raise an event indicating an alert storm was detected
-            $momApi.LogScriptEvent($stormDescription, 9908, 2, $eventDetails.ToString())
+            $stormAlert.Value |
+                Where-Object -FilterScript { $_.ResolutionState -ne 18 } |
+                Set-SCOMAlert -ResolutionState 18 -Comment $alertStormRule.Comment.InnerText -TicketId $ticketId
         }
     }
     
