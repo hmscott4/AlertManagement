@@ -433,7 +433,7 @@ This fragment depends on references:
         <Category>Custom</Category>
         <DataSources>
           <DataSource ID="Scheduler" TypeID="Microsoft.Alert.Management.Alert.Management.Assign.Alert.TimedPowerShell.Rule.DS">
-            <IntervalSeconds>86400</IntervalSeconds>
+            <IntervalSeconds>300</IntervalSeconds>
             <SyncTime></SyncTime>
           </DataSource>
         </DataSources>
@@ -441,7 +441,7 @@ This fragment depends on references:
           <WriteAction ID="WA" TypeID="Microsoft.Alert.Management.Alert.Management.Assign.Alert.TimedPowerShell.Rule.WA">
             <ComputerName>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</ComputerName>
             <pConfigFile>YourStringParamData</pConfigFile>
-            <TimeoutSeconds>120</TimeoutSeconds>
+            <TimeoutSeconds>300</TimeoutSeconds>
           </WriteAction>
         </WriteActions>
       </Rule>
