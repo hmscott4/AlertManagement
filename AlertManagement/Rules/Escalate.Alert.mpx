@@ -61,11 +61,11 @@ This fragment depends on references:
       <WriteActionModuleType ID="Microsoft.Alert.Management.Alert.Management.Escalate.Alert.TimedPowerShell.Rule.WA" Accessibility="Internal" Batching="false">
         <Configuration>
           <xsd:element minOccurs="1" name="ComputerName" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
-          <xsd:element minOccurs="1" name="ConfigFile" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="pConfigFile" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element minOccurs="1" name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
         <OverrideableParameters>
-          <OverrideableParameter ID="ConfigFile" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="pConfigFile" Selector="$Config/pConfigFile$" ParameterType="string" />
           <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
         </OverrideableParameters>
         <ModuleImplementation Isolation="Any">
@@ -80,7 +80,7 @@ This fragment depends on references:
                   #  Author:
                   #  v1.0
                   #=================================================================================
-                  param($ComputerName,$MGName,$ConfigFile)
+                  param($ComputerName,$MGName,$pConfigFile)
 
 
                   # Manual Testing section - put stuff here for manually testing script - typically parameters:
@@ -116,7 +116,7 @@ This fragment depends on references:
                   # Begin MAIN script section
                   #=================================================================================
                   # Log an event for the Params
-                  $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n These are the parameters passed from script: `n ComputerName: ($ComputerName). `n ManagementGroup Name: ($MGName) `n ConfigFile: ($ConfigFile).")
+                  $momapi.LogScriptEvent($ScriptName,$EventID,0,"`n These are the parameters passed from script: `n ComputerName: ($ComputerName). `n ManagementGroup Name: ($MGName) `n ConfigFile: ($pConfigFile).")
 
                   ########################################################################
                   # Escalate-SCOMAlert.ps1
@@ -191,7 +191,7 @@ This fragment depends on references:
 
                     # RETRIEVE CONFIGURATION FILE WITH RULES AND EXCEPTIONS
                     # [xml]$configFile= Get-Content 'D:\Admin\Scripts\EscalateScomAlerts\escalate.alert.config'
-                    [xml]$configFile= Get-Content $ConfigFile
+                    [xml]$configFile= Get-Content $pConfigFile
 
                     # MANAGEMENT SERVER
                     [string]$managementServer = '.'
@@ -569,8 +569,8 @@ This fragment depends on references:
                     <Value>$Target/ManagementGroup/Name$</Value>
                   </Parameter>
                   <Parameter>
-                    <Name>ConfigFile</Name>
-                    <Value>$Config/ConfigFile$</Value>
+                    <Name>pConfigFile</Name>
+                    <Value>$Config/pConfigFile$</Value>
                   </Parameter>
                 </Parameters>
                 <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
@@ -599,7 +599,7 @@ This fragment depends on references:
         <WriteActions>
           <WriteAction ID="WA" TypeID="Microsoft.Alert.Management.Alert.Management.Escalate.Alert.TimedPowerShell.Rule.WA">
             <ComputerName>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</ComputerName>
-            <ConfigFile>YourStringParamData</ConfigFile>
+            <pConfigFile>YourStringParamData</pConfigFile>
             <TimeoutSeconds>120</TimeoutSeconds>
           </WriteAction>
         </WriteActions>
