@@ -25,9 +25,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Compile Include="AlertManagement.PS.ps1" />
+    <Content Include="assign.alert.config" />
+    <Content Include="escalate.alert.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="assign.alert.ps1" />
+    <Compile Include="Escalate-SCOMAlert.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />
