@@ -261,10 +261,15 @@ If($Connection.IsActive)
                     # Get the associated monitoring object
                     $alertMonitoringObject = Get-ScomMonitoringObject -Id $alert.MonitoringObjectId
 
-                    if ( $alertMonitoringObject.'[System.ConfigItem].AssetStatus'.Value -eq 'Deployed' )
-                    {
+					######################################################################################
+					# HMS
+					# 2020/03/23
+					# Comment out Check for Asset Status; most customers won't use this
+					######################################################################################
+                    # if ( $alertMonitoringObject.'[System.ConfigItem].AssetStatus'.Value -eq 'Deployed' )
+                    # {
                         $createStormAlert += $alert
-                    }
+                    # }
                 }
                 
                 # Get a unique list of monitoring objects
