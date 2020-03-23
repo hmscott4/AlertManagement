@@ -60,6 +60,9 @@
     <Compile Include="Rules\AlertAssignment.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Rules\Escalate.Alert.mpx">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
 </Project>
