@@ -53,6 +53,8 @@
   <ItemGroup>
     <Folder Include="Monitors" />
     <Folder Include="Discoveries" />
+    <Folder Include="Config" />
+    <Folder Include="Scripts" />
     <Folder Include="Tasks" />
     <Folder Include="Rules" />
   </ItemGroup>
@@ -63,6 +65,18 @@
     <Compile Include="Rules\Escalate.Alert.mpx">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\assign.alert.ps1" />
+    <EmbeddedResource Include="Scripts\Escalate-SCOMAlert.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\assign.alert.config">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\escalate.alert.config">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
 </Project>
