@@ -2,9 +2,9 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <ProjectGuid>{90586037-a07c-47fe-a15d-083f9d28aab4}</ProjectGuid>
-    <RootNamespace>AlertManagement</RootNamespace>
-    <Name>AlertManagement</Name>
-    <ManagementPackName>AlertManagement</ManagementPackName>
+    <RootNamespace>SCOM.Alert.Management</RootNamespace>
+    <Name>SCOM.Alert.Management</Name>
+    <ManagementPackName>SCOM.Alert.Management</ManagementPackName>
     <Version>1.0.0.0</Version>
     <MpFrameworkVersion>v7.0.2</MpFrameworkVersion>
     <MpFrameworkProfile>OM</MpFrameworkProfile>
@@ -59,6 +59,9 @@
     <Folder Include="Rules" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ManagementPack.mpx">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Rules\AlertAssignment.mpx">
       <SubType>Code</SubType>
     </Compile>
