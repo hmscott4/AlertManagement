@@ -151,8 +151,11 @@ $updateTypeDataUnitMonitorParameters = @{
             return $unitMonitor
         }
     }
+}   
+if ( -not ( Get-TypeData -TypeName $updateTypeDataUnitMonitorParameters.TypeName ).Members[$updateTypeDataUnitMonitorParameters.MemberName] )
+{​​​​​​​
+    Update-TypeData @updateTypeDataUnitMonitorParameters
 }
-Update-TypeData @updateTypeDataUnitMonitorParameters
 
 # Add a Monitor property to the alert which contains the associated unit monitor object
 $updateTypeDataMonitorParameters = @{
@@ -163,7 +166,10 @@ $updateTypeDataMonitorParameters = @{
         Get-SCOMClassInstance -Id $this.MonitoringObjectId
     }
 }
-Update-TypeData @updateTypeDataMonitorParameters
+if ( -not ( Get-TypeData -TypeName $updateTypeDataMonitorParameters.TypeName ).Members[$updateTypeDataMonitorParameters.MemberName] )
+{​​​​​​​
+    Update-TypeData @updateTypeDataMonitorParameters
+}
 
 # Add a HealthStateSuccess property to the alert which contains the associated unit monitor object
 $updateTypeDataHealthStateSuccessParameters = @{
@@ -176,7 +182,10 @@ $updateTypeDataHealthStateSuccessParameters = @{
             Select-Object -ExpandProperty Name
     }
 }
-Update-TypeData @updateTypeDataHealthStateSuccessParameters
+if ( -not ( Get-TypeData -TypeName $updateTypeDataHealthStateSuccessParameters.TypeName ).Members[$updateTypeDataHealthStateSuccessParameters.MemberName] )
+{​​​​​​​
+    Update-TypeData @updateTypeDataHealthStateSuccessParameters
+}
 
 #endregion Update Type Data
 
@@ -234,7 +243,7 @@ If($Connection.IsActive)
         $stormAlerts = $stormAlertGroups.GetEnumerator() |
             Where-Object -FilterScript { $_.Value.Count -ge $alertStormRule.Count }
 
-        foreach ( $stormAlert in $stormAlerts.GetEnumerator() )
+        foreach ( $stormAlert in $stormAlerts )
         {
             # Get the alerts which were previously tagged as an alert storm
             $oldAlertStormAlerts = $stormAlert.Value |
@@ -252,44 +261,61 @@ If($Connection.IsActive)
 
                 # Define the "ticket id"
                 $ticketId = ( Get-Date -Format 'MM/dd/yyyy hh:mm:ss {0}' ) -f $alertName
-
-                # Create an array of alerts which should be passed into a storm alert
-                $createStormAlert = @()
-
-                foreach ( $alert in $stormAlert.Value )
-                {
-                    # Get the associated monitoring object
-                    $alertMonitoringObject = Get-ScomMonitoringObject -Id $alert.MonitoringObjectId
-
-					######################################################################################
-					# HMS
-					# 2020/03/23
-					# Comment out Check for Asset Status; most customers won't use this
-					######################################################################################
-                    # if ( $alertMonitoringObject.'[System.ConfigItem].AssetStatus'.Value -eq 'Deployed' )
-                    # {
-                        $createStormAlert += $alert
-                    # }
-                }
                 
-                # Get a unique list of monitoring objects
-                $monitoringObjects = $createStormAlert |
-                    Select-Object -ExpandProperty MonitoringObjectFullName -Unique |
-                    Sort-Object
+                    # Get a unique list of monitoring objects
+                    $monitoringObjects = $stormAlert.Value |
+                        Select-Object -ExpandProperty MonitoringObjectFullName -Unique |
+                        Sort-Object
             
-                # Define the string which will be passed in as the "script name" property for LogScriptEvent
-                $stormDescription = "The alert ""$alertName"" was triggered $($createStormAlert.Count) times for the following objects:"
+                    # Define the string which will be passed in as the "script name" property for LogScriptEvent
+                    $stormDescription = "The alert ""$alertName"" was triggered $($stormAlert.Value.Count) times for the following objects:"
             
-                # Define the event details
-                $eventDetails = New-Object -TypeName System.Text.StringBuilder
-                $eventDetails.AppendLine() > $null
-                $eventDetails.AppendLine() > $null
-                $monitoringObjects | ForEach-Object -Process { $eventDetails.AppendLine($_) > $null }
-                $eventDetails.AppendLine() > $null
-                $eventDetails.AppendLine("Internal ticket id: $ticketId") > $null
+                    # Define the event details
+                    $eventDetails = New-Object -TypeName System.Text.StringBuilder
+                    $eventDetails.AppendLine() > $null
+                    $eventDetails.AppendLine() > $null
+                    $monitoringObjects | ForEach-Object -Process { $eventDetails.AppendLine($_) > $null }
+                    $eventDetails.AppendLine() > $null
+                    $eventDetails.AppendLine("Internal ticket id: $ticketId") > $null
 
-                # Raise an event indicating an alert storm was detected
-                $momApi.LogScriptEvent($stormDescription, 9908, 2, $eventDetails.ToString())
+                    # Get the highest severity of the selected alerts
+                    $highestAlertSeverity = $stormAlert.Value.Severity |
+                        Sort-Object -Property value__ -Descending |
+                        Select-Object -First 1 -Unique
+
+                    # Get the highest priority of the selected alerts
+                    $highestAlertPriority = $stormAlert.Value.Priority |
+                        Sort-Object -Property value__ -Descending |
+                        Select-Object -First 1 -Unique
+
+                    # Determine what the event severity should be
+                    if (
+                        $highestAlertSeverity -eq 'Error' -and
+                        $highestAlertPriority -eq 'High' -and
+                        $stormAlert.Value.Monitor.'[System.ConfigItem].AssetStatus'.Value -contains 'Deployed'
+                    )
+                    {
+                        # Error
+                        $eventSeverity = 1
+                    }
+                    elseif (
+                        $highestAlertSeverity -in @('Error','Warning') -and
+                        $highestAlertPriority -in @('Normal','Low') -and
+                        $stormAlert.Value.Monitor.'[System.ConfigItem].AssetStatus'.Value -contains 'Deployed'
+                    )
+                    {
+                        # Warning
+                        $eventSeverity = 2
+                    }
+                    else
+                    {
+                        # Information
+                        $eventSeverity = 0
+                    }
+
+                    # Raise an event indicating an alert storm was detected
+                    $momApi.LogScriptEvent($stormDescription, 9908, $eventSeverity, $eventDetails.ToString())
+
             }
             
             # Mark the alert as being part of an alert storm
