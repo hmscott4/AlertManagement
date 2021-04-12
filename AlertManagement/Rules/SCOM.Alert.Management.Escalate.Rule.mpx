@@ -81,19 +81,22 @@
   </TypeDefinitions>
   <Monitoring>
     <Rules>
-      <Rule ID="SCOM.Alert.Management.Escalate.Rule" Enabled="true" Target="SC!Microsoft.SystemCenter.AllManagementServersPool" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
+      <Rule ID="SCOM.Alert.Management.Escalate.Rule" Enabled="true" Target="SC!Microsoft.SystemCenter.AllManagementServersPool" ConfirmDelivery="false" Remotable="true" Priority="Normal" DiscardLevel="100">
         <Category>Custom</Category>
         <DataSources>
           <DataSource ID="Scheduler" TypeID="SCOM.Alert.Management.Escalate.Rule.DataSource">
             <IntervalSeconds>300</IntervalSeconds>
             <SyncTime></SyncTime>
+            <TimeoutSeconds>240</TimeoutSeconds>
+            <ConfigFile></ConfigFile>
+            <DebugLogging>false</DebugLogging>
           </DataSource>
         </DataSources>
         <WriteActions>
           <WriteAction ID="WA" TypeID="SCOM.Alert.Management.Escalate.Rule.WriteAction">
-            <TimeoutSeconds>120</TimeoutSeconds>
+            <TimeoutSeconds>240</TimeoutSeconds>
             <ConfigFile></ConfigFile>
-            <DebugLogging>False</DebugLogging>
+            <DebugLogging>false</DebugLogging>
           </WriteAction>
         </WriteActions>
       </Rule>
@@ -106,7 +109,59 @@
           <Name>Escalate SCOM Alerts</Name>
           <Description>Set the resolution state on alerts based on the defined criteria.</Description>
         </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource">
+          <Name>Escalate SCOM Alert Timed Scheduler</Name>
+          <Description>The scheduler which executes the Escalate SCOM Alert rule.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="IntervalSeconds">
+          <Name>Interval Seconds</Name>
+          <Description>The frequency in which to execute the rule.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="SyncTime">
+          <Name>Sync Time</Name>
+          <Description>The time on which to synchronize the start time of the rule.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="TimeoutSeconds">
+          <Name>Timeout Seconds</Name>
+          <Description>The length of time (in seconds) to wait for the script to complete.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="ConfigFile">
+          <Name>Configuration File</Name>
+          <Description>The full path to the configuration file which contains the rules the Escalate SCOM Alerts script will process.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="DebugLogging">
+          <Name>Debug Logging</Name>
+          <Description>Write debug logs to the Operations Manager log.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction">
+          <Name>Escalate SCOM Alert Script</Name>
+          <Description>Execute the Escalate-ScomAlert.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="TimeoutSeconds">
+          <Name>Timeout Seconds</Name>
+          <Description>The length of time (in seconds) to wait for the script to complete.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="ConfigFile">
+          <Name>Configuration File</Name>
+          <Description>The full path to the configuration file which contains the rules the Escalate SCOM Alerts script will process.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="DebugLogging">
+          <Name>Debug Logging</Name>
+          <Description>Write debug logs to the Operations Manager log.</Description>
+        </DisplayString>
       </DisplayStrings>
+      <KnowledgeArticles>
+        <KnowledgeArticle ElementID="SCOM.Alert.Management.Escalate.Rule" Visible="true">
+          <MamlContent>
+            <maml:section xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
+              <maml:title>Summary</maml:title>
+              <maml:para>
+                Manages the resolution state of the alerts based on the rules in the configuration file.
+              </maml:para>
+            </maml:section>
+          </MamlContent>
+        </KnowledgeArticle>
+      </KnowledgeArticles>
     </LanguagePack>
   </LanguagePacks>
 </ManagementPackFragment>

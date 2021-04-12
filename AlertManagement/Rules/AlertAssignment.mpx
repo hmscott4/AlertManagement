@@ -1,30 +1,4 @@
-﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <!--
-%%
-Description:
-  A rule that runs a PowerShell script on a timer with examples for sending parameters to the script
-  CompanyID - is a short abbreviation for your company with NO SPACES OR SPECIAL CHARACTERS ALLOWED
-  AppName - is a short name for your app with NO SPACES OR SPECIAL CHARACTERS ALLOWED 
-  ClassID - is the targeted class such as your custom class or Windows!Microsoft.Windows.Server.OperatingSystem
-  UniqueID - Is a unique short description of the workflow purpose (NO SPACES OR SPECIAL CHARACTERS ALLOWED) such as "MonitorFilesInFolder"  
-
-Version: 1.2
-LastModified: 27-Jan-2019
-%%
-
-In this fragment you need to replace:
-  Microsoft
-  Alert.Management
-  Microsoft.SystemCenter.AllManagementServersPool
-  Alert.Management.Assign.Alert
-  
-This fragment depends on references:
-  RequiredReference: Alias="System", ID="System.Library"
-  RequiredReference: Alias="Windows", ID="Microsoft.Windows.Library"
-
-@@Author=Kevin Holman@@  
--->
-  <TypeDefinitions>
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><TypeDefinitions>
     <ModuleTypes>
       <DataSourceModuleType ID="Microsoft.Alert.Management.Alert.Management.Assign.Alert.TimedPowerShell.Rule.DS" Accessibility="Public" Batching="false">
         <Configuration>
@@ -426,10 +400,9 @@ This fragment depends on references:
         <InputType>System!System.BaseData</InputType>
       </WriteActionModuleType>
     </ModuleTypes>
-  </TypeDefinitions>
-  <Monitoring>
+  </TypeDefinitions><Monitoring>
     <Rules>
-      <Rule ID="Microsoft.Alert.Management.Alert.Management.Assign.Alert.TimedPowerShell.Rule" Enabled="true" Target="Microsoft.SystemCenter.AllManagementServersPool" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
+      <Rule ID="Microsoft.Alert.Management.Alert.Management.Assign.Alert.TimedPowerShell.Rule" Enabled="true" Target="SC!Microsoft.SystemCenter.AllManagementServersPool" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
         <Category>Custom</Category>
         <DataSources>
           <DataSource ID="Scheduler" TypeID="Microsoft.Alert.Management.Alert.Management.Assign.Alert.TimedPowerShell.Rule.DS">
@@ -439,22 +412,19 @@ This fragment depends on references:
         </DataSources>
         <WriteActions>
           <WriteAction ID="WA" TypeID="Microsoft.Alert.Management.Alert.Management.Assign.Alert.TimedPowerShell.Rule.WA">
-            <ComputerName>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</ComputerName>
+            <ComputerName></ComputerName>
             <pConfigFile>YourStringParamData</pConfigFile>
             <TimeoutSeconds>300</TimeoutSeconds>
           </WriteAction>
         </WriteActions>
       </Rule>
     </Rules>
-  </Monitoring>
-  <LanguagePacks>
+  </Monitoring><LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
         <DisplayString ElementID="Microsoft.Alert.Management.Alert.Management.Assign.Alert.TimedPowerShell.Rule">
           <Name>Microsoft Alert.Management Alert.Management.Assign.Alert TimedPowerShell Rule</Name>
-          <Description />
         </DisplayString>
       </DisplayStrings>
     </LanguagePack>
-  </LanguagePacks>
-</ManagementPackFragment>
+  </LanguagePacks></ManagementPackFragment>
