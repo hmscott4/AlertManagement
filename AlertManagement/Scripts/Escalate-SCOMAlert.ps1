@@ -61,7 +61,7 @@ function Format-DateField
     # COMPUTE TIME OFFSET; CAST AS STRING VALUE
     $m_timeOffset = [System.Int32] - $TimeOffset
     $compareDate = [System.DateTime] (Get-Date).AddMinutes($m_timeOffset).ToUniversalTime()
-    $dateString = $compareDate.ToString("MM/dd/yyyy HH:mm:ss")
+    $dateString = $compareDate.ToString('MM/dd/yyyy HH:mm:ss')
 
     switch -regex ( $Criteria )
     {
@@ -71,34 +71,32 @@ function Format-DateField
     }
 
     # REPLACE ESCAPED XML CHARACTERS
-    $formattedCriteria = $formattedCriteria.Replace("&lt;", "<")
-    $formattedCriteria = $formattedCriteria.Replace("&gt;", ">")
+    $formattedCriteria = $formattedCriteria.Replace('&lt;', '<')
+    $formattedCriteria = $formattedCriteria.Replace('&gt;', '>')
 
     return $formattedCriteria
 }
 
-function CleanPostPipelineFilter
+function Optimize-PostPipelineFilter
 {
-    param ([string]$postPipelineFilter)
-    [string]$tmpString = ""
+    [CmdletBidning()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $PostPipelineFilter
+    )
 
     # REPLACE ESCAPED XML CHARACTERS
-    $tmpString = $postPipelineFilter.Replace("&lt;", "<")
-    $tmpString = $postPipelineFilter.Replace("&gt;", ">")
+    $formattedSTring = $PostPipelineFilter.Replace('&lt;', '<')
+    $formattedSTring = $PostPipelineFilter.Replace('&gt;', '>')
 
-    Return $tmpString
+    return $formattedSTring
 }
 #endregion Functions
 
 # RETRIEVE CONFIGURATION FILE WITH RULES AND EXCEPTIONS
 $config = [System.Xml.XmlDocument] ( Get-Content -Path $ConfigFile.FullName )
-
-# LOG FILE
-<#
-$logFilePath = $config.config.settings.outputpath.name
-$fileName = "AlertEscalation." + (Get-Date -Format "yyyy.MM.dd") + ".log"
-$logFileName = Join-Path -Path $logFilePath $fileName
-#>
 
 if ( -not ( Get-Module -Name OperationsManager ) )
 {
@@ -332,43 +330,42 @@ foreach ( $alertStormRule in $alertStormRules )
 # PROCESS EXCEPTIONS FIRST
 $alertExceptions = $config.SelectNodes("//config/exceptions/exception[@enabled='true']") | Sort-Object { $_.Sequence }
 
-foreach ($exception in $alertExceptions)
+foreach ( $exception in $alertExceptions )
 {
     # ASSIGN VALUES
-    # Write-Host $exception.name
-    [string]$criteria = $exception.Criteria.InnerText
-    [int]$newResolutionState = $exception.NewResolutionState
-    [string]$postPipelineFilter = $exception.PostPipelineFilter #.InnerText
-    [string]$comment = $exception.Comment.InnerText
-    [string]$name = $exception.Name
+    Write-Verbose -Message $exception.name
+    $criteria = $exception.Criteria.InnerText
+    $newResolutionState = [System.Int32] $exception.NewResolutionState
+    $postPipelineFilter = $exception.PostPipelineFilter #.InnerText
+    $comment = $exception.Comment.InnerText
+    $name = $exception.Name
 
     # REPLACE TIME BASED CRITERIA
-    if ($criteria -match "__TimeRaised__")
+    if ( $criteria -match '__TimeRaised__' )
     {
-        [int]$timeRaisedAge = $exception.TimeRaisedAge
+        $timeRaisedAge = [System.Int32] $exception.TimeRaisedAge
         $criteria = Format-DateField $criteria $timeRaisedAge
     }
-    if ($criteria -match "__LastModified__")
+    if ( $criteria -match '__LastModified__' )
     {
-        [int]$lastModifiedAge = $exception.LastModifiedAge
+        $lastModifiedAge = [System.Int32] $exception.LastModifiedAge
         $criteria = Format-DateField $criteria $lastModifiedAge
     }
 
     # COLLECT ALERTS BASED ON CRITERIA
-    If ($postPipelineFilter -eq "")
+    if ( [System.String]::IsNullOrEmpty($postPipelineFilter) )
     {
         $alerts = Get-SCOMAlert -Criteria $criteria 
     } 
-    Else 
+    else 
     {
-        [string]$cleanString = CleanPostPipelineFilter $postPipelineFilter
-        [scriptblock]$filter = [System.Management.Automation.ScriptBlock]::Create($cleanString)
-
+        $cleanString = Optimize-PostPipelineFilter -PostPipeLineFilter $postPipelineFilter
+        $filter = [System.Management.Automation.ScriptBlock]::Create($cleanString)
         $alerts = Get-SCOMAlert -Criteria $criteria | Where-Object -FilterScript $filter
     }
 
-    ### UPDATE MATCHING ALERTS TO NEW RESOLUTION STATE
-    If ($alerts.Count -gt 0)
+    # UPDATE MATCHING ALERTS TO NEW RESOLUTION STATE
+    if ( $alerts.Count -gt 0 )
     {
         $alerts | Set-SCOMAlert -ResolutionState $newResolutionState -Comment $Comment
         $AlertCount = $alerts.Count
@@ -424,13 +421,13 @@ foreach ($rule in $alertRules)
     } 
     else
     {
-        $cleanString = CleanPostPipelineFilter $postPipelineFilter
+        $cleanString = Optimize-PostPipelineFilter $postPipelineFilter
         $filter = [System.Management.Automation.ScriptBlock]::Create($cleanString)
         $alerts = Get-SCOMAlert -Criteria $criteria | Where-Object -FilterScript $filter
     }
 
-    ### UPDATE MATCHING ALERTS TO NEW RESOLUTION STATE
-    If ($alerts.Count -gt 0)
+    # UPDATE MATCHING ALERTS TO NEW RESOLUTION STATE
+    if ($alerts.Count -gt 0)
     {
         $alerts | Set-SCOMAlert -ResolutionState $newResolutionState -Comment $Comment
         Write-Verbose -Message $criteria
