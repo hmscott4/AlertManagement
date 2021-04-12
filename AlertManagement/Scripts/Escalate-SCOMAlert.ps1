@@ -30,7 +30,7 @@ $momapi = New-Object -comObject MOM.ScriptAPI
 
 trap
 {
-	$message = "`n $parameterString `n $($_.ToString())"
+    $message = "`n $parameterString `n $($_.ToString())"
     $momapi.LogScriptEvent($scriptName, $scriptEventID, 1, $message)
     break
 }
@@ -220,15 +220,13 @@ $alertStormRules = $config.SelectNodes("//config/alertStormRules/stormRule[@enab
 foreach ( $alertStormRule in $alertStormRules )
 {
     # Get the alerts defined by the criteria and group them by the defined property
-    $potentialStormAlertGroups = Get-SCOMAlert -Criteria $alertStormRule.Criteria.InnerText |
-    Group-Object -Property $alertStormRule.Property |
-    Where-Object -FilterScript { $_.Count -gt 1 }
+    $potentialStormAlertGroups = Get-SCOMAlert -Criteria $alertStormRule.Criteria.InnerText | Group-Object -Property $alertStormRule.Property | Where-Object -FilterScript { $_.Count -gt 1 }
 
     # Define a counter which will be used to further subdivide the alerts into groups
     $groupCounter = 0
 
     # Create a hashtable to store the new groups of alerts
-    $stormAlertGroups = @{$groupCounter = @() }
+    $stormAlertGroups = @{ $groupCounter = @() }
 
     foreach ( $potentialStormAlertGroup in $potentialStormAlertGroups )
     {
@@ -258,14 +256,12 @@ foreach ( $alertStormRule in $alertStormRules )
     }
     
     # Get the groups which meet the threshold for number of the same alert
-    $stormAlerts = $stormAlertGroups.GetEnumerator() |
-    Where-Object -FilterScript { $_.Value.Count -ge $alertStormRule.Count }
+    $stormAlerts = $stormAlertGroups.GetEnumerator() | Where-Object -FilterScript { $_.Value.Count -ge $alertStormRule.Count }
 
     foreach ( $stormAlert in $stormAlerts )
     {
         # Get the alerts which were previously tagged as an alert storm
-        $oldAlertStormAlerts = $stormAlert.Value |
-        Where-Object -FilterScript { ( $_.ResolutionState -eq 18 ) -and $_.TicketID }
+        $oldAlertStormAlerts = $stormAlert.Value | Where-Object -FilterScript { ( $_.ResolutionState -eq 18 ) -and $_.TicketID }
         
         if ( $oldAlertStormAlerts.Count -gt 0 )
         {
@@ -281,9 +277,7 @@ foreach ( $alertStormRule in $alertStormRules )
             $ticketId = ( Get-Date -Format 'MM/dd/yyyy hh:mm:ss {0}' ) -f $alertName
             
             # Get a unique list of monitoring objects
-            $monitoringObjects = $stormAlert.Value |
-            Select-Object -ExpandProperty MonitoringObjectFullName -Unique |
-            Sort-Object
+            $monitoringObjects = $stormAlert.Value | Select-Object -ExpandProperty MonitoringObjectFullName -Unique | Sort-Object
         
             # Define the string which will be passed in as the "script name" property for LogScriptEvent
             $stormDescription = "The alert ""$alertName"" was triggered $($stormAlert.Value.Count) times for the following objects:"
@@ -297,14 +291,10 @@ foreach ( $alertStormRule in $alertStormRules )
             $eventDetails.AppendLine("Internal ticket id: $ticketId") > $null
 
             # Get the highest severity of the selected alerts
-            $highestAlertSeverity = $stormAlert.Value.Severity |
-            Sort-Object -Property value__ -Descending |
-            Select-Object -First 1 -Unique
+            $highestAlertSeverity = $stormAlert.Value.Severity | Sort-Object -Property value__ -Descending | Select-Object -First 1 -Unique
 
             # Get the highest priority of the selected alerts
-            $highestAlertPriority = $stormAlert.Value.Priority |
-            Sort-Object -Property value__ -Descending |
-            Select-Object -First 1 -Unique
+            $highestAlertPriority = $stormAlert.Value.Priority | Sort-Object -Property value__ -Descending | Select-Object -First 1 -Unique
 
             # Determine what the event severity should be
             if (
@@ -335,9 +325,7 @@ foreach ( $alertStormRule in $alertStormRules )
         }
         
         # Mark the alert as being part of an alert storm
-        $stormAlert.Value |
-        Where-Object -FilterScript { $_.ResolutionState -ne 18 } |
-        Set-SCOMAlert -ResolutionState 18 -Comment $alertStormRule.Comment.InnerText -TicketId $ticketId
+        $stormAlert.Value | Where-Object -FilterScript { $_.ResolutionState -ne 18 } | Set-SCOMAlert -ResolutionState 18 -Comment $alertStormRule.Comment.InnerText -TicketId $ticketId
     }
 }
 
@@ -383,11 +371,15 @@ foreach ($exception in $alertExceptions)
     If ($alerts.Count -gt 0)
     {
         $alerts | Set-SCOMAlert -ResolutionState $newResolutionState -Comment $Comment
-        # Write-Host $criteria
         $AlertCount = $alerts.Count
-        $msg = (Get-Date -Format "yyyy/MM/dd hh:mm:ss") + " : INFO : Updated $AlertCount alert(s) to resolution state $newResolutionState (Exception: $name)."
-        # Write-Host "  : $msg"
-        #Add-Content $logFileName $msg
+        Write-Verbose -Message $criteria        
+
+        if ($debug)
+        {
+            $message = "`nUpdated $AlertCount alert(s) to resolution state $newResolutionState (Exception: $name)."
+            $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+            Write-Debug -Message $message
+        }
     }
     
 
@@ -406,22 +398,22 @@ $alertRules = $config.SelectNodes("//config/rules/rule[@enabled='true']") | Sort
 foreach ($rule in $alertRules)
 {
     # ASSIGN VALUES
-    # Write-Host $rule.name
-    [string]$criteria = $rule.Criteria.InnerText
-    [int]$newResolutionState = $rule.NewResolutionState
-    [string]$postPipelineFilter = $rule.PostPipelineFilter #.InnerText
-    [string]$comment = $rule.Comment.InnerText
-    [string]$name = $rule.name
+    Write-Verbose -Message $rule.name
+    $criteria = $rule.Criteria.InnerText
+    $newResolutionState = [System.Int32] $rule.NewResolutionState
+    $postPipelineFilter = $rule.PostPipelineFilter #.InnerText
+    $comment = $rule.Comment.InnerText
+    $name = $rule.name
 
     # REPLACE TIME BASED CRITERIA
-    if ($criteria -match "__TimeRaised__")
+    if ($criteria -match '__TimeRaised__')
     {
-        [int]$timeRaisedAge = $rule.TimeRaisedAge
+        $timeRaisedAge = [System.Int32] $rule.TimeRaisedAge
         $criteria = Format-DateField $criteria $timeRaisedAge
     }
-    if ($criteria -match "__LastModified__")
+    if ($criteria -match '__LastModified__')
     {
-        [int]$lastModifiedAge = $rule.LastModifiedAge
+        $lastModifiedAge = [System.Int32] $rule.LastModifiedAge
         $criteria = Format-DateField $criteria $lastModifiedAge
     }
 
@@ -432,9 +424,8 @@ foreach ($rule in $alertRules)
     } 
     else
     {
-        [string]$cleanString = CleanPostPipelineFilter $postPipelineFilter
-        [scriptblock]$filter = [System.Management.Automation.ScriptBlock]::Create($cleanString)
-
+        $cleanString = CleanPostPipelineFilter $postPipelineFilter
+        $filter = [System.Management.Automation.ScriptBlock]::Create($cleanString)
         $alerts = Get-SCOMAlert -Criteria $criteria | Where-Object -FilterScript $filter
     }
 
@@ -442,20 +433,19 @@ foreach ($rule in $alertRules)
     If ($alerts.Count -gt 0)
     {
         $alerts | Set-SCOMAlert -ResolutionState $newResolutionState -Comment $Comment
-        # Write-Host $criteria
+        Write-Verbose -Message $criteria
         $AlertCount = $alerts.Count
-        $msg = (Get-Date -Format "yyyy/MM/dd hh:mm:ss") + " : INFO : Updated $AlertCount alert(s) to resolution state $newResolutionState (Rule: $name)."
-        # Write-Host "  : $msg"
 
-        #Add-Content $logFileName $msg
+        if ($debug)
+        {
+            $message = "`nUpdated $AlertCount alert(s) to resolution state $newResolutionState (Rule: $name)."
+            $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+            Write-Debug -Message $message
+        }
     }
 
     # RESET RULE VALUES
-    $criteria = $null
-    $newResolutionState = $null
-    $postPipelineFilter = $null
-    $comment = $null
-    $name = $null
+    Remove-Variable -Name criteria,newResolutionState,postPipelineFilter,comment,name -ErrorAction Continue
 }
 
 # Log an event for script ending and total execution time.
