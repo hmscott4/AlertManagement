@@ -31,11 +31,11 @@
   <ItemGroup>
     <ManagementPackReference Include="Microsoft.SystemCenter.Library">
       <Alias>SC</Alias>
-      <PackageToBundle>false</PackageToBundle>
+      <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
     <ManagementPackReference Include="Microsoft.Windows.Library">
       <Alias>Windows</Alias>
-      <PackageToBundle>false</PackageToBundle>
+      <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
     <ManagementPackReference Include="System.Health.Library">
       <Alias>Health</Alias>
@@ -54,6 +54,7 @@
     <Folder Include="Monitors" />
     <Folder Include="Discoveries" />
     <Folder Include="Config" />
+    <Folder Include="DataSources" />
     <Folder Include="Scripts" />
     <Folder Include="Tasks" />
     <Folder Include="Rules" />
@@ -65,13 +66,13 @@
     <Compile Include="Rules\AlertAssignment.mpx">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Rules\Escalate.Alert.mpx">
+    <Compile Include="Rules\SCOM.Alert.Management.Escalate.Rule.mpx">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\assign.alert.ps1" />
-    <EmbeddedResource Include="Scripts\Escalate-SCOMAlert.ps1" />
+    <EmbeddedResource Include="Scripts\Escalate-ScomAlert.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\assign.alert.config">

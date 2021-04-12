@@ -1,0 +1,112 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TypeDefinitions>
+    <ModuleTypes>
+      <DataSourceModuleType ID="SCOM.Alert.Management.Escalate.Rule.DataSource" Accessibility="Public" Batching="false">
+        <Configuration>
+          <IncludeSchemaTypes>
+            <SchemaType>System!System.ExpressionEvaluatorSchema</SchemaType>
+          </IncludeSchemaTypes>
+          <xsd:element name="IntervalSeconds" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="SyncTime" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="ConfigFile" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="DebugLogging" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="SyncTime" Selector="$Config/SyncTime$" ParameterType="string" />
+          <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="ConfigFile" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="DebugLogging" Selector="$Config/DebugLogging$" ParameterType="bool" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="DS" TypeID="System!System.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval Unit="Seconds">$Config/IntervalSeconds$</Interval>
+                    <SyncTime>$Config/SyncTime$</SyncTime>
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+            </MemberModules>
+            <Composition>
+              <Node ID="DS" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.TriggerData</OutputType>
+      </DataSourceModuleType>
+      <WriteActionModuleType ID="SCOM.Alert.Management.Escalate.Rule.WriteAction" Accessibility="Internal" Batching="false">
+        <Configuration>
+          <xsd:element minOccurs="1" name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="ConfigFile" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="DebugLogging" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="ConfigFile" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="DebugLogging" Selector="$Config/DebugLogging$" ParameterType="bool" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <WriteAction ID="WA" TypeID="Windows!Microsoft.Windows.PowerShellWriteAction">
+                <ScriptName>Escalate-ScomAlert.ps1</ScriptName>
+                <ScriptBody>$IncludeFileContent/Scripts/Escalate-ScomAlert.ps1$</ScriptBody>
+                <Parameters>
+                  <Parameter>
+                    <Name>ConfigFile</Name>
+                    <Value>$Config/ConfigFile$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>DebugLogging</Name>
+                    <Value>$Config/DebugLogging$</Value>
+                  </Parameter>
+                </Parameters>
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </WriteAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="WA" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.BaseData</OutputType>
+        <InputType>System!System.BaseData</InputType>
+      </WriteActionModuleType>
+    </ModuleTypes>
+  </TypeDefinitions>
+  <Monitoring>
+    <Rules>
+      <Rule ID="SCOM.Alert.Management.Escalate.Rule" Enabled="true" Target="SC!Microsoft.SystemCenter.AllManagementServersPool" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
+        <Category>Custom</Category>
+        <DataSources>
+          <DataSource ID="Scheduler" TypeID="SCOM.Alert.Management.Escalate.Rule.DataSource">
+            <IntervalSeconds>300</IntervalSeconds>
+            <SyncTime></SyncTime>
+          </DataSource>
+        </DataSources>
+        <WriteActions>
+          <WriteAction ID="WA" TypeID="SCOM.Alert.Management.Escalate.Rule.WriteAction">
+            <TimeoutSeconds>120</TimeoutSeconds>
+            <ConfigFile></ConfigFile>
+            <DebugLogging>False</DebugLogging>
+          </WriteAction>
+        </WriteActions>
+      </Rule>
+    </Rules>
+  </Monitoring>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule">
+          <Name>Escalate SCOM Alerts</Name>
+          <Description>Set the resolution state on alerts based on the defined criteria.</Description>
+        </DisplayString>
+      </DisplayStrings>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>
