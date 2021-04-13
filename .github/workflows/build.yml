@@ -14,12 +14,10 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
-    # The type of runner that the job will run on
+
     runs-on: windows-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Runs a set of commands using the runners shell
       - name: Print working directory
         shell: powershell
-        run: .\.github\scripts\build.ps1
+        run: Get-ChildItem -recurse
