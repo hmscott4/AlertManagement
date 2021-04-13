@@ -15,10 +15,14 @@ on:
 jobs:
   build:
 
+    # Specify the version of Windows
     runs-on: windows-latest
 
     steps:
+      # Checkout the repo  
       - uses: actions/checkout@v1
+      
+      # Execute the build PowerShell script
       - name: Execute build script
         shell: powershell
         run: .\.github\scripts\build.ps1
