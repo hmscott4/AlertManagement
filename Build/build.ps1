@@ -42,17 +42,9 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 	$msBuildExe = Get-Item -Path ( Join-Path -Path $vsinfo.installationPath -ChildPath 'MSBuild\Current\Bin\MSBuild.exe' ) -ErrorAction Stop
 	Write-Verbose -Message "MSBuild.exe path: $($msBuildExe.FullName)"
 
-	# Build the solution
-	<#$devenvcomStartProcessArguments = @(
-		$solution.FullName
-		'/Build Release'
-	)#>
-	#Write-Verbose -Message "'$devenvexe' $($devenvcomStartProcessArguments -join ' ')"
-	#Start-Process -FilePath $devenvexe.FullName -NoNewWindow -Wait -ArgumentList $devenvcomStartProcessArguments
-
 	foreach ( $project in ( Get-ChildItem -Filter *.mpproj -Recurse ) )
 	{
-		# Build the solution
+		# Build the project
 		$msBuildExeStartProcessArguments = @(
 			$project.FullName
 			'-t:build'
