@@ -22,12 +22,13 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 
 	# Get the path to devenv.exe
 	$devenvexe = $vsInfo.productPath
+	Write-Verbose -Message "devenv.exe path: $($devenvexe.FullName)"
 
 	# Build the solution
 	$devenvcomStartProcessArguments = @(
 		$solution.FullName
 		'/Build Release'
 	)
-	Write-Verbose -Message "'$devenvcom' $($devenvcomStartProcessArguments -join ' ')"
-	Start-Process -FilePath $devenvcom.FullName -NoNewWindow -Wait -ArgumentList $devenvcomStartProcessArguments
+	Write-Verbose -Message "'$devenvexe' $($devenvcomStartProcessArguments -join ' ')"
+	Start-Process -FilePath $devenvexe.FullName -NoNewWindow -Wait -ArgumentList $devenvcomStartProcessArguments
 }
