@@ -7,16 +7,23 @@ Project("{D4B43EB3-688B-4EEE-86BD-088F0B28ABB3}") = "AlertManagement", "AlertMan
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB8CD6FE-303B-4C7F-81B7-6E81B36187DF}"
 	ProjectSection(SolutionItems) = preProject
-		LICENSE = LICENSE
 		README.md = README.md
-		Security.md = Security.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{DC519476-6369-468A-9A90-DDFF4323F274}"
+	ProjectSection(SolutionItems) = preProject
+		.github\LICENSE.md = .github\LICENSE.md
+		.github\Security.md = .github\Security.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{402DAA0C-01A5-4581-9D51-1CB4BCAFA061}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{74C50A47-5C9A-4A16-8275-F0AB237BACBE}"
+	ProjectSection(SolutionItems) = preProject
+		.github\scripts\build.ps1 = .github\scripts\build.ps1
 	EndProjectSection
 EndProject
 Global
@@ -40,6 +47,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DC519476-6369-468A-9A90-DDFF4323F274} = {EB8CD6FE-303B-4C7F-81B7-6E81B36187DF}
 		{402DAA0C-01A5-4581-9D51-1CB4BCAFA061} = {DC519476-6369-468A-9A90-DDFF4323F274}
+		{74C50A47-5C9A-4A16-8275-F0AB237BACBE} = {DC519476-6369-468A-9A90-DDFF4323F274}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A43960F5-1B92-4AD7-8922-6C44C7728FF9}
