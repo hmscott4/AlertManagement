@@ -13,20 +13,21 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
-    <GenerateSealed>false</GenerateSealed>
+    <GenerateSealed>False</GenerateSealed>
     <Company>MyCompany</Company>
     <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
-    <DelaySigning>false</DelaySigning>
+    <DelaySigning>False</DelaySigning>
     <AssemblyOriginatorKeyFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>false</DebugSymbols>
     <OutputPath>bin\Release\</OutputPath>
-    <DelaySigning>false</DelaySigning>
+    <DelaySigning>False</DelaySigning>
     <Company>MyCompany</Company>
     <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
+    <GenerateSealed>False</GenerateSealed>
   </PropertyGroup>
   <ItemGroup>
     <ManagementPackReference Include="Microsoft.SystemCenter.Library">

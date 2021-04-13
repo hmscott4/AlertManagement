@@ -31,4 +31,6 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 	)
 	Write-Verbose -Message "'$devenvexe' $($devenvcomStartProcessArguments -join ' ')"
 	Start-Process -FilePath $devenvexe.FullName -NoNewWindow -Wait -ArgumentList $devenvcomStartProcessArguments
+
+	Get-ChildItem -Path .\AlertManagement\bin -Recurse
 }
