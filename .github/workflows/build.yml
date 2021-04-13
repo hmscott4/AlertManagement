@@ -25,4 +25,11 @@ jobs:
       # Execute the build PowerShell script
       - name: Execute build script
         shell: powershell
-        run: .\.github\scripts\build.ps1
+        run: .\Build\build.ps1
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Alert Management
+          path: |
+            AlertManagement/bin/Release
+            !*.pdb

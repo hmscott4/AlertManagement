@@ -21,9 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\build.yml = .github\workflows\build.yml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{74C50A47-5C9A-4A16-8275-F0AB237BACBE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{1FF4895E-D706-4F3E-9E85-5CB0B14E2DD2}"
 	ProjectSection(SolutionItems) = preProject
-		.github\scripts\build.ps1 = .github\scripts\build.ps1
+		Build\build.ps1 = Build\build.ps1
 	EndProjectSection
 EndProject
 Global
@@ -47,7 +47,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DC519476-6369-468A-9A90-DDFF4323F274} = {EB8CD6FE-303B-4C7F-81B7-6E81B36187DF}
 		{402DAA0C-01A5-4581-9D51-1CB4BCAFA061} = {DC519476-6369-468A-9A90-DDFF4323F274}
-		{74C50A47-5C9A-4A16-8275-F0AB237BACBE} = {DC519476-6369-468A-9A90-DDFF4323F274}
+		{1FF4895E-D706-4F3E-9E85-5CB0B14E2DD2} = {EB8CD6FE-303B-4C7F-81B7-6E81B36187DF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A43960F5-1B92-4AD7-8922-6C44C7728FF9}
