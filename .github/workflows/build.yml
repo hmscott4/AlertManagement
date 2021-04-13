@@ -22,5 +22,4 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Print working directory
         shell: powershell
-        run: |
-            .\.github\scripts\build.ps1
+        run: .\.github\scripts\build.ps1
