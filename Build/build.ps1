@@ -54,5 +54,9 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 		Start-Process -FilePath $msBuildExe.FullName -NoNewWindow -Wait -ArgumentList $msBuildExeStartProcessArguments
 	}
 
-	Get-ChildItem -Path .\AlertManagement\bin -Recurse
+	# Verify the management pack files were created
+	if ( -not ( Get-ChildItem -Path .\AlertManagement\bin\Release | Where-Object -FilterScript { $_.Extension -match 'mp|mpb|xml' } ) )
+	{
+		throw 'No management pack files found in ".\AlertManagement\bin\Release"'
+	}
 }

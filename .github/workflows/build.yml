@@ -30,4 +30,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: Alert Management
-          path: AlertManagement/bin/Release/*.[mx][bm][lp]
+          # Upload MPB and XML files
+          path: AlertManagement/bin/Release/*.[mx][mp][bl]
