@@ -48,7 +48,18 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 		'/Build Release'
 	)
 	Write-Verbose -Message "'$devenvexe' $($devenvcomStartProcessArguments -join ' ')"
-	Start-Process -FilePath $devenvexe.FullName -NoNewWindow -Wait -ArgumentList $devenvcomStartProcessArguments
+	#Start-Process -FilePath $devenvexe.FullName -NoNewWindow -Wait -ArgumentList $devenvcomStartProcessArguments
+
+	foreach ( $project in ( Get-ChildItem -Filter *.mpproj ) )
+	{
+		# Build the solution
+		$msBuildExeStartProcessArguments = @(
+			$project.FullName
+			'-t:build'
+		)
+	}
+	Write-Verbose -Message "'$($msBuildExe.FullName)' $($msBuildExeStartProcessArguments -join ' ')"
+	Start-Process -FilePath $msBuildExe.FullName -NoNewWindow -Wait -ArgumentList $msBuildExeStartProcessArguments
 
 	Get-ChildItem -Path .\AlertManagement\bin -Recurse
 }
