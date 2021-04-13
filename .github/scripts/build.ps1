@@ -56,6 +56,7 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 		$msBuildExeStartProcessArguments = @(
 			$project.FullName
 			'-t:build'
+			'-property:Configuration=Release'
 		)
 		Write-Verbose -Message "'$($msBuildExe.FullName)' $($msBuildExeStartProcessArguments -join ' ')"
 		Start-Process -FilePath $msBuildExe.FullName -NoNewWindow -Wait -ArgumentList $msBuildExeStartProcessArguments
