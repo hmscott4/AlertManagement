@@ -21,7 +21,7 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 	Write-Verbose -Message "Visual Studio installation path: $($vsInfo.installationPath)"
 
 	# Get the path to devenv.exe
-	$devenvexe = $vsInfo.productPath
+	$devenvexe = Get-Item -Path $vsInfo.productPath
 	Write-Verbose -Message "devenv.exe path: $($devenvexe.FullName)"
 
 	# Build the solution
