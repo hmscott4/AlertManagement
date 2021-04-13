@@ -18,6 +18,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Print working directory
+      - uses: actions/checkout@v1
+      - name: Get children
         shell: powershell
         run: Get-ChildItem -recurse
