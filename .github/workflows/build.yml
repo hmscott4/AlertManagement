@@ -19,6 +19,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Get children
+      - name: Execute build script
         shell: powershell
-        run: Get-ChildItem -recurse
+        run: .\.github\scripts\build.ps1
