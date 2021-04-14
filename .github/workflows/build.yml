@@ -25,6 +25,12 @@ jobs:
         shell: powershell
         run: .\Build\build.ps1
 
+      - name: Check In Version Updates
+        uses: EndBug/add-and-commit@v7
+        with:
+          message: 'Updated version'
+          add: '/AlertManagement/*.mpproj*'
+
       # Upload the management pack files as artifacts
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
