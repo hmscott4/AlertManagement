@@ -28,7 +28,8 @@ jobs:
         run: .\Build\build.ps1
 
       # Upload the management pack files as artifacts
-      - uses: actions/upload-artifact@v2
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
         with:
           name: Alert Management
           path: |
@@ -36,3 +37,10 @@ jobs:
             AlertManagement/bin/Release/*.mpb
             AlertManagement/bin/Release/*.xml
 
+      - name: Generate Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            AlertManagement/bin/Release/*.mp  
+            AlertManagement/bin/Release/*.mpb
+            AlertManagement/bin/Release/*.xml
