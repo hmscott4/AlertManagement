@@ -32,9 +32,21 @@ jobs:
           name: Alert Management
           path: AlertManagement/bin/Release/*
 
-      # Release the management pack
-      - name: Generate Beta Release
+      # Create a release of the management pack
+      - name: Generate Release
         if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: v${{ env.Version }}
+          tag_name: v${{ env.Version }}
+          prerelease: false
+          files: AlertManagement.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create a beta release of the management pack
+      - name: Generate Beta Release
+        if: github.ref == 'refs/heads/dev'
         uses: softprops/action-gh-release@v1
         with:
           name: v${{ env.Version }}
