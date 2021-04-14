@@ -55,8 +55,15 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 	}
 
 	# Verify the management pack files were created
-	if ( -not ( Get-ChildItem -Path .\AlertManagement\bin\Release | Where-Object -FilterScript { $_.Extension -match 'mp|mpb|xml' } ) )
+	$releaseFiles = Get-ChildItem -Path .\AlertManagement\bin\Release | Where-Object -FilterScript { $_.Extension -match 'mp|mpb|xml' }
+	if ( -not $releaseFiles )
 	{
 		throw 'No management pack files found in ".\AlertManagement\bin\Release"'
+	}
+	else
+	{
+		# Copy the management pack files to a release folder
+		$releaseFolder = New-Item -Path Release
+		Copy-Item -Path $releaseFiles.FullName -Destination $releaseFolder.FullName
 	}
 }

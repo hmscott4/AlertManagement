@@ -43,9 +43,6 @@ jobs:
           name: Test Release
           tag_name: Test
           prerelease: true
-          files: |
-            AlertManagement/bin/Release/*.mp  
-            AlertManagement/bin/Release/*.mpb
-            AlertManagement/bin/Release/*.xml
+          files: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
