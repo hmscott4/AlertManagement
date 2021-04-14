@@ -38,8 +38,8 @@ jobs:
       - name: Generate Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ env:version }}
-          tag_name: ${{ env:version }}
+          name: Release ${{ env.Version }}
+          tag_name: ${{ env.Version }}
           prerelease: true
           files: AlertManagement.zip
         env:
