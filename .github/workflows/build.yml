@@ -32,11 +32,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Alert Management
-          path: |
-            AlertManagement/bin/Release/*.mp  
-            AlertManagement/bin/Release/*.mpb
-            AlertManagement/bin/Release/*.xml
+          path: AlertManagement/bin/Release/*
 
+      # Release the management pack
       - name: Generate Release
         uses: softprops/action-gh-release@v1
         with:
