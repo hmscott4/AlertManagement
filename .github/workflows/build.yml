@@ -40,6 +40,9 @@ jobs:
       - name: Generate Release
         uses: softprops/action-gh-release@v1
         with:
+          name: Test Release
+          tag_name: Test
+          prerelease: true
           files: |
             AlertManagement/bin/Release/*.mp  
             AlertManagement/bin/Release/*.mpb
