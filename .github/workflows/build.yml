@@ -29,7 +29,7 @@ jobs:
         uses: EndBug/add-and-commit@v7
         with:
           message: 'Updated version'
-          add: '/AlertManagement/*.mpproj*'
+          add: './AlertManagement/*.mpproj*'
 
       # Upload the management pack files as artifacts
       - name: Upload Artifacts
