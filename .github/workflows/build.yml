@@ -27,10 +27,10 @@ jobs:
         shell: powershell
         run: .\Build\build.ps1
 
+      # Upload the management pack files as artifacts
       - uses: actions/upload-artifact@v2
         with:
           name: Alert Management
-          # Upload the management pack files as artifacts
           path: |
             AlertManagement/bin/Release/*.mp  
             AlertManagement/bin/Release/*.mpb
