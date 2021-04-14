@@ -62,6 +62,15 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 	}
 	else
 	{
+		# Get the version of the management pack
+		$managementPackXmlFile = $releaseFiles | Where-Object -FilterScript { $_.Extension -eq '.xml' }
+		$managementPackXml = [System.Xml.XmlDocument] ( $managementPackXmlFile | Get-Content )
+		$version = $managementPackXml.ManagementPack.Manifest.Identity.Version
+		Write-Verbose -Message "Management Pack Version: $version"
+		
+		# Return the version to GitHub
+		Write-Output -InputObject "::set-env name=version::$version"
+
 		# Zip up the management pack files
 		Compress-Archive -Path $releaseFiles.FullName -Destination AlertManagement.zip
 	}
