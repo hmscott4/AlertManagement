@@ -34,11 +34,11 @@ jobs:
 
       # Release the management pack
       - name: Generate Beta Release
+        if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v1
         with:
           name: v${{ env.Version }}
           tag_name: v${{ env.Version }}
-          if: github.ref == 'refs/heads/main'
           prerelease: true
           files: AlertManagement.zip
         env:
