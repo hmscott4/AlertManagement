@@ -1,8 +1,6 @@
 # Set the verbose preference
 $VerbosePreference = 'Continue'
 
-Write-Verbose -Message "Current branch: $env:GITHUB_REF"
-
 # Download the System Center Visual Studio Authoring Extensions (VSAE)
 $invokeWebRequestParams = @{
 	Uri = 'https://download.microsoft.com/download/4/4/6/446B60D0-4409-4F94-9433-D83B3746A792/VisualStudioAuthoringConsole_x64.msi'
@@ -48,14 +46,44 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 		# Get the next management pack version from the user file
 		$projectUserFile = Get-ChildItem -Path $projectFile.Directory -Filter *.mpproj.user
 		$projectUserFileXml = [System.Xml.XmlDocument] ( $projectUserFile | Get-Content )
-		$targetVersion = [System.Version]::new($projectUserFileXml.Project.PropertyGroup.DeploymentNextVersion)
-		Write-Verbose -Message "Management Pack Version: $($targetVersion.ToString())"
+		$nextVersion = [System.Version]::new($projectUserFileXml.Project.PropertyGroup.DeploymentNextVersion)
+		
+		# Break out the version components to make it easier to work with
+		$nextVersionMajor = $nextVersion.Major
+		$nextVersionMinor = $nextVersion.Minor
+		$nextVersionBuild = $nextVersion.Build
+		$nextVersionRevision = $nextVersion.Revision
+
+		# Increment the minor version
+		if ( ( $env:GITHUB_REF -match '^refs/heads/dev' ) -and $env:GITHUB_HEAD_REF -and $env:GITHUB_BASE_REF )
+		{
+			$nextVersionMinor++
+		}
+
+		# Increment the major version
+		if ( ( $env:GITHUB_REF -match '^refs/heads/main' ) -and $env:GITHUB_HEAD_REF -and $env:GITHUB_BASE_REF )
+		{
+			$nextVersionMajor++
+			$nextVersionMinor = 0
+		}
+
+		# Increment the build
+		$nextVersionBuild++
+
+		# Create the new version
+		$newVersion = [System.Version]::new($nextVersionMajor,$nextVersionMinor,$nextVersionBuild,$nextVersionRevision)
+		Write-Verbose -Message "Management Pack Version: $($newVersion.ToString())"
 
 		# Set the next management pack version in the project file
 		$projectFileXml = [System.Xml.XmlDocument] ( $projectFile | Get-Content )
 		$mpConfiguration = $projectFileXml.Project.PropertyGroup | Where-Object -FilterScript { [System.String]::IsNullOrEmpty($_.Condition) }
-		$mpConfiguration.Version = $targetVersion.ToString()
+		$mpConfiguration.Version = $newVersion.ToString()
 		$projectFileXml.Save($projectFile.FullName)
+
+		# Increment the version in the user file
+		$newNextVersion = [System.Version]::new($newVersion.Major,$newVersion.Minor,$newVersion.Build, $newVersion.Revision + 1)
+		$projectUserFileXml.Project.PropertyGroup.DeploymentNextVersion = $newNextVersion.ToString()
+		$projectUserFileXml.Save($projectUserFile.FullName)
 
 		# Build the project
 		$msBuildExeStartProcessArguments = @(
@@ -65,11 +93,6 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 		)
 		Write-Verbose -Message "'$($msBuildExe.FullName)' $($msBuildExeStartProcessArguments -join ' ')"
 		Start-Process -FilePath $msBuildExe.FullName -NoNewWindow -Wait -ArgumentList $msBuildExeStartProcessArguments
-
-		# Increment the version in the user file
-		$newVersion = [System.Version]::new($targetVersion.Major,$targetVersion.Minor,$targetVersion.Build + 1, $targetVersion.Revision + 1)
-		$projectUserFileXml.Project.PropertyGroup.DeploymentNextVersion = $newVersion.ToString()
-		$projectUserFileXml.Save($projectUserFile.FullName)
 	}
 
 	# Verify the management pack files were created
@@ -81,7 +104,7 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 	else
 	{
 		# Return the version to GitHub
-		Write-Output -InputObject "Version=$($targetVersion.ToString())" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+		Write-Output -InputObject "Version=$($newVersion.ToString())" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
 		# Zip up the management pack files
 		Compress-Archive -Path $releaseFiles.FullName -Destination AlertManagement.zip

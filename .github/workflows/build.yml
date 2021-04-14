@@ -18,7 +18,7 @@ jobs:
 
     steps:
       # Checkout the repo  
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       
       # Execute the build PowerShell script
       - name: Execute build script
