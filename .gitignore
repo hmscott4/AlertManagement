@@ -4,6 +4,8 @@
 # User-specific files
 *.suo
 *.user
+# Except the Managmement pack project user file because it contains the next build number
+!*.mpproj.user
 *.userosscache
 *.sln.docstates
 
