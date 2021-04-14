@@ -2,11 +2,9 @@ name: Build Management Pack
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the dev branch
+  # Triggers the workflow on push or pull request
   push:
-    branches: [ AlertStormManagement ]
   pull_request:
-    branches: [ AlertStormManagement ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -35,11 +33,12 @@ jobs:
           path: AlertManagement/bin/Release/*
 
       # Release the management pack
-      - name: Generate Release
+      - name: Generate Beta Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ env.Version }}
-          tag_name: ${{ env.Version }}
+          name: v${{ env.Version }}
+          tag_name: v${{ env.Version }}
+          if: github.ref == 'refs/heads/main'
           prerelease: true
           files: AlertManagement.zip
         env:
