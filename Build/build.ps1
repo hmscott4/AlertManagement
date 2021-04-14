@@ -62,8 +62,7 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 	}
 	else
 	{
-		# Copy the management pack files to a release folder
-		$releaseFolder = New-Item -Path Release
-		Copy-Item -Path $releaseFiles.FullName -Destination $releaseFolder.FullName
+		# Zip up the management pack files
+		Compress-Archive -Path $releaseFiles.FullName -Destination AlertManagement.zip
 	}
 }
