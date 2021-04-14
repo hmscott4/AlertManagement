@@ -69,7 +69,7 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 		Write-Verbose -Message "Management Pack Version: $version"
 		
 		# Return the version to GitHub
-		Write-Output -InputObject "::set-env name=version::$version"
+		Write-Output -InputObject "Version=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
 		# Zip up the management pack files
 		Compress-Archive -Path $releaseFiles.FullName -Destination AlertManagement.zip
