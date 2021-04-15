@@ -24,15 +24,16 @@ jobs:
           path: 'managementPack'
         
       - name: Checkout Wiki
-        uses: actions/checkout@v2
-        with:
-          repository: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.wiki.git
-          path: 'wiki'
+        shell: powershell
+        run: |
+          $VerbosePreference = 'Continue'
+          New-Item -Path .\wiki -ItemType Directory
+          Set-Location -Path .\wiki
+          git clone $GITHUB_SERVER_URL/$GITHUB_REPOSITORY.wiki.git
 
       - name: Copy Wiki files
         shell: powershell
         run: |
-          $VerbosePreference = 'Continue'
           Remove-Item -Path .\wiki\* -Recurse
           Get-ChildItem -Path .\managementPack\WikiSource\* -Recurse | Copy-Item -Destination .\wiki\
 
