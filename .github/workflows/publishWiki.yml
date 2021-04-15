@@ -54,5 +54,4 @@ jobs:
           git config --global user.name $env:GITHUB_ACTOR
           git add -A
           git commit -m 'Automatic Wiki Update'
-          git remote -v
-      #    git push
+          git push
