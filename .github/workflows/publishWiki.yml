@@ -22,23 +22,29 @@ jobs:
         with:
           repository: ${{ github.repository }}
           path: 'managementPack'
-        
-      - name: Checkout Wiki
+      
+      - name: List Variables
         shell: powershell
         run: |
-          $VerbosePreference = 'Continue'
-          New-Item -Path .\wiki -ItemType Directory
-          Set-Location -Path .\wiki
-          git clone $GITHUB_SERVER_URL/$GITHUB_REPOSITORY.wiki.git
+          $env:GITHUB_SERVER_URL
+          $env:GITHUB_REPOSITORY
+      
+      #- name: Checkout Wiki
+      #  shell: powershell
+      #  run: |
+      #    $VerbosePreference = 'Continue'
+      #    New-Item -Path .\wiki -ItemType Directory
+      #    Set-Location -Path .\wiki
+      #    git clone $GITHUB_SERVER_URL/$GITHUB_REPOSITORY.wiki.git
 
-      - name: Copy Wiki files
-        shell: powershell
-        run: |
-          Remove-Item -Path .\wiki\* -Recurse
-          Get-ChildItem -Path .\managementPack\WikiSource\* -Recurse | Copy-Item -Destination .\wiki\
+      #- name: Copy Wiki files
+      #  shell: powershell
+      #  run: |
+      #    Remove-Item -Path .\wiki\* -Recurse
+      #    Get-ChildItem -Path .\managementPack\WikiSource\* -Recurse | Copy-Item -Destination .\wiki\
 
-      - name: Check In Wiki
-        uses: EndBug/add-and-commit@v7
-        with:
-          add: './wiki'
-          message: 'Updated Wiki'
+      #- name: Check In Wiki
+      #  uses: EndBug/add-and-commit@v7
+      #  with:
+      #    add: './wiki'
+      #    message: 'Updated Wiki'
