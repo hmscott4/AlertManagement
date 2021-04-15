@@ -27,7 +27,9 @@ jobs:
         shell: powershell
         run: |
           $VerbosePreference = 'Continue'
-          git clone "$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY.wiki.git" wiki
+          $wikiRepoUrl = "$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY.wiki.git"
+          Write-Verbose -Message $wikiRepoUrl
+      #    git clone "$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY.wiki.git" wiki
 
       #- name: Copy Wiki files
       #  shell: powershell
