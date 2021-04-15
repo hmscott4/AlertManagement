@@ -32,6 +32,7 @@ jobs:
       - name: Copy Wiki files
         shell: powershell
         run: |
+          $VerbosePreference = 'Continue'
           Remove-Item -Path .\wiki\* -Recurse
           Get-ChildItem -Path .\managementPack\WikiSource\* -Recurse | Copy-Item -Destination .\wiki\
 
