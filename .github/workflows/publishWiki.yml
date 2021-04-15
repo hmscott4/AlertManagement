@@ -24,13 +24,21 @@ jobs:
           path: 'managementPack'
       
       - name: Checkout Wiki
-        shell: powershell
-        run: |
-          $VerbosePreference = 'Continue'
-          $githubDomain = $env:GITHUB_SERVER_URL.Replace('https://','')
-          $wikiRepoUrl = "https://${{ secrets.GITHUB_TOKEN }}@$githubDomain/$env:GITHUB_REPOSITORY.wiki.git"
-          Write-Verbose -Message $wikiRepoUrl
-          git clone $wikiRepoUrl wiki
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository }}.wiki
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+          path: 'wiki'
+      
+          #- name: Checkout Wiki
+      #  shell: powershell
+      #  run: |
+      #    $VerbosePreference = 'Continue'
+      #    $githubDomain = $env:GITHUB_SERVER_URL.Replace('https://','')
+      #    $wikiRepoUrl = "https://${{ secrets.GITHUB_TOKEN }}@$githubDomain/$env:GITHUB_REPOSITORY.wiki.git"
+      #    Write-Verbose -Message $wikiRepoUrl
+      #    git clone $wikiRepoUrl wiki
 
       - name: Copy Wiki Files
         shell: powershell
