@@ -23,19 +23,11 @@ jobs:
           repository: ${{ github.repository }}
           path: 'managementPack'
       
-      - name: List Variables
+      - name: Checkout Wiki
         shell: powershell
         run: |
-          $env:GITHUB_SERVER_URL
-          $env:GITHUB_REPOSITORY
-      
-      #- name: Checkout Wiki
-      #  shell: powershell
-      #  run: |
-      #    $VerbosePreference = 'Continue'
-      #    New-Item -Path .\wiki -ItemType Directory
-      #    Set-Location -Path .\wiki
-      #    git clone $GITHUB_SERVER_URL/$GITHUB_REPOSITORY.wiki.git
+          $VerbosePreference = 'Continue'
+          git clone "$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY.wiki.git" wiki
 
       #- name: Copy Wiki files
       #  shell: powershell
