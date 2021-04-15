@@ -31,14 +31,14 @@ jobs:
           Write-Verbose -Message $wikiRepoUrl
           git clone $wikiRepoUrl wiki
 
-      #- name: Copy Wiki files
-      #  shell: powershell
-      #  run: |
-      #    Remove-Item -Path .\wiki\* -Recurse
-      #    Get-ChildItem -Path .\managementPack\WikiSource\* -Recurse | Copy-Item -Destination .\wiki\
+      - name: Copy Wiki files
+        shell: powershell
+        run: |
+          Remove-Item -Path .\wiki\* -Recurse
+          Get-ChildItem -Path .\managementPack\WikiSource\ -Recurse | Copy-Item -Destination .\wiki\
 
-      #- name: Check In Wiki
-      #  uses: EndBug/add-and-commit@v7
-      #  with:
-      #    add: './wiki'
-      #    message: 'Updated Wiki'
+      - name: Check In Wiki
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: './wiki'
+          message: 'Updated Wiki'
