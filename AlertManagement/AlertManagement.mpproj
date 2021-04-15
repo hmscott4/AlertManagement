@@ -58,12 +58,16 @@
     <Folder Include="Discoveries" />
     <Folder Include="Config" />
     <Folder Include="DataSources" />
+    <Folder Include="Presentation" />
     <Folder Include="Scripts" />
     <Folder Include="Tasks" />
     <Folder Include="Rules" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ManagementPack.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.AddResolutionStates.Console.Task.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Rules\AlertAssignment.mpx">
@@ -74,6 +78,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\Add-ResolutionStates.ps1" />
     <EmbeddedResource Include="Scripts\assign.alert.ps1" />
     <EmbeddedResource Include="Scripts\Escalate-ScomAlert.ps1" />
   </ItemGroup>
