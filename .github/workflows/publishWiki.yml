@@ -27,7 +27,7 @@ jobs:
         shell: powershell
         run: |
           $VerbosePreference = 'Continue'
-          $wikiRepoUrl = "$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY.wiki.git"
+          $wikiRepoUrl = "https://${{ secrets.GITHUB_TOKEN }}@${$env:GITHUB_SERVER_URL.Replace('https://','')}/$env:GITHUB_REPOSITORY.wiki.git"
           Write-Verbose -Message $wikiRepoUrl
           git clone $wikiRepoUrl wiki
 
@@ -41,8 +41,6 @@ jobs:
         shell: powershell
         run: |
           Set-Location -Path .\wiki\
-          git config --global user.email "$env:GITHUB_ACTOR@users.noreply.github.com"
-          git config --global user.name $env:GITHUB_ACTOR
           git add -A
           git commit -m 'Automatic Wiki Update'
           git push
