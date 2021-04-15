@@ -27,7 +27,8 @@ jobs:
         shell: powershell
         run: |
           $VerbosePreference = 'Continue'
-          $wikiRepoUrl = "https://${{ secrets.GITHUB_TOKEN }}@${$env:GITHUB_SERVER_URL.Replace('https://','')}/$env:GITHUB_REPOSITORY.wiki.git"
+          $githubDomain = $env:GITHUB_SERVER_URL.Replace('https://','')
+          $wikiRepoUrl = "https://${{ secrets.GITHUB_TOKEN }}@$githubDomain/$env:GITHUB_REPOSITORY.wiki.git"
           Write-Verbose -Message $wikiRepoUrl
           git clone $wikiRepoUrl wiki
 
