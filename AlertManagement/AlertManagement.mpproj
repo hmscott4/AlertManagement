@@ -76,6 +76,9 @@
     <Compile Include="Rules\SCOM.Alert.Management.Escalate.Rule.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Rules\SCOM.Alert.Management.Storm.Rule.mpx">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\Add-ResolutionStates.ps1" />

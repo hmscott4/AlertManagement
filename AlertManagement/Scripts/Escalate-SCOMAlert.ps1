@@ -24,6 +24,7 @@ if ($debug -or $DebugPreference -ne 'SilentlyContinue')
 
 $scriptName = 'Escalate-SCOMAlert.ps1'
 $scriptEventID = 15813 # randomly generated for this script
+$stormEventId = 9908
 
 # Load MOMScript API
 $momapi = New-Object -comObject MOM.ScriptAPI
@@ -296,16 +297,16 @@ foreach ( $alertStormRule in $alertStormRules )
 
             # Determine what the event severity should be
             if (
-                $highestAlertSeverity -eq 'Error' -and
-                $highestAlertPriority -eq 'High'
+                $highestAlertSeverity -eq [Microsoft.EnterpriseManagement.Configuration.ManagementPackAlertSeverity]::Error -and
+                $highestAlertPriority -eq [Microsoft.EnterpriseManagement.Configuration.ManagementPackWorkflowPriority]::High
             )
             {
                 # Error
                 $eventSeverity = 1
             }
             elseif (
-                $highestAlertSeverity -in @('Error', 'Warning') -and
-                $highestAlertPriority -in @('Normal', 'Low')
+                $highestAlertSeverity -in @([Microsoft.EnterpriseManagement.Configuration.ManagementPackAlertSeverity]::Error, [Microsoft.EnterpriseManagement.Configuration.ManagementPackAlertSeverity]::Warning) -and
+                $highestAlertPriority -in @([Microsoft.EnterpriseManagement.Configuration.ManagementPackWorkflowPriority]::Normal, [Microsoft.EnterpriseManagement.Configuration.ManagementPackWorkflowPriority]::Low)
             )
             {
                 # Warning
@@ -318,7 +319,7 @@ foreach ( $alertStormRule in $alertStormRules )
             }
 
             # Raise an event indicating an alert storm was detected
-            $momApi.LogScriptEvent($stormDescription, 9908, $eventSeverity, $eventDetails.ToString())
+            $momApi.LogScriptEvent($stormDescription, $stormEventId, $eventSeverity, $eventDetails.ToString())
 
         }
         
