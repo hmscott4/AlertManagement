@@ -19,7 +19,7 @@
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
         <DisplayString ElementID="SCOM.Alert.Management.AddResolutionState.Console.Task">
-          <Name>Add Resolution Stats</Name>
+          <Name>Add Resolution States</Name>
           <Description></Description>
         </DisplayString>
       </DisplayStrings>
