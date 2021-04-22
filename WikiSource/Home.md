@@ -6,8 +6,8 @@ Please leave comments, feature requests, and bug reports for this management pac
 
 ## Table of Contents
 
-- [Release History](.\Release-History)
-- [Install management pack](.\Install-Management-Pack)
-- [Alert Assignment](.\Alert-Assignment)
-- [Alert Escalation](.\Alert-Escalation)
-- [Views](.\Views.md)
+- [Release History](Release-History)
+- [Install management pack](Install-Management-Pack)
+- [Alert Assignment](Alert-Assignment)
+- [Alert Escalation](Alert-Escalation)
+- [Views](Views.md)

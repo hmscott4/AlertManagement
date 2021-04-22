@@ -17,5 +17,5 @@
   1. Expand the task pane on the right-hand side
   1. Click **Deploy Alert Management Config Files**
   1. ###################### Overrides - place on share
-- Configure the [**Assign SCOM Alerts**](.\Assign-Alerts) rule.
-- Configure the [**Escalate SCOM Alerts**](.\Escalate-Alerts) rule.
+- Configure the [**Assign SCOM Alerts**](Assign-Alerts) rule.
+- Configure the [**Escalate SCOM Alerts**](Escalate-Alerts) rule.
