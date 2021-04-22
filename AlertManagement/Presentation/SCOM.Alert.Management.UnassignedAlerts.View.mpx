@@ -1,7 +1,7 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Presentation>
     <Views>
-      <View ID="SCOM.Alert.Management.ActiveAlerts.View" Accessibility="Internal" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
+      <View ID="SCOM.Alert.Management.UnassignedAlerts.View" Accessibility="Internal" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
         <Category>Custom</Category>
         <Criteria>
           <ResolutionState>
@@ -61,7 +61,7 @@
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="SCOM.Alert.Management.ActiveAlerts.View">
+        <DisplayString ElementID="SCOM.Alert.Management.UnassignedAlerts.View">
           <Name>Unassigned Alerts</Name>
         </DisplayString>
       </DisplayStrings>
