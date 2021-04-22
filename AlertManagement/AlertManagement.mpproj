@@ -70,7 +70,7 @@
     <Compile Include="Presentation\SCOM.Alert.Management.AddResolutionStates.Console.Task.mpx">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Rules\AlertAssignment.mpx">
+    <Compile Include="Rules\SCOM.Alert.Management.Assign.Rule.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Rules\SCOM.Alert.Management.Escalate.Rule.mpx">

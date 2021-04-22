@@ -5,10 +5,6 @@ param
     [System.IO.FileInfo]
     $ConfigFile,
 
-    [Parameter()]
-    [System.String]
-    $DebugLogging = 'false',
-
 	[Parameter()]
 	[System.String]
 	$AssignedResolutionStateName = 'Assigned',
@@ -19,7 +15,11 @@ param
 
 	[Parameter()]
 	[System.String]
-	$DefaultOwner = 'Unassigned'
+	$DefaultOwner = 'Unassigned',
+
+	[Parameter()]
+    [System.String]
+    $DebugLogging = 'false'
 )
 
 # Gather the start time of the script

@@ -1,0 +1,221 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TypeDefinitions>
+    <ModuleTypes>
+      <DataSourceModuleType ID="SCOM.Alert.Management.Assign.Rule.DataSource" Accessibility="Public" Batching="false">
+        <Configuration>
+          <IncludeSchemaTypes>
+            <SchemaType>System!System.ExpressionEvaluatorSchema</SchemaType>
+          </IncludeSchemaTypes>
+          <xsd:element name="IntervalSeconds" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="SyncTime" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="ConfigFile" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="AssignedResolutionStateName" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="UnassignedResolutionStateName" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="DefaultOwner" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        <xsd:element name="DebugLogging" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="SyncTime" Selector="$Config/SyncTime$" ParameterType="string" />
+          <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="ConfigFile" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="AssignedResolutionStateName" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="UnassignedResolutionStateName" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="DefaultOwner" Selector="$Config/ConfigFile$" ParameterType="string" />
+        <OverrideableParameter ID="DebugLogging" Selector="$Config/DebugLogging$" ParameterType="bool" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="DS" TypeID="System!System.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval Unit="Seconds">$Config/IntervalSeconds$</Interval>
+                    <SyncTime>$Config/SyncTime$</SyncTime>
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+            </MemberModules>
+            <Composition>
+              <Node ID="DS" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.TriggerData</OutputType>
+      </DataSourceModuleType>
+      <WriteActionModuleType ID="SCOM.Alert.Management.Assign.Rule.WriteAction" Accessibility="Internal" Batching="false">
+        <Configuration>
+          <xsd:element minOccurs="1" name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="ConfigFile" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="AssignedResolutionStateName" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="UnassignedResolutionStateName" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="DefaultOwner" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="DebugLogging" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="ConfigFile" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="AssignedResolutionStateName" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="UnassignedResolutionStateName" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="DefaultOwner" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="DebugLogging" Selector="$Config/DebugLogging$" ParameterType="bool" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <WriteAction ID="WA" TypeID="Windows!Microsoft.Windows.PowerShellWriteAction">
+                <ScriptName>Assign-ScomAlert.ps1</ScriptName>
+                <ScriptBody>$IncludeFileContent/Scripts/Assign-ScomAlert.ps1$</ScriptBody>
+                <Parameters>
+                  <Parameter>
+                    <Name>ConfigFile</Name>
+                    <Value>$Config/ConfigFile$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>AssignedResolutionStateName</Name>
+                    <Value>$Config/AssignedResolutionStateName$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>UnassignedResolutionStateName</Name>
+                    <Value>$Config/UnassignedResolutionStateName$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>DefaultOwner</Name>
+                    <Value>$Config/DefaultOwner$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>DebugLogging</Name>
+                    <Value>$Config/DebugLogging$</Value>
+                  </Parameter>
+                </Parameters>
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </WriteAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="WA" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.BaseData</OutputType>
+        <InputType>System!System.BaseData</InputType>
+      </WriteActionModuleType>
+    </ModuleTypes>
+  </TypeDefinitions>
+  <Monitoring>
+    <Rules>
+      <Rule ID="SCOM.Alert.Management.Assign.Rule" Enabled="false" Target="SC!Microsoft.SystemCenter.AllManagementServersPool" ConfirmDelivery="false" Remotable="true" Priority="Normal" DiscardLevel="100">
+        <Category>Custom</Category>
+        <DataSources>
+          <DataSource ID="Scheduler" TypeID="SCOM.Alert.Management.Assign.Rule.DataSource">
+            <IntervalSeconds>300</IntervalSeconds>
+            <SyncTime></SyncTime>
+            <TimeoutSeconds>240</TimeoutSeconds>
+            <ConfigFile></ConfigFile>
+            <AssignedResolutionStateName>Assigned</AssignedResolutionStateName>
+            <UnassignedResolutionStateName>Unassigned</UnassignedResolutionStateName>
+            <DefaultOwner>Unassigned</DefaultOwner>
+            <DebugLogging>false</DebugLogging>
+          </DataSource>
+        </DataSources>
+        <WriteActions>
+          <WriteAction ID="WA" TypeID="SCOM.Alert.Management.Assign.Rule.WriteAction">
+            <TimeoutSeconds>240</TimeoutSeconds>
+            <ConfigFile></ConfigFile>
+            <AssignedResolutionStateName>Assigned</AssignedResolutionStateName>
+            <UnassignedResolutionStateName>Unassigned</UnassignedResolutionStateName>
+            <DefaultOwner>Unassigned</DefaultOwner>
+            <DebugLogging>false</DebugLogging>
+          </WriteAction>
+        </WriteActions>
+      </Rule>
+    </Rules>
+  </Monitoring>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule">
+          <Name>Assign SCOM Alerts</Name>
+          <Description>Assign the alerts based on the defined criteria. Disabled by default.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.DataSource">
+          <Name>Assign SCOM Alert Timed Scheduler</Name>
+          <Description>The scheduler which executes the Assign SCOM Alert rule.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.DataSource" SubElementID="IntervalSeconds">
+          <Name>Interval Seconds</Name>
+          <Description>The frequency in which to execute the rule.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.DataSource" SubElementID="SyncTime">
+          <Name>Sync Time</Name>
+          <Description>The time on which to synchronize the start time of the rule.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.DataSource" SubElementID="TimeoutSeconds">
+          <Name>Timeout Seconds</Name>
+          <Description>The length of time (in seconds) to wait for the script to complete.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.DataSource" SubElementID="ConfigFile">
+          <Name>Configuration File</Name>
+          <Description>The full path to the configuration file which contains the rules the Assign SCOM Alerts script will process.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.DataSource" SubElementID="AssignedResolutionStateName">
+          <Name>Assigned Resolution State</Name>
+          <Description>The name of the Resolution State which designates an alert has been assigned.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.DataSource" SubElementID="UnassignedResolutionStateName">
+          <Name>Unassigned Resolution State</Name>
+          <Description>The name of the Resolution State which designates an alert is unassigned.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.DataSource" SubElementID="DefaultOwner">
+          <Name>Default Owner</Name>
+          <Description>The owner which is assigned to an alert when no other owners can be determined.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.DataSource" SubElementID="DebugLogging">
+          <Name>Debug Logging</Name>
+          <Description>Write debug logs to the Operations Manager log.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.WriteAction">
+          <Name>Assign SCOM Alert Script</Name>
+          <Description>Execute the Assign-ScomAlert.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.WriteAction" SubElementID="TimeoutSeconds">
+          <Name>Timeout Seconds</Name>
+          <Description>The length of time (in seconds) to wait for the script to complete.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.WriteAction" SubElementID="ConfigFile">
+          <Name>Configuration File</Name>
+          <Description>The full path to the configuration file which contains the rules the Assign SCOM Alerts script will process.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.WriteAction" SubElementID="AssignedResolutionStateName">
+          <Name>Assigned Resolution State</Name>
+          <Description>The name of the Resolution State which designates an alert has been assigned.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.WriteAction" SubElementID="UnassignedResolutionStateName">
+          <Name>Unassigned Resolution State</Name>
+          <Description>The name of the Resolution State which designates an alert is unassigned.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.WriteAction" SubElementID="DefaultOwner">
+          <Name>Default Owner</Name>
+          <Description>The owner which is assigned to an alert when no other owners can be determined.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Assign.Rule.WriteAction" SubElementID="DebugLogging">
+          <Name>Debug Logging</Name>
+          <Description>Write debug logs to the Operations Manager log.</Description>
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles>
+        <KnowledgeArticle ElementID="SCOM.Alert.Management.Assign.Rule" Visible="true">
+          <MamlContent>
+            <maml:section xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
+              <maml:title>Summary</maml:title>
+              <maml:para>
+                Assigns alerts to owners based on the rules in the configuration file. This rule is disabled by default
+              </maml:para>
+            </maml:section>
+          </MamlContent>
+        </KnowledgeArticle>
+      </KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>
