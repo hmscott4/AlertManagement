@@ -15,7 +15,11 @@ param
 
 	[Parameter()]
 	[System.String]
-	$UnassignedResolutionStateName = 'Unassigned'
+	$UnassignedResolutionStateName = 'Unassigned',
+
+	[Parameter()]
+	[System.String]
+	$DefaultOwner = 'Unassigned'
 )
 
 # Gather the start time of the script
@@ -94,6 +98,7 @@ foreach ( $newAlert in $newAlerts )
 	# Format the alert name for XPath
 	$alertName = Format-xPathExpression -Value $alertName
 
+	#region Determine Alert Owner
 	$searchStrings = @(
 		"//Config/Exceptions/Exception[AlertName='$alertName' and @enabled='true']"
 		"//Config/Exceptions/Exception[ManagementPackName='$mpName' and @enabled='true' and ( AlertProperty = 'MonitoringObjectFullName' or AlertProperty = 'MonitoringObjectPath' or AlertProperty = 'MonitoringObjectDisplayName' )]"
@@ -125,31 +130,45 @@ foreach ( $newAlert in $newAlerts )
 	}
 	else
 	{
-		$assignedTo = $UnassignedResolutionStateName
+		$assignedTo = $DefaultOwner
+		$message = "No assignment rule found for an alert.`nManagement Pack: $mpName`nAlert: $alertName"
+		$momapi.LogScriptEvent($scriptName, $scriptEventID, 2, $message)
+		Write-Verbose -Message $message
 	}
+	#endregion Determine Alert Owner
 
-	#region Set Alert
+	#region Assign Alert
 	$setScomAlertParams = @{
+		Alert = $newAlert
 		Owner = $assignedTo
-		Comment = ( 'Alert automation assigned to: {0}' -f $assignedTo )
+		ResolutionState = $null
+		Comment = "Alert automation assigned to: $assignedTo"
 	}
 
-	if ( $assignedTo -ne $UnassignedResolutionStateName )
+	if ( $assignedTo -ne $DefaultOwner )
 	{
-		$newAlert | Set-SCOMAlert @setScomAlertParams -ResolutionState $assignedResolutionState
+		$setScomAlertParams.ResolutionState = $assignedResolutionState
 	}
 	else
 	{
-		$newAlert | Set-SCOMAlert @setScomAlertParams -ResolutionState $unassignedResolutionState
+		$setScomAlertParams.ResolutionState = $unassignedResolutionState
 	}
-	#endregion
+
+	if ( $debug )
+	{
+		$setScomAlertParamsString = ( $setScomAlertParams.GetEnumerator() | ForEach-Object -Process { " -$($_.Key) '$($_.Value)'" } ) -join ''
+		$message = "Set the alert owner `nSet-SCOMAlert $setScomAlertParamsString"
+		$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+	}
+	Set-SCOMAlert @setScomAlertParams
+	#endregion Assign Alert
 }
 
 # Log an event for script ending and total execution time.
 $endTime = Get-Date
 $scriptTime = ($EndTime - $StartTime).TotalSeconds
 
-if ($debug)
+if ( $debug )
 {
     $message = "`n Script Completed. `n Script Runtime: ($scriptTime) seconds."
     $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
