@@ -16,7 +16,7 @@ jobs:
     runs-on: windows-latest
 
     # Only publish wiki when "main" is updated
-    if: github.ref == 'refs/heads/main'
+    #if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout AlertManagement
