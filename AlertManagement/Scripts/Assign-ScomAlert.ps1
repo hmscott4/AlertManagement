@@ -101,21 +101,13 @@ foreach ( $newAlert in $newAlerts )
 	#region Determine Alert Owner
 	$searchStrings = @(
 		"//Config/Exceptions/Exception[AlertName='$alertName' and @enabled='true']"
-		"//Config/Exceptions/Exception[ManagementPackName='$mpName' and @enabled='true' and ( AlertProperty = 'MonitoringObjectFullName' or AlertProperty = 'MonitoringObjectPath' or AlertProperty = 'MonitoringObjectDisplayName' )]"
 		"//Config/Rules/Rule[managementPackName='$mpName' and @enabled='true']"
 	)
 
 	foreach ( $searchString in $searchStrings )
 	{
-		$assignmentRule = $config.SelectSingleNode($searchString)
-
-		if ( -not [System.String]::IsNullOrEmpty($assignmentRule.AlertProperty) )
-		{
-			if ( $newAlert.($assignmentRule.AlertProperty) -notlike "*$($newAlert.($assignmentRule.AlertProperty))*" )
-			{
-				$assignmentRule = $null
-			}
-		}
+		$assignmentRule = $config.SelectSingleNode($searchString) |
+		Where-Object -FilterScript { $newAlert.($_.AlertProperty) -match "*$($newAlert.($_.AlertProperty))*" }
 
 		if ( $assignmentRule )
 		{
