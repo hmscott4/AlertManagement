@@ -1,0 +1,33 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Presentation>
+    <Views>
+      <View ID="SCOM.Alert.Management.RootManagementServer.View" Accessibility="Internal" Enabled="true" Target="SC!Microsoft.SystemCenter.RootManagementServer" TypeID="SC!Microsoft.SystemCenter.StateViewType" Visible="true">
+        <Category>Custom</Category>
+        <Criteria />
+        <Presentation>
+          <ColumnInfo Index="1" SortIndex="0" Width="26" Grouped="false" Sorted="true" IsSortable="true" Visible="true" SortOrder="Descending">
+            <Name>State</Name>
+            <Id>Microsoft.SqlServer.Windows.Database.SharePoint.Service</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="2" SortIndex="-1" Width="26" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Maintenance Mode</Name>
+            <Id>InMaintenanceMode</Id>
+          </ColumnInfo>
+          <ColumnInfo Index="3" SortIndex="-1" Width="200" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Name</Name>
+            <Id>Name</Id>
+          </ColumnInfo>
+        </Presentation>
+      </View>
+    </Views>
+  </Presentation>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="SCOM.Alert.Management.RootManagementServer.View">
+          <Name>Root Management Server</Name>
+        </DisplayString>
+      </DisplayStrings>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>

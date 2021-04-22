@@ -76,6 +76,9 @@
     <Compile Include="Presentation\SCOM.Alert.Management.Folder.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.RootManagementServer.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Presentation\SCOM.Alert.Management.UnassignedAlerts.View.mpx">
       <SubType>Code</SubType>
     </Compile>

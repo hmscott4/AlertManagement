@@ -6,6 +6,7 @@
     <FolderItems>
       <FolderItem ElementID="SCOM.Alert.Management.ActiveAlerts.View" ID="SCOM.Alert.Management.ActiveAlerts.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
       <FolderItem ElementID="SCOM.Alert.Management.UnassignedAlerts.View" ID="SCOM.Alert.Management.UnassignedAlerts.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
+      <FolderItem ElementID="SCOM.Alert.Management.RootManagementServer.View" ID="SCOM.Alert.Management.RootManagementServer.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
     </FolderItems>
   </Presentation>
   <LanguagePacks>
