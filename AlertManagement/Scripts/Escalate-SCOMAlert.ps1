@@ -23,8 +23,8 @@ if ($debug -or $DebugPreference -ne 'SilentlyContinue')
 }
 
 $scriptName = 'Escalate-SCOMAlert.ps1'
-$scriptEventID = 15813 # randomly generated for this script
-$stormEventId = 9908
+$scriptEventID = 9932
+$stormEventId = 9933
 
 # Load MOMScript API
 $momapi = New-Object -comObject MOM.ScriptAPI

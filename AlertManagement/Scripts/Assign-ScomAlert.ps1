@@ -35,7 +35,7 @@ if ($debug -or $DebugPreference -ne 'SilentlyContinue')
 }
 
 $scriptName = 'Alert-SCOMAlert.ps1'
-$scriptEventID = 9931 # randomly generated for this script
+$scriptEventID = 9931
 
 # Load MOMScript API
 $momapi = New-Object -comObject MOM.ScriptAPI
