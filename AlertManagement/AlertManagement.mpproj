@@ -67,7 +67,16 @@
     <Compile Include="ManagementPack.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.ActiveAlerts.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Presentation\SCOM.Alert.Management.AddResolutionStates.Console.Task.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.Folder.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.UnassignedAlerts.View.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Rules\SCOM.Alert.Management.Assign.Rule.mpx">

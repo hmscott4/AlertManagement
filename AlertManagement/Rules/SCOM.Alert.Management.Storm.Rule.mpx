@@ -49,7 +49,8 @@
               <AlertParameter1>$Data/EventDescription$</AlertParameter1>
             </AlertParameters>
             <Suppression />
-            <Custom1 />
+            <!--Specify custom attribute 1 to allow the alert to show up in the Alerts view-->
+            <Custom1>Alert Management</Custom1>
             <Custom2 />
             <Custom3 />
             <Custom4 />
