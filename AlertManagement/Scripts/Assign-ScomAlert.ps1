@@ -11,7 +11,7 @@ param
 
 	[Parameter()]
 	[System.String]
-	$UnassignedResolutionStateName = 'Unassigned',
+	$UnassignedResolutionStateName = 'Assigned',
 
 	[Parameter()]
 	[System.String]
@@ -82,11 +82,23 @@ function Format-xPathExpression
 $config = [System.Xml.XmlDocument] ( Get-Content -Path $ConfigFile.FullName -ErrorAction Stop )
 
 # Get the resolution state number from SCOM
-$assignedResolutionState = Get-SCOMAlertResolutionState -Name $AssignedResolutionStateName
-$unassignedResolutionState = Get-SCOMAlertResolutionState -Name $UnassignedResolutionStateName
+$assignedResolutionState = Get-SCOMAlertResolutionState -Name $AssignedResolutionStateName | Select-Object -ExpandProperty ResolutionState
+$unassignedResolutionState = Get-SCOMAlertResolutionState -Name $UnassignedResolutionStateName | Select-Object -ExpandProperty ResolutionState
+if ($debug)
+{
+    $message = "`nAssigned Resolution State: $assignedResolutionState `nUnassigned Resolution State: $unassignedResolutionState"
+    $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+    Write-Debug -Message $message
+}
 
 # Get all new alerts
-$newAlerts = Get-SCOMAlert -ResolutionState 0
+$newAlerts = Get-SCOMAlert -Criteria "ResolutionState <> 255 AND ( Owner IS NULL OR Owner = '$DefaultOwner')"
+if ( $debug )
+{
+	$message = "$($newAlerts.Count) alert(s) found to process."
+	$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+	Write-Debug -Message $message
+}
 
 foreach ( $newAlert in $newAlerts )
 {
@@ -100,14 +112,14 @@ foreach ( $newAlert in $newAlerts )
 
 	#region Determine Alert Owner
 	$searchStrings = @(
-		"//Config/Exceptions/Exception[AlertName='$alertName' and @enabled='true']"
-		"//Config/Rules/Rule[managementPackName='$mpName' and @enabled='true']"
+		"//config/exceptions/exception[AlertName='$alertName' and @enabled='true']"
+		"//config/rules/rule[managementPackName='$mpName' and @enabled='true']"
 	)
 
 	foreach ( $searchString in $searchStrings )
 	{
 		$assignmentRule = $config.SelectSingleNode($searchString) |
-		Where-Object -FilterScript { $newAlert.($_.AlertProperty) -match "*$($newAlert.($_.AlertProperty))*" }
+		Where-Object -FilterScript { $newAlert.($_.AlertProperty) -match "$($newAlert.($_.AlertProperty))" }
 
 		if ( $assignmentRule )
 		{
@@ -125,7 +137,7 @@ foreach ( $newAlert in $newAlerts )
 		$assignedTo = $DefaultOwner
 		$message = "No assignment rule found for an alert.`nManagement Pack: $mpName`nAlert: $alertName"
 		$momapi.LogScriptEvent($scriptName, $scriptEventID, 2, $message)
-		Write-Verbose -Message $message
+		Write-Warning -Message $message
 	}
 	#endregion Determine Alert Owner
 
@@ -133,15 +145,12 @@ foreach ( $newAlert in $newAlerts )
 	$setScomAlertParams = @{
 		Alert = $newAlert
 		Owner = $assignedTo
-		ResolutionState = $null
+		ResolutionState = $assignedResolutionState
 		Comment = "Alert automation assigned to: $assignedTo"
 	}
 
-	if ( $assignedTo -ne $DefaultOwner )
-	{
-		$setScomAlertParams.ResolutionState = $assignedResolutionState
-	}
-	else
+	# If the alert is assigned to the "default" owner, set the resolution state to the "Unassigned" value
+	if ( $assignedTo -eq $DefaultOwner )
 	{
 		$setScomAlertParams.ResolutionState = $unassignedResolutionState
 	}
