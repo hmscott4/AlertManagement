@@ -1,0 +1,63 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TypeDefinitions>
+    <ModuleTypes>
+      <WriteActionModuleType ID="SCOM.Alert.Management.CopyConfigurationFiles.WA" Accessibility="Internal" Batching="false">
+        <Configuration>
+          <xsd:element minOccurs="1" name="Destination" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="Force" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="DebugLogging" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="Destination" Selector="$Config/Destination$" ParameterType="string" />
+          <OverrideableParameter ID="Force" Selector="$Config/Force$" ParameterType="bool" />
+          <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="DebugLogging" Selector="$Config/DebugLogging$" ParameterType="bool" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <WriteAction ID="CCFWA" TypeID="Windows!Microsoft.Windows.PowerShellWriteAction">
+                <ScriptName>Copy-ConfigurationFiles.ps1</ScriptName>
+                <ScriptBody>$IncludeFileContent/Scripts/Copy-ConfigurationFiles.ps1$</ScriptBody>
+                <Parameters>
+                  <Parameter>
+                    <Name>Destination</Name>
+                    <Value>$Config/Destination$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>Force</Name>
+                    <Value>$Config/Force$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>DebugLogging</Name>
+                    <Value>$Config/DebugLogging$</Value>
+                  </Parameter>
+                </Parameters>
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </WriteAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="CCFWA" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.BaseData</OutputType>
+        <InputType>System!System.BaseData</InputType>
+      </WriteActionModuleType>
+    </ModuleTypes>
+  </TypeDefinitions>
+  <Monitoring>
+    <Tasks>
+      <Task ID="SCOM.Alert.Management.CopyConfigurationFiles.Task" Accessibility="Public" Enabled="true" Target="SC!Microsoft.SystemCenter.RootManagementServer" Timeout="120" Remotable="true">
+        <Category>Custom</Category>
+        <WriteAction ID="CCFWA" TypeID="SCOM.Alert.Management.CopyConfigurationFiles.WA">
+          <Destination />
+          <Force>false</Force>
+          <DebugLogging>false</DebugLogging>
+        </WriteAction>
+      </Task>
+    </Tasks>
+  </Monitoring>
+</ManagementPackFragment>
+

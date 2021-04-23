@@ -56,8 +56,8 @@
   <ItemGroup>
     <Folder Include="Monitors" />
     <Folder Include="Discoveries" />
-    <Folder Include="Config" />
     <Folder Include="DataSources" />
+    <Folder Include="Resources" />
     <Folder Include="Presentation" />
     <Folder Include="Scripts" />
     <Folder Include="Tasks" />
@@ -82,6 +82,12 @@
     <Compile Include="Presentation\SCOM.Alert.Management.UnassignedAlerts.View.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Resources\SCOM.Alert.Management.AssignAlertConfig.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\SCOM.Alert.Management.EscalateAlertConfig.mpx">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Rules\SCOM.Alert.Management.Assign.Rule.mpx">
       <SubType>Code</SubType>
     </Compile>
@@ -94,17 +100,21 @@
     <Compile Include="Rules\SCOM.Alert.Management.Unassigned.Rule.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Tasks\SCOM.Alert.Management.CopyConfigurationFiles.Task.mpx">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\Add-ResolutionStates.ps1" />
     <EmbeddedResource Include="Scripts\Assign-ScomAlert.ps1" />
+    <EmbeddedResource Include="Scripts\Copy-ConfigurationFiles.ps1" />
     <EmbeddedResource Include="Scripts\Escalate-ScomAlert.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config\assign.alert.config">
+    <Content Include="Resources\assign.alert.config">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Config\escalate.alert.config">
+    <Content Include="Resources\escalate.alert.config">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>
