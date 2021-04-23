@@ -34,7 +34,7 @@ if ($debug -or $DebugPreference -ne 'SilentlyContinue')
     $DebugPreference = 'Continue'
 }
 
-$scriptName = 'Alert-SCOMAlert.ps1'
+$scriptName = 'Assign-ScomAlert.ps1'
 $scriptEventID = 9931
 
 # Load MOMScript API

@@ -22,7 +22,7 @@ if ($debug -or $DebugPreference -ne 'SilentlyContinue')
     $DebugPreference = 'Continue'
 }
 
-$scriptName = 'Escalate-SCOMAlert.ps1'
+$scriptName = 'Escalate-ScomAlert.ps1'
 $scriptEventID = 9932
 $stormEventId = 9933
 
@@ -80,7 +80,7 @@ function Format-DateField
 
 function Optimize-PostPipelineFilter
 {
-    [CmdletBidning()]
+    [CmdletBinding()]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -89,20 +89,15 @@ function Optimize-PostPipelineFilter
     )
 
     # REPLACE ESCAPED XML CHARACTERS
-    $formattedSTring = $PostPipelineFilter.Replace('&lt;', '<')
-    $formattedSTring = $PostPipelineFilter.Replace('&gt;', '>')
+    $formattedString = $PostPipelineFilter.Replace('&lt;', '<')
+    $formattedString = $PostPipelineFilter.Replace('&gt;', '>')
 
-    return $formattedSTring
+    return $formattedString
 }
 #endregion Functions
 
 # RETRIEVE CONFIGURATION FILE WITH RULES AND EXCEPTIONS
 $config = [System.Xml.XmlDocument] ( Get-Content -Path $ConfigFile.FullName )
-
-if ( -not ( Get-Module -Name OperationsManager ) )
-{
-    Import-Module OperationsManager
-}
 
 #region Update Type Data
 
@@ -171,7 +166,7 @@ $updateTypeDataUnitMonitorParameters = @{
     }
 }
 
-if ( -not ( Get-TypeData -TypeName $updateTypeDataUnitMonitorParameters.TypeName ).Members[$updateTypeDataUnitMonitorParameters.MemberName] )
+if ( -not ( Get-TypeData -TypeName $updateTypeDataUnitMonitorParameters.TypeName | Foreach-Object -Process { $_.Members[$updateTypeDataUnitMonitorParameters.MemberName] } ) )
 {
     Update-TypeData @updateTypeDataUnitMonitorParameters
 }
@@ -186,7 +181,7 @@ $updateTypeDataMonitorParameters = @{
     }
 }
 
-if ( -not ( Get-TypeData -TypeName $updateTypeDataMonitorParameters.TypeName ).Members[$updateTypeDataMonitorParameters.MemberName] )
+if ( -not ( Get-TypeData -TypeName $updateTypeDataMonitorParameters.TypeName | Foreach-Object -Process { $_.Members[$updateTypeDataMonitorParameters.MemberName] } ) )
 {
     Update-TypeData @updateTypeDataMonitorParameters
 }
@@ -203,7 +198,7 @@ $updateTypeDataHealthStateSuccessParameters = @{
     }
 }
 
-if ( -not ( Get-TypeData -TypeName $updateTypeDataHealthStateSuccessParameters.TypeName ).Members[$updateTypeDataHealthStateSuccessParameters.MemberName] )
+if ( -not ( Get-TypeData -TypeName $updateTypeDataHealthStateSuccessParameters.TypeName | Foreach-Object -Process { $_.Members[$updateTypeDataHealthStateSuccessParameters.MemberName] } ) )
 {
     Update-TypeData @updateTypeDataHealthStateSuccessParameters
 }
@@ -219,7 +214,9 @@ $alertStormRules = $config.SelectNodes("//config/alertStormRules/stormRule[@enab
 foreach ( $alertStormRule in $alertStormRules )
 {
     # Get the alerts defined by the criteria and group them by the defined property
-    $potentialStormAlertGroups = Get-SCOMAlert -Criteria $alertStormRule.Criteria.InnerText | Group-Object -Property $alertStormRule.Property | Where-Object -FilterScript { $_.Count -gt 1 }
+    $potentialStormAlertGroups = Get-SCOMAlert -Criteria $alertStormRule.Criteria.InnerText |
+        Group-Object -Property $alertStormRule.Property |
+        Where-Object -FilterScript { $_.Count -gt 1 }
 
     # Define a counter which will be used to further subdivide the alerts into groups
     $groupCounter = 0
@@ -255,12 +252,14 @@ foreach ( $alertStormRule in $alertStormRules )
     }
     
     # Get the groups which meet the threshold for number of the same alert
-    $stormAlerts = $stormAlertGroups.GetEnumerator() | Where-Object -FilterScript { $_.Value.Count -ge $alertStormRule.Count }
+    $stormAlerts = $stormAlertGroups.GetEnumerator() |
+        Where-Object -FilterScript { $_.Value.Count -ge $alertStormRule.Count }
 
     foreach ( $stormAlert in $stormAlerts )
     {
         # Get the alerts which were previously tagged as an alert storm
-        $oldAlertStormAlerts = $stormAlert.Value | Where-Object -FilterScript { ( $_.ResolutionState -eq 18 ) -and $_.TicketID }
+        $oldAlertStormAlerts = $stormAlert.Value |
+            Where-Object -FilterScript { ( $_.ResolutionState -eq 18 ) -and $_.TicketID }
         
         if ( $oldAlertStormAlerts.Count -gt 0 )
         {
@@ -276,7 +275,9 @@ foreach ( $alertStormRule in $alertStormRules )
             $ticketId = ( Get-Date -Format 'MM/dd/yyyy hh:mm:ss {0}' ) -f $alertName
             
             # Get a unique list of monitoring objects
-            $monitoringObjects = $stormAlert.Value | Select-Object -ExpandProperty MonitoringObjectFullName -Unique | Sort-Object
+            $monitoringObjects = $stormAlert.Value |
+                Select-Object -ExpandProperty MonitoringObjectFullName -Unique |
+                Sort-Object
         
             # Define the string which will be passed in as the "script name" property for LogScriptEvent
             $stormDescription = "The alert ""$alertName"" was triggered $($stormAlert.Value.Count) times for the following objects:"
@@ -290,10 +291,14 @@ foreach ( $alertStormRule in $alertStormRules )
             $eventDetails.AppendLine("Internal ticket id: $ticketId") > $null
 
             # Get the highest severity of the selected alerts
-            $highestAlertSeverity = $stormAlert.Value.Severity | Sort-Object -Property value__ -Descending | Select-Object -First 1 -Unique
+            $highestAlertSeverity = $stormAlert.Value.Severity |
+                Sort-Object -Property value__ -Descending |
+                Select-Object -First 1 -Unique
 
             # Get the highest priority of the selected alerts
-            $highestAlertPriority = $stormAlert.Value.Priority | Sort-Object -Property value__ -Descending | Select-Object -First 1 -Unique
+            $highestAlertPriority = $stormAlert.Value.Priority |
+                Sort-Object -Property value__ -Descending |
+                Select-Object -First 1 -Unique
 
             # Determine what the event severity should be
             if (
@@ -324,7 +329,9 @@ foreach ( $alertStormRule in $alertStormRules )
         }
         
         # Mark the alert as being part of an alert storm
-        $stormAlert.Value | Where-Object -FilterScript { $_.ResolutionState -ne 18 } | Set-SCOMAlert -ResolutionState 18 -Comment $alertStormRule.Comment.InnerText -TicketId $ticketId
+        $stormAlert.Value |
+            Where-Object -FilterScript { $_.ResolutionState -ne 18 } |
+            Set-SCOMAlert -ResolutionState 18 -Comment $alertStormRule.Comment.InnerText -TicketId $ticketId
     }
 }
 
@@ -381,13 +388,15 @@ foreach ( $exception in $alertExceptions )
     }
     
 
-    # RESET EXCEPTION VALUES
-    $criteria = $null
-    $newResolutionState = $null
-    $postPipelineFilter = $null
-    $comment = $null
-    $name = $null
-
+    # Reset variables
+    $variables = @(
+        'criteria'
+        'newResolutionState'
+        'postPipelineFilter'
+        'comment'
+        'name'
+    )
+    Remove-Variable -Name $variables -ErrorAction SilentlyContinue
 }
 
 # PROCESS RULES SECOND

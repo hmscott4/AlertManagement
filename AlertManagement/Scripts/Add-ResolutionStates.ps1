@@ -18,7 +18,7 @@ if ( $debug -or $DebugPreference -ne 'SilentlyContinue' )
     $DebugPreference = 'Continue'
 }
 
-$scriptName = 'Alert-SCOMAlert.ps1'
+$scriptName = 'Add-ResolutionStates.ps1'
 $scriptEventID = 9934
 
 # Load MOMScript API
@@ -47,19 +47,25 @@ $states = @{
 
 foreach ( $state in $states.GetEnumerator() )
 {
-	$addScomResolutionStateParams = @{
+	$addScomAlertResolutionStateParams = @{
         Name = $state.Value
         ResolutionStateCode = $state.Key
     }
 
-    if ( $debug )
+    # Determine if the resolution state exists
+    $alertResolutionState = Get-SCOMAlertResolutionState -Name $addScomAlertResolutionStateParams.Name
+
+    if ( -not $alertResolutionState )
     {
-        $addScomResolutionStateParamsString = ( $addScomResolutionStateParams.GetEnumerator() | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" } ) -join ''
-        $message = "Add-SCOMResolutionState $addScomResolutionStateParamsString"
-        $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-        Write-Debug -Message $message
+        if ( $debug )
+        {
+            $addScomAlertResolutionStateParamsString = ( $addScomAlertResolutionStateParams.GetEnumerator() | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" } ) -join ''
+            $message = "Add-SCOMAlertResolutionState $addScomAlertResolutionStateParamsString"
+            $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+            Write-Debug -Message $message
+        }
+        Add-SCOMResolutionState @addScomResolutionStateParams
     }
-    Add-SCOMResolutionState @addScomResolutionStateParams
 }
 
 # Log an event for script ending and total execution time.
