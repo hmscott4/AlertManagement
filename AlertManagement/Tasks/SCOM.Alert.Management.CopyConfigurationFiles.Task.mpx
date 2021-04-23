@@ -54,10 +54,41 @@
         <WriteAction ID="CCFWA" TypeID="SCOM.Alert.Management.CopyConfigurationFiles.WA">
           <Destination />
           <Force>false</Force>
+          <TimeoutSeconds>60</TimeoutSeconds>
           <DebugLogging>false</DebugLogging>
         </WriteAction>
       </Task>
     </Tasks>
   </Monitoring>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="SCOM.Alert.Management.CopyConfigurationFiles.Task">
+          <Name>Copy Configuration Files</Name>
+          <Description>Copy the configuration files to the specified location.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.CopyConfigurationFiles.WA">
+          <Name>Copy Configuration Files</Name>
+          <Description>Copy the configuration files to the specified location.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.CopyConfigurationFiles.WA" SubElementID="Destination">
+          <Name>Destination</Name>
+          <Description>The destination directory for the configuration files.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.CopyConfigurationFiles.WA" SubElementID="Force">
+          <Name>Force</Name>
+          <Description>Force the copy operation to overwrite existing files.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.CopyConfigurationFiles.WA" SubElementID="TimeoutSeconds">
+          <Name>Timeout Seconds</Name>
+          <Description>The length of time (in seconds) to wait for the script to complete.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.CopyConfigurationFiles.WA" SubElementID="DebugLogging">
+          <Name>Debug Logging</Name>
+          <Description>Write debug logs to the Operations Manager log.</Description>
+        </DisplayString>
+      </DisplayStrings>
+    </LanguagePack>
+  </LanguagePacks>
 </ManagementPackFragment>
 
