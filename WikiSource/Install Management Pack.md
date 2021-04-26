@@ -8,14 +8,17 @@
   1. Expand **Alert Management**
   1. Select **Root Management Servers**
   1. Expand the task pane on the right-hand side
-  1. Click **Add Resolution States**
+  1. Click **Add Alert Management Resolution States**
 - Deploy the configuration files
   1. In the Operations Manager Console
   1. Select **Monitoring**
   1. Expand **Alert Management**
   1. Select **Root Management Servers**
   1. Expand the task pane on the right-hand side
-  1. Click **Deploy Alert Management Config Files**
-  1. ###################### Overrides - place on share
+  1. Click **Create Alert Management Config Files**
+  1. Click **Override**
+  1. Enter a path for the **Destination**
+  1. Click **Override**
+  1. Click **Run**
 - Configure the [**Assign SCOM Alerts**](Assign-Alerts) rule.
 - Configure the [**Escalate SCOM Alerts**](Escalate-Alerts) rule.

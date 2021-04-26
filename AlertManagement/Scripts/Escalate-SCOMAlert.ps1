@@ -2,7 +2,7 @@
 param
 (
     [Parameter(Mandatory = $true)]
-    [System.IO.FileInfo]
+    [System.String]
     $ConfigFile,
 
     [Parameter()]
@@ -95,6 +95,9 @@ function Optimize-PostPipelineFilter
     return $formattedString
 }
 #endregion Functions
+
+# Get the config file object to ensure it exists
+$configurationFile = Get-Item -Path $ConfigFile -ErrorAction Stop
 
 # RETRIEVE CONFIGURATION FILE WITH RULES AND EXCEPTIONS
 $config = [System.Xml.XmlDocument] ( Get-Content -Path $ConfigFile.FullName )

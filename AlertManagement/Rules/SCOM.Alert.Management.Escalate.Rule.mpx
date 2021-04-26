@@ -8,16 +8,10 @@
           </IncludeSchemaTypes>
           <xsd:element name="IntervalSeconds" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element name="SyncTime" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
-          <xsd:element name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
-          <xsd:element name="ConfigFile" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
-          <xsd:element name="DebugLogging" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
         <OverrideableParameters>
           <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
           <OverrideableParameter ID="SyncTime" Selector="$Config/SyncTime$" ParameterType="string" />
-          <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
-          <OverrideableParameter ID="ConfigFile" Selector="$Config/ConfigFile$" ParameterType="string" />
-          <OverrideableParameter ID="DebugLogging" Selector="$Config/DebugLogging$" ParameterType="bool" />
         </OverrideableParameters>
         <ModuleImplementation Isolation="Any">
           <Composite>
@@ -87,9 +81,6 @@
           <DataSource ID="Scheduler" TypeID="SCOM.Alert.Management.Escalate.Rule.DataSource">
             <IntervalSeconds>300</IntervalSeconds>
             <SyncTime></SyncTime>
-            <TimeoutSeconds>240</TimeoutSeconds>
-            <ConfigFile></ConfigFile>
-            <DebugLogging>false</DebugLogging>
           </DataSource>
         </DataSources>
         <WriteActions>
@@ -120,18 +111,6 @@
         <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="SyncTime">
           <Name>Sync Time</Name>
           <Description>The time on which to synchronize the start time of the rule.</Description>
-        </DisplayString>
-        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="TimeoutSeconds">
-          <Name>Timeout Seconds</Name>
-          <Description>The length of time (in seconds) to wait for the script to complete.</Description>
-        </DisplayString>
-        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="ConfigFile">
-          <Name>Configuration File</Name>
-          <Description>The full path to the configuration file which contains the rules the Escalate SCOM Alerts script will process.</Description>
-        </DisplayString>
-        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="DebugLogging">
-          <Name>Debug Logging</Name>
-          <Description>Write debug logs to the Operations Manager log.</Description>
         </DisplayString>
         <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction">
           <Name>Escalate SCOM Alert Script</Name>

@@ -64,11 +64,11 @@
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
         <DisplayString ElementID="SCOM.Alert.Management.CopyConfigurationFiles.Task">
-          <Name>Copy Configuration Files</Name>
+          <Name>Create Alert Management Configuration Files</Name>
           <Description>Copy the configuration files to the specified location.</Description>
         </DisplayString>
         <DisplayString ElementID="SCOM.Alert.Management.CopyConfigurationFiles.WA">
-          <Name>Copy Configuration Files</Name>
+          <Name>Create Alert Management Configuration Files</Name>
           <Description>Copy the configuration files to the specified location.</Description>
         </DisplayString>
         <DisplayString ElementID="SCOM.Alert.Management.CopyConfigurationFiles.WA" SubElementID="Destination">

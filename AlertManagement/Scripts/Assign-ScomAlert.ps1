@@ -2,7 +2,7 @@
 param
 (
     [Parameter(Mandatory = $true)]
-    [System.IO.FileInfo]
+    [System.String]
     $ConfigFile,
 
 	[Parameter()]
@@ -78,8 +78,11 @@ function Format-xPathExpression
     }
 }
 
+# Get the config file object to ensure it exists
+$configurationFile = Get-Item -Path $ConfigFile -ErrorAction Stop
+
 # Retrieve the configuration file with assignments and exceptions
-$config = [System.Xml.XmlDocument] ( Get-Content -Path $ConfigFile.FullName -ErrorAction Stop )
+$config = [System.Xml.XmlDocument] ( Get-Content -Path $configurationFile.FullName -ErrorAction Stop )
 
 # Get the resolution state number from SCOM
 $assignedResolutionState = Get-SCOMAlertResolutionState -Name $AssignedResolutionStateName | Select-Object -ExpandProperty ResolutionState

@@ -50,12 +50,12 @@
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
         <DisplayString ElementID="SCOM.Alert.Management.AddResolutionStates.Task">
-          <Name>Add Resolution States</Name>
-          <Description>Add the resolution states required by the management pack.</Description>
+          <Name>Add Alert Management Resolution States</Name>
+          <Description>Add the resolution states required by the Alert Management management pack.</Description>
         </DisplayString>
         <DisplayString ElementID="SCOM.Alert.Management.AddResolutionStates.WA">
-          <Name>Add Resolution States</Name>
-          <Description>Add the resolution states required by the management pack.</Description>
+          <Name>Add Alert Management Resolution States</Name>
+          <Description>Add the resolution states required by the Alert Management management pack.</Description>
         </DisplayString>
         <DisplayString ElementID="SCOM.Alert.Management.AddResolutionStates.WA" SubElementID="TimeoutSeconds">
           <Name>Timeout Seconds</Name>
