@@ -109,9 +109,9 @@
         <Category>Custom</Category>
         <DataSources>
           <DataSource ID="Scheduler" TypeID="SCOM.Alert.Management.Assign.Rule.DataSource">
-            <IntervalSeconds>300</IntervalSeconds>
+            <IntervalSeconds>60</IntervalSeconds>
             <SyncTime></SyncTime>
-            <TimeoutSeconds>240</TimeoutSeconds>
+            <TimeoutSeconds>45</TimeoutSeconds>
             <ConfigFile></ConfigFile>
             <AssignedResolutionStateName>Assigned</AssignedResolutionStateName>
             <UnassignedResolutionStateName>Unassigned</UnassignedResolutionStateName>

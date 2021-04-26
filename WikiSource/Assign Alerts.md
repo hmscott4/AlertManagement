@@ -1,6 +1,6 @@
 # Assign Alerts
 
-The **Assign SCOM Alerts** rule executes a powershell script on a timed schedule (default is 5 minutes) which assigns alerts to owners specified in the _assign.alert.config_ file.
+The **Assign SCOM Alerts** rule executes a powershell script on a timed schedule (default is 60 seconds) which assigns alerts to owners specified in the _assign.alert.config_ file.
 
 ## Config File
 
