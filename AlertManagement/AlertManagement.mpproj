@@ -111,12 +111,12 @@
     <EmbeddedResource Include="Scripts\Escalate-ScomAlert.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\assign.alert.config">
+    <EmbeddedResource Include="Resources\assign.alert.config">
       <SubType>Content</SubType>
-    </Content>
-    <Content Include="Resources\escalate.alert.config">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\escalate.alert.config">
       <SubType>Content</SubType>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
 </Project>
