@@ -8,14 +8,14 @@
   1. Expand **Alert Management**
   1. Select **Root Management Servers**
   1. Expand the task pane on the right-hand side
-  1. Click **Add Alert Management Resolution States**
+  1. Click **Alert Management - Add Resolution States**
 - Deploy the configuration files
   1. In the Operations Manager Console
   1. Select **Monitoring**
   1. Expand **Alert Management**
   1. Select **Root Management Servers**
   1. Expand the task pane on the right-hand side
-  1. Click **Create Alert Management Config Files**
+  1. Click **Alert Management - Create Configuration Files**
   1. Click **Override**
   1. Enter a path for the **Destination**
   1. Click **Override**
