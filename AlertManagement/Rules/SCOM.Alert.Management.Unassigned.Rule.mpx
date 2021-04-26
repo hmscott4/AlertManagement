@@ -27,7 +27,7 @@
                     </ValueExpression>
                     <Operator>Equal</Operator>
                     <ValueExpression>
-                      <Value Type="UnsignedInteger">3</Value>
+                      <Value Type="UnsignedInteger">2</Value>
                     </ValueExpression>
                   </SimpleExpression>
                 </Expression>
@@ -48,7 +48,7 @@
         </DataSources>
         <WriteActions>
           <WriteAction ID="Alert" TypeID="Health!System.Health.GenerateAlert">
-            <Priority>$Data/EventLevel$</Priority>
+            <Priority>1</Priority>
             <!-- 0=Low, 1=Medium, 2=High -->
             <Severity>1</Severity>
             <!-- 0=Information, 1=Warning, 2=Critical -->
@@ -59,7 +59,12 @@
             <AlertParameters>
               <AlertParameter1>$Data/EventDescription$</AlertParameter1>
             </AlertParameters>
-            <Suppression />
+            <Suppression>
+              <SuppressionValue>$Data/EventDisplayNumber$</SuppressionValue>
+              <SuppressionValue>$Data/EventLevel$</SuppressionValue>
+              <SuppressionValue>$Data/PublisherName$</SuppressionValue>
+              <SuppressionValue>$Data/EventDescription$</SuppressionValue>
+            </Suppression>
             <!--Specify custom attribute 1 to allow the alert to show up in the Alerts view-->
             <Custom1>Alert Management</Custom1>
             <Custom2 />

@@ -47,8 +47,13 @@
             <AlertMessageId>$MPElement[Name="SCOM.Alert.Management.Storm.Rule.AlertMessage"]$</AlertMessageId>
             <AlertParameters>
               <AlertParameter1>$Data/EventDescription$</AlertParameter1>
+              <AlertParameter2>$Data/EventData/DataItem[0]$</AlertParameter2>
             </AlertParameters>
-            <Suppression />
+            <Suppression>
+              <SuppressionValue>$Data/EventDisplayNumber$</SuppressionValue>
+              <SuppressionValue>$Data/PublisherName$</SuppressionValue>
+              <SuppressionValue>$Data/EventDescription$</SuppressionValue>
+            </Suppression>
             <!--Specify custom attribute 1 to allow the alert to show up in the Alerts view-->
             <Custom1>Alert Management</Custom1>
             <Custom2 />
@@ -77,7 +82,7 @@
           <Name>Alert Storm Detection Rule</Name>
         </DisplayString>
         <DisplayString ElementID="SCOM.Alert.Management.Storm.Rule.AlertMessage">
-          <Name>Alert Storm Detected</Name>
+          <Name>Alert Storm Detected: {1}</Name>
           <Description>{0}</Description>
         </DisplayString>
       </DisplayStrings>

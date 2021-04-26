@@ -138,7 +138,7 @@ foreach ( $newAlert in $newAlerts )
 	else
 	{
 		$assignedTo = $DefaultOwner
-		$message = "No assignment rule found for an alert.`nManagement Pack: $mpName`nAlert: $alertName"
+		$message = "`nNo assignment rule found for an alert.`nManagement Pack: $mpName`nAlert: $alertName"
 		$momapi.LogScriptEvent($scriptName, $scriptEventID, 2, $message)
 		Write-Warning -Message $message
 	}

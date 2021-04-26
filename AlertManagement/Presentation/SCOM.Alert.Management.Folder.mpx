@@ -4,7 +4,9 @@
       <Folder ID="SCOM.Alert.Management.Folder" Accessibility="Internal" ParentFolder="SC!Microsoft.SystemCenter.Monitoring.ViewFolder.Root" />
     </Folders>
     <FolderItems>
-      <FolderItem ElementID="SCOM.Alert.Management.ActiveAlerts.View" ID="SCOM.Alert.Management.ActiveAlerts.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
+      <FolderItem ElementID="SCOM.Alert.Management.AlertManagementAlerts.View" ID="SCOM.Alert.Management.AlertManagementAlerts.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
+      <FolderItem ElementID="SCOM.Alert.Management.AlertStorm.View" ID="SCOM.Alert.Management.AlertStorm.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
+      <FolderItem ElementID="SCOM.Alert.Management.AssignedAlerts.View" ID="SCOM.Alert.Management.AssignedAlerts.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
       <FolderItem ElementID="SCOM.Alert.Management.UnassignedAlerts.View" ID="SCOM.Alert.Management.UnassignedAlerts.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
       <FolderItem ElementID="SCOM.Alert.Management.RootManagementServer.View" ID="SCOM.Alert.Management.RootManagementServer.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
     </FolderItems>

@@ -67,7 +67,13 @@
     <Compile Include="ManagementPack.mpx">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Presentation\SCOM.Alert.Management.ActiveAlerts.View.mpx">
+    <Compile Include="Presentation\SCOM.Alert.Management.AlertManagementAlerts.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.AlertStorm.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.AssignedAlerts.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Presentation\SCOM.Alert.Management.Folder.mpx">

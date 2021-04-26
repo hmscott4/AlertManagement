@@ -1,13 +1,12 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Presentation>
     <Views>
-      <View ID="SCOM.Alert.Management.UnassignedAlerts.View" Accessibility="Internal" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
+      <View ID="SCOM.Alert.Management.AlertStorm.View" Accessibility="Internal" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
         <Category>Custom</Category>
         <Criteria>
           <ResolutionState>
-            <StateRange Operator="NotEquals">255</StateRange>
+            <StateRange Operator="Equals">18</StateRange>
           </ResolutionState>
-          <AssignedTo>Unassigned</AssignedTo>
         </Criteria>
         <Presentation>
           <ColumnInfo Index="1" SortIndex="-1" Width="54" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
@@ -65,8 +64,8 @@
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="SCOM.Alert.Management.UnassignedAlerts.View">
-          <Name>Unassigned Alerts</Name>
+        <DisplayString ElementID="SCOM.Alert.Management.AlertStorm.View">
+          <Name>Alert Storm</Name>
         </DisplayString>
       </DisplayStrings>
     </LanguagePack>

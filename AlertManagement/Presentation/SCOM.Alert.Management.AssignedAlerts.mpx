@@ -1,13 +1,12 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Presentation>
     <Views>
-      <View ID="SCOM.Alert.Management.ActiveAlerts.View" Accessibility="Internal" Enabled="true" Target="Windows!Microsoft.Windows.Server.OperatingSystem" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
+      <View ID="SCOM.Alert.Management.AssignedAlerts.View" Accessibility="Internal" Enabled="true" Target="System!System.Entity" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
         <Category>Custom</Category>
         <Criteria>
           <ResolutionState>
-            <StateRange Operator="NotEquals">255</StateRange>
+            <StateRange Operator="Equals">5</StateRange>
           </ResolutionState>
-          <CustomField1>Alert Management</CustomField1>
         </Criteria>
         <Presentation>
           <ColumnInfo Index="1" SortIndex="-1" Width="54" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
@@ -54,6 +53,10 @@
             <Name>Priority</Name>
             <Id>Priority</Id>
           </ColumnInfo>
+          <ColumnInfo Index="13" SortIndex="-1" Width="100" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
+            <Name>Repeat Count</Name>
+            <Id>RepeatCount</Id>
+          </ColumnInfo>
         </Presentation>
       </View>
     </Views>
@@ -61,8 +64,8 @@
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
-        <DisplayString ElementID="SCOM.Alert.Management.ActiveAlerts.View">
-          <Name>Active Alerts</Name>
+        <DisplayString ElementID="SCOM.Alert.Management.AssignedAlerts.View">
+          <Name>Assigned Alerts</Name>
         </DisplayString>
       </DisplayStrings>
     </LanguagePack>
