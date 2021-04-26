@@ -5,9 +5,6 @@
     </Folders>
     <FolderItems>
       <FolderItem ElementID="SCOM.Alert.Management.AlertManagementAlerts.View" ID="SCOM.Alert.Management.AlertManagementAlerts.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
-      <FolderItem ElementID="SCOM.Alert.Management.AlertStorm.View" ID="SCOM.Alert.Management.AlertStorm.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
-      <FolderItem ElementID="SCOM.Alert.Management.AssignedAlerts.View" ID="SCOM.Alert.Management.AssignedAlerts.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
-      <FolderItem ElementID="SCOM.Alert.Management.UnassignedAlerts.View" ID="SCOM.Alert.Management.UnassignedAlerts.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
       <FolderItem ElementID="SCOM.Alert.Management.RootManagementServer.View" ID="SCOM.Alert.Management.RootManagementServer.View.FolderItem" Folder="SCOM.Alert.Management.Folder" />
     </FolderItems>
   </Presentation>

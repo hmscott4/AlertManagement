@@ -70,19 +70,31 @@
     <Compile Include="Presentation\SCOM.Alert.Management.AlertManagementAlerts.View.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.AlertsByStatus.Folder.mpx">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Presentation\SCOM.Alert.Management.AlertStorm.View.mpx">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Presentation\SCOM.Alert.Management.AssignedAlerts.mpx">
+    <Compile Include="Presentation\SCOM.Alert.Management.AssignedAlerts.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.AwaitingEvidence.View.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Presentation\SCOM.Alert.Management.Folder.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.NewAlerts.View.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Presentation\SCOM.Alert.Management.RootManagementServer.View.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Presentation\SCOM.Alert.Management.UnassignedAlerts.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.Verified.View.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Resources\SCOM.Alert.Management.AssignAlertConfig.mpx">
