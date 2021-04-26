@@ -14,4 +14,4 @@ This repo contains the solution for the Alert Management SCOM management pack.
 
 [Latest build](AlertManagement/actions/workflows/build.yml)
 
-[Documentation](WikiSource/Home)
+[Documentation](WikiSource/Home.md)
