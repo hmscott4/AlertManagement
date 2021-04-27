@@ -4,14 +4,18 @@ This repo contains the solution for the Alert Management SCOM management pack.
 
 ## Production Release
 
-[Documentation](AlertManagement/wiki)
+[Latest Release](https://github.com/hmscott4/AlertManagement/releases/latest/download/AlertManagement.zip)
 
-## Beta Release
+[Documentation](https://github.com/hmscott4/AlertManagement/wiki)
 
-[Documentation](AlertManagement/WikiSource/Home.md)
+## Pre-Release
+
+[Latest Pre-Release](https://github.com/hmscott4/AlertManagement/releases)
+
+[Pre-Release Documentation](https://github.com/hmscott4/AlertManagement/blob/dev/AlertManagement/WikiSource/Home.md)
 
 ## Current Build
 
-[Latest build](AlertManagement/actions/workflows/build.yml)
+[Current Build](AlertManagement/actions/workflows/build.yml)
 
-[Documentation](WikiSource/Home.md)
+[Current Build Documentation](WikiSource/Home.md)
