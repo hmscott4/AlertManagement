@@ -100,7 +100,7 @@ function Optimize-PostPipelineFilter
 $configurationFile = Get-Item -Path $ConfigFile -ErrorAction Stop
 
 # RETRIEVE CONFIGURATION FILE WITH RULES AND EXCEPTIONS
-$config = [System.Xml.XmlDocument] ( Get-Content -Path $ConfigFile.FullName )
+$config = [System.Xml.XmlDocument] ( Get-Content -Path $configurationFile.FullName )
 
 #region Update Type Data
 
@@ -207,9 +207,6 @@ if ( -not ( Get-TypeData -TypeName $updateTypeDataHealthStateSuccessParameters.T
 }
 
 #endregion Update Type Data
-
-# INITIALIZE AlertCount
-$alertCount = 0
 
 # Alert Storm Processing
 $alertStormRules = $config.SelectNodes("//config/alertStormRules/stormRule[@enabled='true']") | Sort-Object { $_.Sequence }
@@ -344,12 +341,18 @@ $alertExceptions = $config.SelectNodes("//config/exceptions/exception[@enabled='
 foreach ( $exception in $alertExceptions )
 {
     # ASSIGN VALUES
-    Write-Verbose -Message $exception.name
     $criteria = $exception.Criteria.InnerText
     $newResolutionState = [System.Int32] $exception.NewResolutionState
     $postPipelineFilter = $exception.PostPipelineFilter #.InnerText
     $comment = $exception.Comment.InnerText
     $name = $exception.Name
+
+    if ($debug)
+    {
+        $message = "`nProcessing the exception '$name' `nComment: $comment`nNew Resolution State: $newResolutionState `nCriteria: $criteria `nPost Pipeline Filter: $postPipelineFilter"
+        $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+        Write-Debug -Message $message
+    }
 
     # REPLACE TIME BASED CRITERIA
     if ( $criteria -match '__TimeRaised__' )
@@ -379,12 +382,11 @@ foreach ( $exception in $alertExceptions )
     if ( $alerts.Count -gt 0 )
     {
         $alerts | Set-SCOMAlert -ResolutionState $newResolutionState -Comment $Comment
-        $AlertCount = $alerts.Count
-        Write-Verbose -Message $criteria        
+        $alertCount = $alerts.Count
 
         if ($debug)
         {
-            $message = "`nUpdated $AlertCount alert(s) to resolution state $newResolutionState (Exception: $name)."
+            $message = "`nUpdated $alertCount alert(s) to resolution state $newResolutionState `nException: $name"
             $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
             Write-Debug -Message $message
         }
@@ -408,12 +410,18 @@ $alertRules = $config.SelectNodes("//config/rules/rule[@enabled='true']") | Sort
 foreach ($rule in $alertRules)
 {
     # ASSIGN VALUES
-    Write-Verbose -Message $rule.name
     $criteria = $rule.Criteria.InnerText
     $newResolutionState = [System.Int32] $rule.NewResolutionState
     $postPipelineFilter = $rule.PostPipelineFilter #.InnerText
     $comment = $rule.Comment.InnerText
     $name = $rule.name
+
+    if ($debug)
+    {
+        $message = "`nProcessing the rule '$name' `nComment: $comment`nNew Resolution State: $newResolutionState `nCriteria: $criteria `nPost Pipeline Filter: $postPipelineFilter"
+        $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+        Write-Debug -Message $message
+    }
 
     # REPLACE TIME BASED CRITERIA
     if ($criteria -match '__TimeRaised__')
@@ -443,12 +451,11 @@ foreach ($rule in $alertRules)
     if ($alerts.Count -gt 0)
     {
         $alerts | Set-SCOMAlert -ResolutionState $newResolutionState -Comment $Comment
-        Write-Verbose -Message $criteria
-        $AlertCount = $alerts.Count
+        $alertCount = $alerts.Count
 
         if ($debug)
         {
-            $message = "`nUpdated $AlertCount alert(s) to resolution state $newResolutionState (Rule: $name)."
+            $message = "`nUpdated $alertCount alert(s) to resolution state $newResolutionState `nRule: $name `n$criteria"
             $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
             Write-Debug -Message $message
         }
