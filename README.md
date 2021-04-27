@@ -1,6 +1,6 @@
 # Alert Management
 
-This repo contains the solution for the Alert Management SCOM management pack.
+The **Alert Management** SCOM management pack is a tool for managing alerts throughout their lifecycle. This helps organizations automatically process alerts and allows them to ignore alerts which do not need looked at yet.
 
 ## Production Release
 
