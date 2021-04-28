@@ -81,8 +81,15 @@ function Format-xPathExpression
 # Get the config file object to ensure it exists
 $configurationFile = Get-Item -Path $ConfigFile -ErrorAction Stop
 
+# Get the config file schema
+$configurationFileSchema = Get-Item -Path '$FileResource[Name="SCOM.Alert.Management.AssignAlertConfigSchema"]/Path$' -ErrorAction Stop
+
 # Retrieve the configuration file with assignments and exceptions
 $config = [System.Xml.XmlDocument] ( Get-Content -Path $configurationFile.FullName -ErrorAction Stop )
+
+# Validate the schema
+$config.Schemas.Add('',$configurationFileSchema.FullName) > $null
+$config.Validate($null)
 
 # Get the resolution state number from SCOM
 $assignedResolutionState = Get-SCOMAlertResolutionState -Name $AssignedResolutionStateName | Select-Object -ExpandProperty ResolutionState

@@ -100,6 +100,9 @@
     <Compile Include="Resources\SCOM.Alert.Management.AssignAlertConfig.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Resources\SCOM.Alert.Management.AssignAlertConfigSchema.mpx">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Resources\SCOM.Alert.Management.EscalateAlertConfig.mpx">
       <SubType>Code</SubType>
     </Compile>
@@ -133,6 +136,11 @@
       <SubType>Content</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\escalate.alert.config">
+      <SubType>Content</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\assign.alert.config.xsd">
       <SubType>Content</SubType>
     </EmbeddedResource>
   </ItemGroup>

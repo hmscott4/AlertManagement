@@ -1,0 +1,45 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="config">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="rules">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="rule" maxOccurs="unbounded" minOccurs="0">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element type="xsd:string" name="managementPackName"/>
+                    <xsd:element type="xsd:string" name="Owner"/>
+                  </xsd:sequence>
+                  <xsd:attribute type="xsd:integer" name="ID" use="optional"/>
+                  <xsd:attribute type="xsd:string" name="Name" use="optional"/>
+                  <xsd:attribute type="xsd:string" name="enabled" use="optional"/>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="exceptions">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="exception" maxOccurs="unbounded" minOccurs="0">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element type="xsd:string" name="AlertName"/>
+                    <xsd:element type="xsd:string" name="Owner"/>
+                    <xsd:element type="xsd:string" name="AlertProperty"/>
+                    <xsd:element type="xsd:string" name="AlertPropertyMatches"/>
+                  </xsd:sequence>
+                  <xsd:attribute type="xsd:integer" name="ID" use="optional"/>
+                  <xsd:attribute type="xsd:string" name="Name" use="optional"/>
+                  <xsd:attribute type="xsd:string" name="enabled" use="optional"/>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+      <xsd:attribute type="xsd:float" name="version"/>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>
