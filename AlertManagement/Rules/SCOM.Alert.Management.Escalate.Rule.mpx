@@ -86,7 +86,7 @@
         <WriteActions>
           <WriteAction ID="WA" TypeID="SCOM.Alert.Management.Escalate.Rule.WriteAction">
             <TimeoutSeconds>240</TimeoutSeconds>
-            <ConfigFile></ConfigFile>
+            <ConfigFile>ENTER PATH TO ESCALATE.ALERT.CONFIG FILE HERE</ConfigFile>
             <DebugLogging>false</DebugLogging>
           </WriteAction>
         </WriteActions>

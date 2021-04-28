@@ -104,7 +104,7 @@
         <WriteActions>
           <WriteAction ID="WA" TypeID="SCOM.Alert.Management.Assign.Rule.WriteAction">
             <TimeoutSeconds>45</TimeoutSeconds>
-            <ConfigFile></ConfigFile>
+            <ConfigFile>ENTER PATH TO ASSIGN.ALERT.CONFIG FILE HERE</ConfigFile>
             <AssignedResolutionStateName>Assigned</AssignedResolutionStateName>
             <UnassignedResolutionStateName>Assigned</UnassignedResolutionStateName>
             <DefaultOwner>Unassigned</DefaultOwner>
