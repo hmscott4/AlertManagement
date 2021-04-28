@@ -47,7 +47,7 @@
             <AlertMessageId>$MPElement[Name="SCOM.Alert.Management.Storm.Rule.AlertMessage"]$</AlertMessageId>
             <AlertParameters>
               <AlertParameter1>$Data/EventDescription$</AlertParameter1>
-              <AlertParameter2>$Data/EventData/DataItem[0]$</AlertParameter2>
+              <AlertParameter2>$Data/Params/Param[1]$</AlertParameter2>
             </AlertParameters>
             <Suppression>
               <SuppressionValue>$Data/EventDisplayNumber$</SuppressionValue>
