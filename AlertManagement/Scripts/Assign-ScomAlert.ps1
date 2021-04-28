@@ -105,9 +105,17 @@ if ( $debug )
 
 foreach ( $newAlert in $newAlerts )
 {
-	# Get the details of the alert
-	$mpClass = Get-SCOMClass -Id $newAlert.MonitoringClassId
-	$mpName = $mpClass.ManagementPackName
+	# Get the management pack the alert was generated from
+	if ( $newAlert.IsMonitorAlert )
+	{
+		$mpName = $newAlert.MonitoringRuleId | Get-SCOMMonitor | Select-Object -ExpandProperty ManagementPackName
+	}
+	else
+	{
+		$mpName = $newAlert.MonitoringRuleId | Get-SCOMRule | Select-Object -ExpandProperty ManagementPackName
+	}
+
+	# Get the alert name
 	$alertName = $newAlert.Name
 
 	# Format the alert name for XPath
