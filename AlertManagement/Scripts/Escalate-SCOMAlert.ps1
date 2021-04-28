@@ -279,11 +279,9 @@ foreach ( $alertStormRule in $alertStormRules )
                 Select-Object -ExpandProperty MonitoringObjectFullName -Unique |
                 Sort-Object
         
-            # Define the string which will be passed in as the "script name" property for LogScriptEvent
-            $stormDescription = "The alert ""$alertName"" was triggered $($stormAlert.Value.Count) times for the following objects:"
-        
             # Define the event details
             $eventDetails = New-Object -TypeName System.Text.StringBuilder
+            $eventDetails.AppendLine("The alert ""$alertName"" was triggered $($stormAlert.Value.Count) times for the following objects:")
             $eventDetails.AppendLine() > $null
             $eventDetails.AppendLine() > $null
             $monitoringObjects | ForEach-Object -Process { $eventDetails.AppendLine($_) > $null }
@@ -324,7 +322,7 @@ foreach ( $alertStormRule in $alertStormRules )
             }
 
             # Raise an event indicating an alert storm was detected
-            $momApi.LogScriptEvent($stormDescription, $stormEventId, $eventSeverity, $eventDetails.ToString())
+            $momApi.LogScriptEvent($alertName, $stormEventId, $eventSeverity, $eventDetails.ToString())
 
         }
         
