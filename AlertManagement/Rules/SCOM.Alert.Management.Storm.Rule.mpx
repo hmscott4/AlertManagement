@@ -4,55 +4,30 @@
       <Rule ID="SCOM.Alert.Management.Storm.Rule" Enabled="true" Target="Windows!Microsoft.Windows.Server.OperatingSystem" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
         <Category>Alert</Category>
         <DataSources>
-          <DataSource ID="DS" TypeID="Windows!Microsoft.Windows.EventProvider">
-            <ComputerName>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/NetworkName$</ComputerName>
+          <DataSource ID="DS" TypeID="SCOM.AlertManagement.Storm.Rule.DataSource">
             <LogName>Operations Manager</LogName>
-            <Expression>
-              <And>
-                <Expression>
-                  <SimpleExpression>
-                    <ValueExpression>
-                      <XPathQuery Type="UnsignedInteger">EventDisplayNumber</XPathQuery>
-                    </ValueExpression>
-                    <Operator>Equal</Operator>
-                    <ValueExpression>
-                      <Value Type="UnsignedInteger">9933</Value>
-                    </ValueExpression>
-                  </SimpleExpression>
-                </Expression>
-                <Expression>
-                  <SimpleExpression>
-                    <ValueExpression>
-                      <XPathQuery Type="String">PublisherName</XPathQuery>
-                    </ValueExpression>
-                    <Operator>Equal</Operator>
-                    <ValueExpression>
-                      <Value Type="String">Health Service Script</Value>
-                    </ValueExpression>
-                  </SimpleExpression>
-                </Expression>
-              </And>
-            </Expression>
+            <EventID>9933</EventID>
+            <EventSource>Health Service Script</EventSource>
+            <DebugLogging>false</DebugLogging>
           </DataSource>
         </DataSources>
         <WriteActions>
           <WriteAction ID="Alert" TypeID="Health!System.Health.GenerateAlert">
-            <Priority>1</Priority>
+            <Priority>$Data/Property[@Name='AlertPriority']$</Priority>
             <!-- 0=Low, 1=Medium, 2=High -->
-            <Severity>$Data/EventLevel$</Severity>
+            <Severity>$Data/Property[@Name='AlertSeverity']$</Severity>
             <!-- 0=Information, 1=Warning, 2=Critical -->
             <AlertName />
             <AlertDescription />
             <AlertOwner />
             <AlertMessageId>$MPElement[Name="SCOM.Alert.Management.Storm.Rule.AlertMessage"]$</AlertMessageId>
             <AlertParameters>
-              <AlertParameter1>$Data/EventDescription$</AlertParameter1>
-              <AlertParameter2>$Data/Params/Param[1]$</AlertParameter2>
+              <AlertParameter1>$Data/Property[@Name='AlertName']$</AlertParameter1>
+              <AlertParameter2>$Data/Property[@Name='AlertDescription']$</AlertParameter2>
             </AlertParameters>
             <Suppression>
-              <SuppressionValue>$Data/EventDisplayNumber$</SuppressionValue>
-              <SuppressionValue>$Data/PublisherName$</SuppressionValue>
-              <SuppressionValue>$Data/Params/Param[1]$</SuppressionValue>
+              <SuppressionValue>$Data/Property[@Name='AlertName']$</SuppressionValue>
+              <SuppressionValue>$Data/Property[@Name='AlertDescription']$</SuppressionValue>
             </Suppression>
             <!--Specify custom attribute 1 to allow the alert to show up in the Alerts view-->
             <Custom1>Alert Management</Custom1>
@@ -82,8 +57,8 @@
           <Name>Alert Storm Detection Rule</Name>
         </DisplayString>
         <DisplayString ElementID="SCOM.Alert.Management.Storm.Rule.AlertMessage">
-          <Name>Alert Storm Detected: {1}</Name>
-          <Description>{0}</Description>
+          <Name>Alert Storm Detected: {0}</Name>
+          <Description>{1}</Description>
         </DisplayString>
       </DisplayStrings>
       <KnowledgeArticles>

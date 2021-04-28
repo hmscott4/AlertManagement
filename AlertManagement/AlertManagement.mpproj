@@ -64,6 +64,9 @@
     <Folder Include="Rules" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSources\SCOM.AlertManagement.Storm.Rule.DataSource.mpx">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ManagementPack.mpx">
       <SubType>Code</SubType>
     </Compile>
@@ -130,6 +133,7 @@
     <EmbeddedResource Include="Scripts\Assign-ScomAlert.ps1" />
     <EmbeddedResource Include="Scripts\Copy-ConfigurationFiles.ps1" />
     <EmbeddedResource Include="Scripts\Escalate-ScomAlert.ps1" />
+    <EmbeddedResource Include="Scripts\Invoke-ProcessStormEvent.ps1" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\assign.alert.config">

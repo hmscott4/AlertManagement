@@ -2,7 +2,7 @@
   <Presentation>
     <Views>
       <View ID="SCOM.Alert.Management.AlertManagementAlerts.View" Accessibility="Internal" Enabled="true" Target="Windows!Microsoft.Windows.Server.OperatingSystem" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
-        <Category>Custom</Category>
+        <Category>Alert</Category>
         <Criteria>
           <ResolutionState>
             <StateRange Operator="NotEquals">255</StateRange>

@@ -278,15 +278,6 @@ foreach ( $alertStormRule in $alertStormRules )
             $monitoringObjects = $stormAlert.Value |
                 Select-Object -ExpandProperty MonitoringObjectFullName -Unique |
                 Sort-Object
-        
-            # Define the event details
-            $eventDetails = New-Object -TypeName System.Text.StringBuilder
-            $eventDetails.AppendLine("The alert ""$alertName"" was triggered $($stormAlert.Value.Count) times for the following objects:")
-            $eventDetails.AppendLine() > $null
-            $eventDetails.AppendLine() > $null
-            $monitoringObjects | ForEach-Object -Process { $eventDetails.AppendLine($_) > $null }
-            $eventDetails.AppendLine() > $null
-            $eventDetails.AppendLine("Internal ticket id: $ticketId") > $null
 
             # Get the highest severity of the selected alerts
             $highestAlertSeverity = $stormAlert.Value.Severity |
@@ -320,6 +311,16 @@ foreach ( $alertStormRule in $alertStormRules )
                 # Information
                 $eventSeverity = 0
             }
+
+            # Define the event details
+            $eventDetails = New-Object -TypeName System.Text.StringBuilder
+            $eventDetails.AppendLine("The alert ""$alertName"" was triggered $($stormAlert.Value.Count) times for the following objects:") > $null
+            $eventDetails.AppendLine() > $null
+            $monitoringObjects | ForEach-Object -Process { $eventDetails.AppendLine($_) > $null }
+            $eventDetails.AppendLine() > $null
+            $eventDetails.AppendLine("Priority: $highestAlertPriority") > $null
+            $eventDetails.AppendLine("Severity: $highestAlertSeverity") > $null
+            $eventDetails.AppendLine("Internal ticket id: $ticketId") > $null
 
             # Raise an event indicating an alert storm was detected
             $momApi.LogScriptEvent($alertName, $stormEventId, $eventSeverity, $eventDetails.ToString())
