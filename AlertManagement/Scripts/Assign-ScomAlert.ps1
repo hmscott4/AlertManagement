@@ -108,7 +108,8 @@ foreach ( $newAlert in $newAlerts )
 	# Get the management pack the alert was generated from
 	if ( $newAlert.IsMonitorAlert )
 	{
-		$mpName = $newAlert.MonitoringRuleId | Get-SCOMMonitor | Select-Object -ExpandProperty ManagementPackName
+		$monitor = $newAlert.MonitoringRuleId | Get-SCOMMonitor
+		$mpName = $monitor.GetManagementPack().Name
 	}
 	else
 	{
