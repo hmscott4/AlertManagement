@@ -64,7 +64,7 @@ foreach ( $state in $states.GetEnumerator() )
             $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
             Write-Debug -Message $message
         }
-        Add-SCOMAlertResolutionState @addScomResolutionStateParams
+        Add-SCOMAlertResolutionState @addScomAlertResolutionStateParams
     }
 }
 
