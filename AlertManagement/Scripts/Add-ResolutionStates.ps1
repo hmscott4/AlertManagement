@@ -64,7 +64,7 @@ foreach ( $state in $states.GetEnumerator() )
             $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
             Write-Debug -Message $message
         }
-        Add-SCOMAlertResolutionState @addScomAlertResolutionStateParams
+        $alertResolutionState = Add-SCOMAlertResolutionState @addScomAlertResolutionStateParams
     }
 }
 
@@ -74,7 +74,7 @@ $scriptTime = ( $endTime - $startTime ).TotalSeconds
 
 if ( $debug )
 {
-    $message = "`n Script Completed. `n Script Runtime: ($scriptTime) seconds."
+    $message = "`nScript Completed. `nScript Runtime: ($scriptTime) seconds."
     $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
     Write-Debug -Message $message
 }
