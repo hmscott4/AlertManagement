@@ -290,26 +290,16 @@ foreach ( $alertStormRule in $alertStormRules )
                 Select-Object -First 1 -Unique
 
             # Determine what the event severity should be
-            if (
-                $highestAlertSeverity -eq [Microsoft.EnterpriseManagement.Configuration.ManagementPackAlertSeverity]::Error -and
-                $highestAlertPriority -eq [Microsoft.EnterpriseManagement.Configuration.ManagementPackWorkflowPriority]::High
-            )
+            switch ( $highestAlertSeverity )
             {
                 # Error
-                $eventSeverity = 1
-            }
-            elseif (
-                $highestAlertSeverity -in @([Microsoft.EnterpriseManagement.Configuration.ManagementPackAlertSeverity]::Error, [Microsoft.EnterpriseManagement.Configuration.ManagementPackAlertSeverity]::Warning) -and
-                $highestAlertPriority -in @([Microsoft.EnterpriseManagement.Configuration.ManagementPackWorkflowPriority]::Normal, [Microsoft.EnterpriseManagement.Configuration.ManagementPackWorkflowPriority]::Low)
-            )
-            {
+                ( [Microsoft.EnterpriseManagement.Configuration.ManagementPackAlertSeverity]::Error ) { $eventSeverity = 1 }
+
                 # Warning
-                $eventSeverity = 2
-            }
-            else
-            {
+                ( [Microsoft.EnterpriseManagement.Configuration.ManagementPackAlertSeverity]::Warning ) { $eventSeverity = 2 }
+
                 # Information
-                $eventSeverity = 0
+                default { $eventSeverity = 0 }
             }
 
             # Define the event details
@@ -318,8 +308,8 @@ foreach ( $alertStormRule in $alertStormRules )
             $eventDetails.AppendLine() > $null
             $monitoringObjects | ForEach-Object -Process { $eventDetails.AppendLine($_) > $null }
             $eventDetails.AppendLine() > $null
-            $eventDetails.AppendLine("Priority: $highestAlertPriority") > $null
-            $eventDetails.AppendLine("Severity: $highestAlertSeverity") > $null
+            $eventDetails.AppendLine("Priority: $($highestAlertPriority.value__)") > $null
+            $eventDetails.AppendLine("Severity: $($highestAlertSeverity.value__)") > $null
             $eventDetails.AppendLine("Internal ticket id: $ticketId") > $null
 
             # Raise an event indicating an alert storm was detected

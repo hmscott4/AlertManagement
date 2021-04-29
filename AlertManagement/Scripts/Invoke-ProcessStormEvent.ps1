@@ -71,7 +71,7 @@ foreach ( $line in $EventDetails.Split("`n") )
 }
 
 # Build a hashtable with our values to make it easier to log and build the property bag
-$returnValue = @{
+$result = @{
     AlertName = $AlertName
     AlertDescription = $alertDescription -join "`n"
     AlertPriority = $alertPriority
@@ -81,7 +81,7 @@ $returnValue = @{
 if ( $debug )
 {
 	$i = 0
-	$bagsString = $results | ForEach-Object -Process { $i++; $_.GetEnumerator() } | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" }
+	$bagsString = $result | ForEach-Object -Process { $i++; $_.GetEnumerator() } | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" }
 	$message = "`nProperty bag values: $bagsString"
 	$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
 	Write-Debug -Message $message
