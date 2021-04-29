@@ -5,6 +5,14 @@ param
     [System.String]
     $ConfigFile,
 
+    [Parameter(Mandatory = $true)]
+    [System.String]
+    $StormTicketPrefix,
+
+    [Parameter(Mandatory = $true)]
+    [System.String]
+    $StormTicketDateFormat,
+
     [Parameter()]
     [System.String]
     $DebugLogging = 'false'
@@ -272,7 +280,7 @@ foreach ( $alertStormRule in $alertStormRules )
             $alertName = $stormAlert.Value | Select-Object -ExpandProperty Name -Unique
 
             # Define the "ticket id"
-            $ticketId = ( Get-Date -Format 'MM/dd/yyyy hh:mm:ss {0}' ) -f $alertName
+            $ticketId = ( Get-Date -Format "{0}$StormTicketDateFormat" ) -f $StormTicketPrefix
             
             # Get a unique list of monitoring objects
             $monitoringObjects = $stormAlert.Value |

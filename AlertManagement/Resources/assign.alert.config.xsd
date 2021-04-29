@@ -1,45 +1,75 @@
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <xsd:element name="config">
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element name="rules">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element name="rule" maxOccurs="unbounded" minOccurs="0">
-                <xsd:complexType>
-                  <xsd:sequence>
-                    <xsd:element type="xsd:string" name="managementPackName"/>
-                    <xsd:element type="xsd:string" name="Owner"/>
-                  </xsd:sequence>
-                  <xsd:attribute type="xsd:integer" name="ID" use="optional"/>
-                  <xsd:attribute type="xsd:string" name="Name" use="optional"/>
-                  <xsd:attribute type="xsd:string" name="enabled" use="optional"/>
-                </xsd:complexType>
-              </xsd:element>
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-        <xsd:element name="exceptions">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element name="exception" maxOccurs="unbounded" minOccurs="0">
-                <xsd:complexType>
-                  <xsd:sequence>
-                    <xsd:element type="xsd:string" name="AlertName"/>
-                    <xsd:element type="xsd:string" name="Owner"/>
-                    <xsd:element type="xsd:string" name="AlertProperty"/>
-                    <xsd:element type="xsd:string" name="AlertPropertyMatches"/>
-                  </xsd:sequence>
-                  <xsd:attribute type="xsd:integer" name="ID" use="optional"/>
-                  <xsd:attribute type="xsd:string" name="Name" use="optional"/>
-                  <xsd:attribute type="xsd:string" name="enabled" use="optional"/>
-                </xsd:complexType>
-              </xsd:element>
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-      </xsd:sequence>
-      <xsd:attribute type="xsd:float" name="version"/>
-    </xsd:complexType>
-  </xsd:element>
-</xsd:schema>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="config">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="exceptions">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="exception" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Alert" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType mixed="true">
+                        <xs:sequence>
+                          <xs:element type="xs:string" name="AlertProperty" minOccurs="0"/>
+                          <xs:element type="xs:string" name="AlertPropertyMatches" minOccurs="0"/>
+                        </xs:sequence>
+                        <xs:attribute type="xs:string" name="Name" use="required"/>
+                        <xs:attribute type="xs:string" name="enabled" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ManagementPack" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="Name" use="required"/>
+                            <xs:attribute type="xs:string" name="FullName" use="required"/>
+                            <xs:attribute type="xs:string" name="enabled" use="required"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute type="xs:short" name="ID" use="required"/>
+                  <xs:attribute type="xs:string" name="Name" use="required"/>
+                  <xs:attribute type="xs:string" name="Owner" use="required"/>
+                  <xs:attribute type="xs:string" name="enabled" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="assignments">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="assignment" maxOccurs="unbounded" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>ASSIGNMENTS: Management Pack</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ManagementPack" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="Name" use="required"/>
+                            <xs:attribute type="xs:string" name="enabled" use="required"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute type="xs:short" name="ID" use="required"/>
+                  <xs:attribute type="xs:string" name="Name" use="required"/>
+                  <xs:attribute type="xs:string" name="Owner" use="required"/>
+                  <xs:attribute type="xs:string" name="enabled" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute type="xs:float" name="version"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

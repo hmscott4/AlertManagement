@@ -37,11 +37,15 @@
         <Configuration>
           <xsd:element minOccurs="1" name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element minOccurs="1" name="ConfigFile" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="StormTicketPrefix" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="StormTicketDateFormat" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <xsd:element minOccurs="1" name="DebugLogging" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </Configuration>
         <OverrideableParameters>
           <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
           <OverrideableParameter ID="ConfigFile" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="StormTicketPrefix" Selector="$Config/StormTicketPrefix$" ParameterType="string" />
+          <OverrideableParameter ID="StormTicketDateFormat" Selector="$Config/StormTicketDateFormat$" ParameterType="string" />
           <OverrideableParameter ID="DebugLogging" Selector="$Config/DebugLogging$" ParameterType="bool" />
         </OverrideableParameters>
         <ModuleImplementation Isolation="Any">
@@ -54,6 +58,14 @@
                   <Parameter>
                     <Name>ConfigFile</Name>
                     <Value>$Config/ConfigFile$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>StormTicketPrefix</Name>
+                    <Value>$Config/StormTicketPrefix$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>StormTicketDateFormat</Name>
+                    <Value>$Config/StormTicketDateFormat$</Value>
                   </Parameter>
                   <Parameter>
                     <Name>DebugLogging</Name>
@@ -87,6 +99,8 @@
           <WriteAction ID="WA" TypeID="SCOM.Alert.Management.Escalate.Rule.WriteAction">
             <TimeoutSeconds>240</TimeoutSeconds>
             <ConfigFile>ENTER PATH TO ESCALATE.ALERT.CONFIG FILE HERE</ConfigFile>
+            <StormTicketPrefix>STORM: </StormTicketPrefix>
+            <StormTicketDateFormat>yyyyMMddhhmm</StormTicketDateFormat>
             <DebugLogging>false</DebugLogging>
           </WriteAction>
         </WriteActions>
@@ -123,6 +137,14 @@
         <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="ConfigFile">
           <Name>Configuration File</Name>
           <Description>The full path to the configuration file which contains the rules the Escalate SCOM Alerts script will process.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="StormTicketPrefix">
+          <Name>Storm Ticket Prefix</Name>
+          <Description>The beginning of the string which is in the "Ticket ID" field of alerts involved in an alert storm.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="StormTicketDateFormat">
+          <Name>Storm Ticket Date Format</Name>
+          <Description>The format of the date string which is in the "Ticket ID" field of alerts involved in an alert storm.</Description>
         </DisplayString>
         <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="DebugLogging">
           <Name>Debug Logging</Name>
