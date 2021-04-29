@@ -100,9 +100,6 @@
     <Compile Include="Presentation\SCOM.Alert.Management.Verified.View.mpx">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Resources\SCOM.Alert.Management.AssignAlertConfig.mpx">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Resources\SCOM.Alert.Management.AssignAlertConfigSchema.mpx">
       <SubType>Code</SubType>
     </Compile>
@@ -124,21 +121,18 @@
     <Compile Include="Tasks\SCOM.Alert.Management.AddResolutionStates.Task.mpx">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Tasks\SCOM.Alert.Management.CopyConfigurationFiles.Task.mpx">
+    <Compile Include="Tasks\SCOM.Alert.Management.NewConfigurationFiles.Task.mpx">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\Add-ResolutionStates.ps1" />
     <EmbeddedResource Include="Scripts\Assign-ScomAlert.ps1" />
-    <EmbeddedResource Include="Scripts\Copy-ConfigurationFiles.ps1" />
+    <EmbeddedResource Include="Scripts\New-ConfigurationFiles.ps1" />
     <EmbeddedResource Include="Scripts\Escalate-ScomAlert.ps1" />
     <EmbeddedResource Include="Scripts\Invoke-ProcessStormEvent.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\assign.alert.config">
-      <SubType>Content</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\escalate.alert.config">
       <SubType>Content</SubType>
     </EmbeddedResource>
