@@ -83,38 +83,43 @@ $assignmentGroups += [System.Tuple]::Create('Unix','Linux Team','nix')
 $assignmentGroups += [System.Tuple]::Create('Virtualization','Virtualization Team','HyperV')
 $assignmentGroups += [System.Tuple]::Create('IIS','Web Team','InternetInformationServices')
 $assignmentGroups += [System.Tuple]::Create('Windows','Windows Team','Windows(\.Cluster|\.Server|Defender|\.MSDTC|\.FileServer|\.Library)|File\.Share')
+# Catch-all for unknown management packs
+$assignmentGroups += [System.Tuple]::Create('Unassigned','Monitoring Team','')
 
 # Get the installed management packs
 $managementPacks = Get-SCOMManagementPack | Select-Object -ExpandProperty Name | Sort-Object
 
-foreach ( $assignmentGroup in $assignmentGroups )
+foreach ( $managementPack in $managementPacks)    
 {
-    # Get the assignment node if it exists
-    $nodeSelectionQuery = "//config/assignments/assignment[@Name='$($assignmentGroup.Item1)'][@Owner='$($assignmentGroup.Item2)']"
-    $assignmentNode = $assignAlertConfigXml.SelectSingleNode($nodeSelectionQuery)
-
-    if ( -not $assignmentNode )
+    foreach ( $assignmentGroup in $assignmentGroups )
     {
-        # Figure out the ID
-        $id = [System.Int32] ( $assignAlertConfigXml.config.assignments.assignment.ID | Sort-Object -Descending | Select-Object -First 1 ) + 1
+        # Get the assignment node if it exists
+        $nodeSelectionQuery = "//config/assignments/assignment[@Name='$($assignmentGroup.Item1)'][@Owner='$($assignmentGroup.Item2)']"
+        $assignmentNode = $assignAlertConfigXml.SelectSingleNode($nodeSelectionQuery)
 
-        # Create the assignment node
-        $assignmentNode = $assignAlertConfigXml.CreateElement('assignment')
-        $assignmentNode.SetAttribute('ID',$id)
-        $assignmentNode.SetAttribute('Name',$assignmentGroup.Item1)
-        $assignmentNode.SetAttribute('Owner',$assignmentGroup.Item2)
-        $assignmentNode.SetAttribute('enabled','true')
-        $assignmentNode = $assignAlertConfigXml.SelectSingleNode('/config/assignments').AppendChild($assignmentNode)
-    }
-    
-    foreach ( $managementPack in $managementPacks)    
-    {
+        if ( -not $assignmentNode )
+        {
+            # Figure out the ID
+            $id = [System.Int32] ( $assignAlertConfigXml.config.assignments.assignment.ID | Sort-Object -Descending | Select-Object -First 1 ) + 1
+
+            # Create the assignment node
+            $assignmentNode = $assignAlertConfigXml.CreateElement('assignment')
+            $assignmentNode.SetAttribute('ID',$id)
+            $assignmentNode.SetAttribute('Name',$assignmentGroup.Item1)
+            $assignmentNode.SetAttribute('Owner',$assignmentGroup.Item2)
+            $assignmentNode.SetAttribute('enabled','true')
+            $assignmentNode = $assignAlertConfigXml.SelectSingleNode('/config/assignments').AppendChild($assignmentNode)
+        }
+        
         if ( $managementPack -match $assignmentGroup.Item3 )
         {
             $managementPackNode = $assignAlertConfigXml.CreateElement('ManagementPack')
             $managementPackNode.SetAttribute('Name',$managementPack)
             $managementPackNode.SetAttribute('enabled','true')
             $managementPackNode = $assignAlertConfigXml.SelectSingleNode($nodeSelectionQuery).AppendChild($managementPackNode)
+            
+            # Prevent assigning a management pack to more than one group
+            break
         }
     }
 }
