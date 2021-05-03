@@ -115,7 +115,6 @@ foreach ( $managementPack in $managementPacks)
         {
             $managementPackNode = $assignAlertConfigXml.CreateElement('ManagementPack')
             $managementPackNode.SetAttribute('Name',$managementPack)
-            $managementPackNode.SetAttribute('enabled','true')
             $managementPackNode = $assignAlertConfigXml.SelectSingleNode($nodeSelectionQuery).AppendChild($managementPackNode)
             
             # Prevent assigning a management pack to more than one group
