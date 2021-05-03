@@ -171,13 +171,17 @@ foreach ( $newAlert in $newAlerts )
 		$setScomAlertParams.ResolutionState = $unassignedResolutionState
 	}
 
-	if ( $debug )
+	# Only set the owner if it is different
+	if ( $newAlert.Owner -ne $setScomAlertParams.Owner )
 	{
-		$setScomAlertParamsString = ( $setScomAlertParams.GetEnumerator() | ForEach-Object -Process { " -$($_.Key) '$($_.Value)'" } ) -join ''
-		$message = "Set the alert owner `nSet-SCOMAlert $setScomAlertParamsString"
-		$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+		if ( $debug )
+		{
+			$setScomAlertParamsString = ( $setScomAlertParams.GetEnumerator() | ForEach-Object -Process { " -$($_.Key) '$($_.Value)'" } ) -join ''
+			$message = "Set the alert owner `nSet-SCOMAlert $setScomAlertParamsString"
+			$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+		}
+		Set-SCOMAlert @setScomAlertParams
 	}
-	Set-SCOMAlert @setScomAlertParams
 	#endregion Assign Alert
 }
 
