@@ -139,11 +139,11 @@ if ( ( $assignAlertConfigFileExists -eq $false ) -or ( $assignAlertConfigFileExi
     
     if ( $debug )
     {
-        $message = "Saving the $($assignAlertConfigFile.Name) to $($assignAlertConfigFile.FullName)"
+        $message = "Saving the $(Split-Path -Path $assignAlertConfigFile -Leaf) to '$($assignAlertConfigFile)'"
         $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
         Write-Debug -Message $message
     }
-    $assignAlertConfigXml.Save($assignAlertConfigFile.FullName)
+    $assignAlertConfigXml.Save($assignAlertConfigFile)
 }
 
 #endregion Create assign.alert.config
