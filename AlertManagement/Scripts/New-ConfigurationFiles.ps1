@@ -90,7 +90,8 @@ $managementPacks = Get-SCOMManagementPack | Select-Object -ExpandProperty Name |
 foreach ( $assignmentGroup in $assignmentGroups )
 {
     # Get the assignment node if it exists
-    $assignmentNode = $assignAlertConfigXml.SelectSingleNode("//config/assignments/assignment[@Owner='$($assignmentGroup.Item2)']")
+    $nodeSelectionQuery = "//config/assignments/assignment[@Name='$($assignmentGroup.Item1)'][@Owner='$($assignmentGroup.Item2)']"
+    $assignmentNode = $assignAlertConfigXml.SelectSingleNode($nodeSelectionQuery)
 
     if ( -not $assignmentNode )
     {
@@ -113,7 +114,7 @@ foreach ( $assignmentGroup in $assignmentGroups )
             $managementPackNode = $assignAlertConfigXml.CreateElement('ManagementPack')
             $managementPackNode.SetAttribute('Name',$managementPack)
             $managementPackNode.SetAttribute('enabled','true')
-            $managementPackNode = $assignAlertConfigXml.SelectSingleNode("//config/assignments/assignment[@Owner='$($assignmentGroup.Item2)']").AppendChild($managementPackNode)
+            $managementPackNode = $assignAlertConfigXml.SelectSingleNode($nodeSelectionQuery).AppendChild($managementPackNode)
         }
     }
 }
