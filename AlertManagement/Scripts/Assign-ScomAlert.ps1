@@ -131,14 +131,15 @@ foreach ( $newAlert in $newAlerts )
 
 	#region Determine Alert Owner
 	$searchStrings = @(
-		"//config/exceptions/exception[AlertName='$alertName' and @enabled='true']"
-		"//config/rules/rule[managementPackName='$mpName' and @enabled='true']"
+		"//config/exceptions/exception[@enabled='true']/Alert[@Name='$alertName']/parent::exception"
+		"//config/exceptions/exception[@enabled='true']/ManagementPack[@Name='$mpName']/parent::exception"
+		"//config/assignments/assignment[@enabled='true']/ManagementPack[@Name='$mpName']/parent::assignment"
 	)
 
 	foreach ( $searchString in $searchStrings )
 	{
 		$assignmentRule = $config.SelectSingleNode($searchString) |
-		Where-Object -FilterScript { $newAlert.($_.AlertProperty) -match "$($newAlert.($_.AlertProperty))" }
+		Where-Object -FilterScript { $newAlert.($_.Alert.AlertProperty) -match "$($newAlert.($_.Alert.AlertPropertyMatches))" }
 
 		if ( $assignmentRule )
 		{
@@ -147,11 +148,7 @@ foreach ( $newAlert in $newAlerts )
 		}
 	}
 
-	if ( $assignmentRule )
-	{
-		$assignedTo = $assignmentRule.Owner
-	}
-	else
+	if ( -not $assignedTo )
 	{
 		$assignedTo = $DefaultOwner
 		$message = "`nNo assignment rule found for an alert.`nManagement Pack: $mpName`nAlert: $alertName"

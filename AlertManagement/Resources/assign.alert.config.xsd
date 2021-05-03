@@ -43,9 +43,6 @@
           <xs:complexType>
             <xs:sequence>
               <xs:element name="assignment" maxOccurs="unbounded" minOccurs="0">
-                <xs:annotation>
-                  <xs:documentation>ASSIGNMENTS: Management Pack</xs:documentation>
-                </xs:annotation>
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="ManagementPack" maxOccurs="unbounded" minOccurs="0">
