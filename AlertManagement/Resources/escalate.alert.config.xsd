@@ -1,0 +1,78 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="config">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="alertStormRules">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="stormRule" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:byte" name="Sequence"/>
+                    <xs:element type="xs:string" name="Property"/>
+                    <xs:element type="xs:string" name="Criteria"/>
+                    <xs:element type="xs:byte" name="Count"/>
+                    <xs:element type="xs:byte" name="Window"/>
+                    <xs:element type="xs:byte" name="NewResolutionState"/>
+                    <xs:element type="xs:string" name="Comment"/>
+                    <xs:element type="xs:string" name="SendNotification"/>
+                    <xs:element type="xs:string" name="NotificationRecipients"/>
+                  </xs:sequence>
+                  <xs:attribute type="xs:string" name="name" use="optional"/>
+                  <xs:attribute type="xs:string" name="enabled" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="rules">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="rule" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="Category"/>
+                    <xs:element type="xs:string" name="Description"/>
+                    <xs:element type="xs:byte" name="Sequence"/>
+                    <xs:element type="xs:string" name="Criteria"/>
+                    <xs:element type="xs:short" name="NewResolutionState"/>
+                    <xs:element type="xs:short" name="LastModifiedAge" minOccurs="0"/>
+                    <xs:element type="xs:short" name="TimeRaisedAge" minOccurs="0"/>
+                    <xs:element type="xs:string" name="PostPipelineFilter"/>
+                    <xs:element type="xs:string" name="Comment"/>
+                  </xs:sequence>
+                  <xs:attribute type="xs:string" name="name" use="optional"/>
+                  <xs:attribute type="xs:string" name="enabled" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="exceptions">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="exception" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType mixed="true">
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="Category"/>
+                    <xs:element type="xs:string" name="Description" minOccurs="0"/>
+                    <xs:element type="xs:byte" name="Sequence"/>
+                    <xs:element type="xs:string" name="Criteria"/>
+                    <xs:element type="xs:short" name="NewResolutionState"/>
+                    <xs:element type="xs:short" name="TimeRaisedAge"/>
+                    <xs:element type="xs:string" name="PostPipelineFilter"/>
+                    <xs:element type="xs:string" name="Comment"/>
+                    <xs:element type="xs:string" name="CheckHealth" minOccurs="0"/>
+                  </xs:sequence>
+                  <xs:attribute type="xs:string" name="name" use="optional"/>
+                  <xs:attribute type="xs:string" name="enabled" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute type="xs:float" name="version"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

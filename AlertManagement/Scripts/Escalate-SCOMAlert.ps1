@@ -107,8 +107,15 @@ function Optimize-PostPipelineFilter
 # Get the config file object to ensure it exists
 $configurationFile = Get-Item -Path $ConfigFile -ErrorAction Stop
 
+# Get the config file schema
+$configurationFileSchema = Get-Item -Path '$FileResource[Name="SCOM.Alert.Management.EscalateAlertConfigSchema"]/Path$' -ErrorAction Stop
+
 # RETRIEVE CONFIGURATION FILE WITH RULES AND EXCEPTIONS
 $config = [System.Xml.XmlDocument] ( Get-Content -Path $configurationFile.FullName )
+
+# Validate the schema
+$config.Schemas.Add('',$configurationFileSchema.FullName) > $null
+$config.Validate($null)
 
 #region Update Type Data
 
@@ -393,7 +400,6 @@ foreach ( $exception in $alertExceptions )
             }
         }
     }
-    
 
     # Reset variables
     $variables = @(
