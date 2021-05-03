@@ -378,14 +378,19 @@ foreach ( $exception in $alertExceptions )
     # UPDATE MATCHING ALERTS TO NEW RESOLUTION STATE
     if ( $alerts.Count -gt 0 )
     {
-        $alerts | Set-SCOMAlert -ResolutionState $newResolutionState -Comment $Comment
-        $alertCount = $alerts.Count
+        # Make sure the alert resolution state does need updated
+        $alertsToUpdate = $alerts | Where-Object -FilterScript { $_.ResolutionState -ne $newResolutionState }
 
-        if ($debug)
+        if ( $alertsToUpdate.Count -gt 0 )
         {
-            $message = "`nUpdated $alertCount alert(s) to resolution state $newResolutionState `nException: $name"
-            $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-            Write-Debug -Message $message
+            $alertsToUpdate | Set-SCOMAlert -ResolutionState $newResolutionState -Comment $Comment
+
+            if ($debug)
+            {
+                $message = "`nUpdated $($alertsToUpdate.Count) alert(s) to resolution state $newResolutionState `nException: $name"
+                $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+                Write-Debug -Message $message
+            }
         }
     }
     
@@ -447,14 +452,18 @@ foreach ($rule in $alertRules)
     # UPDATE MATCHING ALERTS TO NEW RESOLUTION STATE
     if ($alerts.Count -gt 0)
     {
-        $alerts | Set-SCOMAlert -ResolutionState $newResolutionState -Comment $Comment
-        $alertCount = $alerts.Count
+        # Make sure the alert resolution state does need updated
+        $alertsToUpdate = $alerts | Where-Object -FilterScript { $_.ResolutionState -ne $newResolutionState }
 
-        if ($debug)
+        if ( $alertsToUpdate.Count -gt 0 )
         {
-            $message = "`nUpdated $alertCount alert(s) to resolution state $newResolutionState `nRule: $name `n$criteria"
-            $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-            Write-Debug -Message $message
+            $alertsToUpdate | Set-SCOMAlert -ResolutionState $newResolutionState -Comment $Comment
+            if ($debug)
+            {
+                $message = "`nUpdated $($alerts.Count) alert(s) to resolution state $newResolutionState `nRule: $name `n$criteria"
+                $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+                Write-Debug -Message $message
+            }
         }
     }
 
