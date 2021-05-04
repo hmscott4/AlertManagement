@@ -102,7 +102,7 @@ foreach ( $managementPack in $managementPacks)
             # Figure out the ID
             $id = (
                 $assignAlertConfigXml.config.assignments.assignment.ID |
-                ForEach-Object -Process { [System.Int32]::Parse($_) } |
+                ForEach-Object -Process { if ( $_ ) { [System.Int32]::Parse($_) } } |
                 Sort-Object -Descending |
                 Select-Object -First 1
             ) + 1
