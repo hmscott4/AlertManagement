@@ -40,7 +40,7 @@ jobs:
 
       # Create a release of the management pack
       - name: Generate Release
-        if: github.ref == 'refs/heads/main'
+        if: ( github.ref == 'refs/heads/main' ) && ( github.repository_owner == 'hmscott4' )
         uses: softprops/action-gh-release@v1
         with:
           name: v${{ env.Version }}
@@ -52,7 +52,7 @@ jobs:
 
       # Create a beta release of the management pack
       - name: Generate Beta Release
-        if: github.ref == 'refs/heads/dev'
+        if: ( github.ref == 'refs/heads/dev' ) && ( github.repository_owner == 'hmscott4' )
         uses: softprops/action-gh-release@v1
         with:
           name: v${{ env.Version }}
