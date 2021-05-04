@@ -5,7 +5,7 @@
     <RootNamespace>SCOM.Alert.Management</RootNamespace>
     <Name>SCOM.Alert.Management</Name>
     <ManagementPackName>SCOM.Alert.Management</ManagementPackName>
-    <Version>1.5.42.128</Version>
+    <Version>1.5.43.129</Version>
     <MpFrameworkVersion>v7.0.2</MpFrameworkVersion>
     <MpFrameworkProfile>OM</MpFrameworkProfile>
     <ProductVersion>1.1.0.0</ProductVersion>
