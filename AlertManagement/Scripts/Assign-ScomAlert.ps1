@@ -64,18 +64,17 @@ function Format-xPathExpression
 		$Value
 	)
 
-    if ($Value.Contains("'"))
-    {
-	   return "\$Value\"
-    }
-    elseif ($Value.Contains('\'))
-    {
-	   return """$Value"""
-    }
-    else
-    {
-       return $Value;
-    }
+	$charactersToReplace = @{
+		"'" = '&quot;'
+		'\' = '\\'
+	}
+
+	foreach ( $characterToReplace in $charactersToReplace.GetEnumerator() )
+	{
+		$Value = $Value.Replace($characterToReplace.Key, $characterToReplace.Value)
+	}
+
+    return $Value
 }
 
 # Get the config file object to ensure it exists
