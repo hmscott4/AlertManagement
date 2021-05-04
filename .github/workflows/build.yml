@@ -1,0 +1,63 @@
+name: Build Management Pack
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request
+  push:
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+
+    # Specify the version of Windows
+    runs-on: windows-latest
+
+    steps:
+      # Checkout the repo  
+      - uses: actions/checkout@v2
+      
+      # Execute the build PowerShell script
+      - name: Execute build script
+        shell: powershell
+        run: .\Build\build.ps1
+
+      - name: Check In Version Updates
+        uses: EndBug/add-and-commit@v7
+        with:
+          message: 'Updated version'
+          add: './AlertManagement/*.mpproj*'
+
+      # Upload the management pack files as artifacts
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Alert Management
+          path: AlertManagement/bin/Release/*.mpb
+
+      # Create a release of the management pack
+      - name: Generate Release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: v${{ env.Version }}
+          tag_name: v${{ env.Version }}
+          prerelease: false
+          files: AlertManagement.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create a beta release of the management pack
+      - name: Generate Beta Release
+        if: github.ref == 'refs/heads/dev'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: v${{ env.Version }}
+          tag_name: v${{ env.Version }}
+          prerelease: true
+          files: AlertManagement.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

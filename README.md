@@ -1,32 +1,21 @@
-# AlertManagement
+# Alert Management
 
-##Management Pack for Alert Workflow
+The **Alert Management** SCOM management pack is a tool for managing alerts throughout their lifecycle. This helps organizations automatically process alerts and allows them to ignore alerts which do not need looked at yet.
 
-1. Includes owner assignment of alert based on Management Pack and custom rules (configurable).
-2. Includes configuration for handling alert storms
+## Production Release
 
-## Basic Workflow
-The following table summarizes the basic alert workflow using the management pack:
-------------------------------------------------------------------------
-| Old State | New State | Comment                                      |
-|:---------:|:---------:|:---------------------------------------------|
-| 0         | 5         | Owner assigned to alert; updated every minute|
-| 5         | 247       | Rule-based alerts updated to "Awaiting Evidence"|
-| 5         | 15        | Monitor-based alerts updated to "Verified"   |
-| 0,5       | 18        | Alerts updated to "Alert Storm" based on count.|
-| 247       | 15        | Rule-based alerts updated to "Verified" if repeat count increases.|
------------------------------------------------------------------------
+[Latest Release](https://github.com/hmscott4/AlertManagement/releases/latest/download/AlertManagement.zip)
 
-0=New
-5=Owner Assigned
-15=Verified
-18=Alert Storm
+[Documentation](https://github.com/hmscott4/AlertManagement/wiki)
 
-## Custom Resolution States
-Requires the following custom Alert Resolution States:
-------------------------------------------------------------------------
-| State | Description    | Notes                                       |
-|:-----:|:---------------|:--------------------------------------------|
-|   5   | Owner Assigned | Transient Alert State; persists < 5 minutes |
-|  15   | Verified       | Persistent Alert State; the new "New"       |
-|  18   | Alert Storm    | Persistent Alert State                      |
+## Pre-Release
+
+[Latest Pre-Release](https://github.com/hmscott4/AlertManagement/releases)
+
+[Pre-Release Documentation](https://github.com/hmscott4/AlertManagement/blob/dev/AlertManagement/WikiSource/Home.md)
+
+## Current Build
+
+[Current Build](AlertManagement/actions/workflows/build.yml)
+
+[Current Build Documentation](WikiSource/Home.md)

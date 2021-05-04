@@ -1,0 +1,168 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TypeDefinitions>
+    <ModuleTypes>
+      <DataSourceModuleType ID="SCOM.Alert.Management.Escalate.Rule.DataSource" Accessibility="Public" Batching="false">
+        <Configuration>
+          <IncludeSchemaTypes>
+            <SchemaType>System!System.ExpressionEvaluatorSchema</SchemaType>
+          </IncludeSchemaTypes>
+          <xsd:element name="IntervalSeconds" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="SyncTime" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="IntervalSeconds" Selector="$Config/IntervalSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="SyncTime" Selector="$Config/SyncTime$" ParameterType="string" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="DS" TypeID="System!System.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval Unit="Seconds">$Config/IntervalSeconds$</Interval>
+                    <SyncTime>$Config/SyncTime$</SyncTime>
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+            </MemberModules>
+            <Composition>
+              <Node ID="DS" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.TriggerData</OutputType>
+      </DataSourceModuleType>
+      <WriteActionModuleType ID="SCOM.Alert.Management.Escalate.Rule.WriteAction" Accessibility="Internal" Batching="false">
+        <Configuration>
+          <xsd:element minOccurs="1" name="TimeoutSeconds" type="xsd:integer" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="ConfigFile" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="StormTicketPrefix" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="StormTicketDateFormat" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element minOccurs="1" name="DebugLogging" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="TimeoutSeconds" Selector="$Config/TimeoutSeconds$" ParameterType="int" />
+          <OverrideableParameter ID="ConfigFile" Selector="$Config/ConfigFile$" ParameterType="string" />
+          <OverrideableParameter ID="StormTicketPrefix" Selector="$Config/StormTicketPrefix$" ParameterType="string" />
+          <OverrideableParameter ID="StormTicketDateFormat" Selector="$Config/StormTicketDateFormat$" ParameterType="string" />
+          <OverrideableParameter ID="DebugLogging" Selector="$Config/DebugLogging$" ParameterType="bool" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <WriteAction ID="WA" TypeID="Windows!Microsoft.Windows.PowerShellWriteAction">
+                <ScriptName>Escalate-ScomAlert.ps1</ScriptName>
+                <ScriptBody>$IncludeFileContent/Scripts/Escalate-ScomAlert.ps1$</ScriptBody>
+                <Parameters>
+                  <Parameter>
+                    <Name>ConfigFile</Name>
+                    <Value>$Config/ConfigFile$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>StormTicketPrefix</Name>
+                    <Value>$Config/StormTicketPrefix$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>StormTicketDateFormat</Name>
+                    <Value>$Config/StormTicketDateFormat$</Value>
+                  </Parameter>
+                  <Parameter>
+                    <Name>DebugLogging</Name>
+                    <Value>$Config/DebugLogging$</Value>
+                  </Parameter>
+                </Parameters>
+                <TimeoutSeconds>$Config/TimeoutSeconds$</TimeoutSeconds>
+              </WriteAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="WA" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.BaseData</OutputType>
+        <InputType>System!System.BaseData</InputType>
+      </WriteActionModuleType>
+    </ModuleTypes>
+  </TypeDefinitions>
+  <Monitoring>
+    <Rules>
+      <Rule ID="SCOM.Alert.Management.Escalate.Rule" Enabled="false" Target="SC!Microsoft.SystemCenter.AllManagementServersPool" ConfirmDelivery="false" Remotable="true" Priority="Normal" DiscardLevel="100">
+        <Category>Custom</Category>
+        <DataSources>
+          <DataSource ID="Scheduler" TypeID="SCOM.Alert.Management.Escalate.Rule.DataSource">
+            <IntervalSeconds>300</IntervalSeconds>
+            <SyncTime></SyncTime>
+          </DataSource>
+        </DataSources>
+        <WriteActions>
+          <WriteAction ID="WA" TypeID="SCOM.Alert.Management.Escalate.Rule.WriteAction">
+            <TimeoutSeconds>240</TimeoutSeconds>
+            <ConfigFile>ENTER PATH TO ESCALATE.ALERT.CONFIG FILE HERE</ConfigFile>
+            <StormTicketPrefix>STORM: </StormTicketPrefix>
+            <StormTicketDateFormat>yyyyMMddhhmm</StormTicketDateFormat>
+            <DebugLogging>false</DebugLogging>
+          </WriteAction>
+        </WriteActions>
+      </Rule>
+    </Rules>
+  </Monitoring>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule">
+          <Name>Escalate SCOM Alerts</Name>
+          <Description>Set the resolution state on alerts based on the defined criteria.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource">
+          <Name>Escalate SCOM Alert Timed Scheduler</Name>
+          <Description>The scheduler which executes the Escalate SCOM Alert rule.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="IntervalSeconds">
+          <Name>Interval Seconds</Name>
+          <Description>The frequency in which to execute the rule.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.DataSource" SubElementID="SyncTime">
+          <Name>Sync Time</Name>
+          <Description>The time on which to synchronize the start time of the rule.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction">
+          <Name>Escalate SCOM Alert Script</Name>
+          <Description>Execute the Escalate-ScomAlert.ps1 script.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="TimeoutSeconds">
+          <Name>Timeout Seconds</Name>
+          <Description>The length of time (in seconds) to wait for the script to complete.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="ConfigFile">
+          <Name>Configuration File</Name>
+          <Description>The full path to the configuration file which contains the rules the Escalate SCOM Alerts script will process.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="StormTicketPrefix">
+          <Name>Storm Ticket Prefix</Name>
+          <Description>The beginning of the string which is in the "Ticket ID" field of alerts involved in an alert storm.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="StormTicketDateFormat">
+          <Name>Storm Ticket Date Format</Name>
+          <Description>The format of the date string which is in the "Ticket ID" field of alerts involved in an alert storm.</Description>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Escalate.Rule.WriteAction" SubElementID="DebugLogging">
+          <Name>Debug Logging</Name>
+          <Description>Write debug logs to the Operations Manager log.</Description>
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles>
+        <KnowledgeArticle ElementID="SCOM.Alert.Management.Escalate.Rule" Visible="true">
+          <MamlContent>
+            <maml:section xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
+              <maml:title>Summary</maml:title>
+              <maml:para>
+                Manages the resolution state of the alerts based on the rules in the configuration file.
+              </maml:para>
+            </maml:section>
+          </MamlContent>
+        </KnowledgeArticle>
+      </KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>
