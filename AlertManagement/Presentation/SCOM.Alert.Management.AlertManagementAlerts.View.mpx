@@ -1,13 +1,12 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Presentation>
     <Views>
-      <View ID="SCOM.Alert.Management.AlertManagementAlerts.View" Accessibility="Internal" Enabled="true" Target="Windows!Microsoft.Windows.Server.OperatingSystem" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
+      <View ID="SCOM.Alert.Management.AlertManagementAlerts.View" Accessibility="Internal" Enabled="true" Target="SCOM.Alert.Management.ManagementServer" TypeID="SC!Microsoft.SystemCenter.AlertViewType" Visible="true">
         <Category>Alert</Category>
         <Criteria>
           <ResolutionState>
             <StateRange Operator="NotEquals">255</StateRange>
           </ResolutionState>
-          <CustomField1>Alert Management</CustomField1>
         </Criteria>
         <Presentation>
           <ColumnInfo Index="1" SortIndex="-1" Width="30" Grouped="false" Sorted="false" IsSortable="true" Visible="true" SortOrder="Ascending">
