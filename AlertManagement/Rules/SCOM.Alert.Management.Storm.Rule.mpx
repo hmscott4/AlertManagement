@@ -1,7 +1,7 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Monitoring>
     <Rules>
-      <Rule ID="SCOM.Alert.Management.Storm.Rule" Enabled="true" Target="Windows!Microsoft.Windows.Server.OperatingSystem" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
+      <Rule ID="SCOM.Alert.Management.Storm.Rule" Enabled="true" Target="SCOM.Alert.Management.ManagementServer" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
         <Category>Alert</Category>
         <DataSources>
           <DataSource ID="DS" TypeID="SCOM.AlertManagement.Storm.Rule.DataSource">
@@ -29,8 +29,7 @@
               <SuppressionValue>$Data/Property[@Name='AlertName']$</SuppressionValue>
               <SuppressionValue>$Data/Property[@Name='AlertDescription']$</SuppressionValue>
             </Suppression>
-            <!--Specify custom attribute 1 to allow the alert to show up in the Alerts view-->
-            <Custom1>Alert Management</Custom1>
+            <Custom1 />
             <Custom2 />
             <Custom3 />
             <Custom4 />

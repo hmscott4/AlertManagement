@@ -57,6 +57,7 @@
     <Folder Include="Monitors" />
     <Folder Include="Discoveries" />
     <Folder Include="DataSources" />
+    <Folder Include="Classes" />
     <Folder Include="Resources" />
     <Folder Include="Presentation" />
     <Folder Include="Scripts" />
@@ -64,7 +65,13 @@
     <Folder Include="Rules" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\SCOM.Alert.Management.ManagementServer.mpx">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DataSources\SCOM.AlertManagement.Storm.Rule.DataSource.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Discoveries\SCOM.Alert.Management.ManagementServer.Discovery.mpx">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ManagementPack.mpx">
