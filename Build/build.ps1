@@ -47,6 +47,7 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 		$projectUserFile = Get-ChildItem -Path $projectFile.Directory -Filter *.mpproj.user
 		$projectUserFileXml = [System.Xml.XmlDocument] ( $projectUserFile | Get-Content )
 		$nextVersion = [System.Version]::new($projectUserFileXml.Project.PropertyGroup.DeploymentNextVersion)
+		Write-Verbose -Message "Current Management Pack Version: $($nextVersion.ToString())"
 		
 		# Break out the version components to make it easier to work with
 		$nextVersionMajor = $nextVersion.Major
@@ -54,17 +55,21 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 		$nextVersionBuild = $nextVersion.Build
 		$nextVersionRevision = $nextVersion.Revision
 
-		# Increment the minor version
-		if ( ( $env:GITHUB_REF -match '^refs/heads/dev' ) -and $env:GITHUB_HEAD_REF -and $env:GITHUB_BASE_REF )
+		Write-Verbose -Message "Branch: $env:GITHUB_REF"
+		switch -Regex ( $env:GITHUB_REF )
 		{
-			$nextVersionMinor++
-		}
+			# Increment the minor version
+			'^refs/heads/dev'
+			{
+				$nextVersionMinor++
+			}
 
-		# Increment the major version
-		if ( ( $env:GITHUB_REF -match '^refs/heads/main' ) -and $env:GITHUB_HEAD_REF -and $env:GITHUB_BASE_REF )
-		{
-			$nextVersionMajor++
-			$nextVersionMinor = 0
+			# Increment the major version
+			'^refs/heads/main'
+			{
+				$nextVersionMajor++
+				$nextVersionMinor = 0
+			}
 		}
 
 		# Increment the build
@@ -72,7 +77,7 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 
 		# Create the new version
 		$newVersion = [System.Version]::new($nextVersionMajor,$nextVersionMinor,$nextVersionBuild,$nextVersionRevision)
-		Write-Verbose -Message "Management Pack Version: $($newVersion.ToString())"
+		Write-Verbose -Message "New Management Pack Version: $($newVersion.ToString())"
 
 		# Set the next management pack version in the project file
 		$projectFileXml = [System.Xml.XmlDocument] ( $projectFile | Get-Content )
