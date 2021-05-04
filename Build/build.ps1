@@ -1,10 +1,6 @@
 # Set the verbose preference
 $VerbosePreference = 'Continue'
 
-Write-Verbose -Message "GITHUB_REF: $env:GITHUB_REF"
-Write-Verbose -Message "GITHUB_HEAD_REF: $env:GITHUB_HEAD_REF"
-Write-Verbose -Message "GITHUB_BASE_REF: $env:GITHUB_BASE_REF"
-
 # Download the System Center Visual Studio Authoring Extensions (VSAE)
 $invokeWebRequestParams = @{
 	Uri = 'https://download.microsoft.com/download/4/4/6/446B60D0-4409-4F94-9433-D83B3746A792/VisualStudioAuthoringConsole_x64.msi'
@@ -59,17 +55,21 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 		$nextVersionBuild = $nextVersion.Build
 		$nextVersionRevision = $nextVersion.Revision
 
-		# Increment the minor version
-		if ( ( $env:GITHUB_REF -match '^refs/heads/dev' ) -and $env:GITHUB_HEAD_REF -and $env:GITHUB_BASE_REF )
+		Write-Verbose -Message "Branch: $env:GITHUB_REF"
+		switch -Regex ( $env:GITHUB_REF )
 		{
-			$nextVersionMinor++
-		}
+			# Increment the minor version
+			'^refs/heads/dev'
+			{
+				$nextVersionMinor++
+			}
 
-		# Increment the major version
-		if ( ( $env:GITHUB_REF -match '^refs/heads/main' ) -and $env:GITHUB_HEAD_REF -and $env:GITHUB_BASE_REF )
-		{
-			$nextVersionMajor++
-			$nextVersionMinor = 0
+			# Increment the major version
+			'^refs/heads/main'
+			{
+				$nextVersionMajor++
+				$nextVersionMinor = 0
+			}
 		}
 
 		# Increment the build
