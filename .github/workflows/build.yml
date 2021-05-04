@@ -16,6 +16,11 @@ jobs:
     # Specify the version of Windows
     runs-on: windows-latest
 
+    if: |
+      ( ( github.ref == 'refs/heads/main' ) && ( github.repository == 'hmscott4/AlertManagement' ) ) ||
+      ( ( github.ref == 'refs/heads/dev' ) && ( github.repository == 'hmscott4/AlertManagement' ) ) ||
+      ( ( github.ref != 'refs/heads/main' ) && ( github.ref != 'refs/heads/dev' ) )
+
     steps:
       # Checkout the repo  
       - uses: actions/checkout@v2
