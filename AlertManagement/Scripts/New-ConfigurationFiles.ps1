@@ -100,7 +100,12 @@ foreach ( $managementPack in $managementPacks)
         if ( -not $assignmentNode )
         {
             # Figure out the ID
-            $id = [System.Int32] ( $assignAlertConfigXml.config.assignments.assignment.ID | Sort-Object -Descending | Select-Object -First 1 ) + 1
+            $id = (
+                $assignAlertConfigXml.config.assignments.assignment.ID |
+                ForEach-Object -Process { [System.Int32]::Parse($_) } |
+                Sort-Object -Descending |
+                Select-Object -First 1
+            ) + 1
 
             # Create the assignment node
             $assignmentNode = $assignAlertConfigXml.CreateElement('assignment')
