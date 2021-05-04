@@ -42,8 +42,6 @@ Declare an alert storm when 10 or more alerts with the same name are generated o
   <Window>5</Window>
   <NewResolutionState>18</NewResolutionState>
   <Comment><![CDATA[Alert updated by the alert automation: Alert Storm]]></Comment>
-  <SendNotification>N</SendNotification>
-  <NotificationRecipients>dan.reist@microsoft.com</NotificationRecipients>
 </stormRule>
 ```
 
@@ -60,8 +58,6 @@ Declare an alert storm when 10 or more alerts with the same monitoring object ID
   <Window>5</Window>
   <NewResolutionState>18</NewResolutionState>
   <Comment><![CDATA[Alert updated by the alert automation: Alert Storm]]></Comment>
-  <SendNotification>N</SendNotification>
-  <NotificationRecipients>dan.reist@microsoft.com</NotificationRecipients>
 </stormRule>
 ```
 
@@ -153,5 +149,5 @@ Close _Power Shell Script failed to run_ alerts if the repeat count is less than
   <PostPipelineFilter>$_.RepeatCount -lt 10</PostPipelineFilter>
   <Comment><![CDATA[Alert updated by the alert automation: Closed]]></Comment>
   <CheckHealth>true</CheckHealth>
-        </exception>
+</exception>
 ```
