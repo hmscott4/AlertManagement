@@ -18,7 +18,9 @@ The **Alert Management** SCOM management pack is a tool for managing alerts thro
 
 ### Current Build
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/hmscott4/AlertManagement/Build%20Management%20Pack?label=Current%20Build)](AlertManagement/actions/workflows/build.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/hmscott4/AlertManagement/Build%20Management%20Pack?label=Current%20Build)](../../../AlertManagement/actions/workflows/build.yml)
+
+https://github.com/hmscott4/AlertManagement/actions/workflows/build.yml
 
 [![Current Build Documentation](https://img.shields.io/badge/Current%20Build-Documentation-blue)](WikiSource/Home.md)
 
