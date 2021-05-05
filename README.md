@@ -8,13 +8,13 @@ The **Alert Management** SCOM management pack is a tool for managing alerts thro
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/hmscott4/AlertManagement?label=Alert%20Management)](https://github.com/hmscott4/AlertManagement/releases/latest/download/AlertManagement.zip)
 
-[![Alert Management](https://img.shields.io/badge/Alert%20Management-Documentation-blue)](https://github.com/hmscott4/AlertManagement/blob/dev/AlertManagement/WikiSource/Home.md)
+[![Alert Management](https://img.shields.io/badge/Alert%20Management-Documentation-blue)](https://github.com/hmscott4/AlertManagement/wiki)
 
-### Pre-Release
+### Preview Release
 
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/hmscott4/AlertManagement?include_prereleases&label=Alert%20Management%20Preview)](https://github.com/hmscott4/AlertManagement/releases)
 
-[![Pre-Release](https://img.shields.io/badge/Alert%20Management%20Preview-Documentation-blue)](https://github.com/hmscott4/AlertManagement/blob/dev/AlertManagement/WikiSource/Home.md)
+[![Alert Management Preview](https://img.shields.io/badge/Alert%20Management%20Preview-Documentation-blue)](https://github.com/hmscott4/AlertManagement/blob/dev/WikiSource/Home.md)
 
 ### Current Build
 
