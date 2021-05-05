@@ -4,18 +4,18 @@ The **Alert Management** SCOM management pack is a tool for managing alerts thro
 
 ## Production Release
 
-[Latest Release](https://github.com/hmscott4/AlertManagement/releases/latest/download/AlertManagement.zip)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/hmscott4/AlertManagement?label=Alert%20Management)](https://github.com/hmscott4/AlertManagement/releases/latest/download/AlertManagement.zip)
 
-[Documentation](https://github.com/hmscott4/AlertManagement/wiki)
+[![Alert Management](https://img.shields.io/badge/Alert%20Management-Documentation-blue)](https://github.com/hmscott4/AlertManagement/blob/dev/AlertManagement/WikiSource/Home.md)
 
 ## Pre-Release
 
-[Latest Pre-Release](https://github.com/hmscott4/AlertManagement/releases)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/hmscott4/AlertManagement?include_prereleases&label=Alert%20Management%20Preview)](https://github.com/hmscott4/AlertManagement/releases)
 
-[Pre-Release Documentation](https://github.com/hmscott4/AlertManagement/blob/dev/AlertManagement/WikiSource/Home.md)
+[![Pre-Release](https://img.shields.io/badge/Pre--Release-Documentation-blue)](https://github.com/hmscott4/AlertManagement/blob/dev/AlertManagement/WikiSource/Home.md)
 
 ## Current Build
 
-[Current Build](AlertManagement/actions/workflows/build.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/hmscott4/AlertManagement/Build%20Management%20Pack?label=Current%20Build)](AlertManagement/actions/workflows/build.yml)
 
-[Current Build Documentation](WikiSource/Home.md)
+[![Current Build Documentation](https://img.shields.io/badge/Current%20Build-Documentation-blue)](WikiSource/Home.md)
