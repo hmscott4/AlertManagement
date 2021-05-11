@@ -1,0 +1,89 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Monitoring>
+    <Rules>
+      <Rule ID="SCOM.Alert.Management.Storm.Rule" Enabled="true" Target="SCOM.Alert.Management.ManagementServer" ConfirmDelivery="true" Remotable="true" Priority="Normal" DiscardLevel="100">
+        <Category>Alert</Category>
+        <DataSources>
+          <DataSource ID="DS" TypeID="SCOM.AlertManagement.Storm.Rule.DataSource">
+            <LogName>Operations Manager</LogName>
+            <EventID>9933</EventID>
+            <EventSource>Health Service Script</EventSource>
+            <DebugLogging>false</DebugLogging>
+          </DataSource>
+        </DataSources>
+        <WriteActions>
+          <WriteAction ID="Alert" TypeID="Health!System.Health.GenerateAlert">
+            <Priority>$Data/Property[@Name='AlertPriority']$</Priority>
+            <!-- 0=Low, 1=Medium, 2=High -->
+            <Severity>$Data/Property[@Name='AlertSeverity']$</Severity>
+            <!-- 0=Information, 1=Warning, 2=Critical -->
+            <AlertName />
+            <AlertDescription />
+            <AlertOwner />
+            <AlertMessageId>$MPElement[Name="SCOM.Alert.Management.Storm.Rule.AlertMessage"]$</AlertMessageId>
+            <AlertParameters>
+              <AlertParameter1>$Data/Property[@Name='AlertName']$</AlertParameter1>
+              <AlertParameter2>$Data/Property[@Name='AlertDescription']$</AlertParameter2>
+            </AlertParameters>
+            <Suppression>
+              <SuppressionValue>$Data/Property[@Name='AlertName']$</SuppressionValue>
+              <SuppressionValue>$Data/Property[@Name='AlertDescription']$</SuppressionValue>
+            </Suppression>
+            <Custom1 />
+            <Custom2 />
+            <Custom3 />
+            <Custom4 />
+            <Custom5 />
+            <Custom6 />
+            <Custom7 />
+            <Custom8 />
+            <Custom9 />
+            <Custom10 />
+          </WriteAction>
+        </WriteActions>
+      </Rule>
+    </Rules>
+  </Monitoring>
+  <Presentation>
+    <StringResources>
+      <StringResource ID="SCOM.Alert.Management.Storm.Rule.AlertMessage" />
+    </StringResources>
+  </Presentation>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="SCOM.Alert.Management.Storm.Rule">
+          <Name>Alert Storm Detection Rule</Name>
+        </DisplayString>
+        <DisplayString ElementID="SCOM.Alert.Management.Storm.Rule.AlertMessage">
+          <Name>Alert Storm Detected: {0}</Name>
+          <Description>{1}</Description>
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles>
+        <KnowledgeArticle ElementID="SCOM.Alert.Management.Storm.Rule" Visible="true">
+          <MamlContent>
+            <maml:section xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
+              <maml:title>Summary</maml:title>
+              <maml:para>
+                Raises an alert when an alert storm is detected. The raised alert combines the alerts involved in the storm into a single alert.
+              </maml:para>
+            </maml:section>
+            <maml:section xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
+              <maml:title>Causes</maml:title>
+              <maml:para>
+                An alert is raised for many different monitoring instances over a short period of time. This is generally caused by a major failure in the infrastructure or configuration of the environment.
+              </maml:para>
+            </maml:section>
+            <maml:section xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
+              <maml:title>Resolutions</maml:title>
+              <maml:para>
+                Investigate the alerts and resolve the underlying infrastructure or configuration issues.
+              </maml:para>
+            </maml:section>
+          </MamlContent>
+        </KnowledgeArticle>
+      </KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>

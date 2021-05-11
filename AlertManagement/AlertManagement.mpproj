@@ -2,10 +2,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <ProjectGuid>{90586037-a07c-47fe-a15d-083f9d28aab4}</ProjectGuid>
-    <RootNamespace>AlertManagement</RootNamespace>
-    <Name>AlertManagement</Name>
-    <ManagementPackName>AlertManagement</ManagementPackName>
-    <Version>1.0.0.0</Version>
+    <RootNamespace>SCOM.Alert.Management</RootNamespace>
+    <Name>SCOM.Alert.Management</Name>
+    <ManagementPackName>SCOM.Alert.Management</ManagementPackName>
+    <Version>1.13.61.148</Version>
     <MpFrameworkVersion>v7.0.2</MpFrameworkVersion>
     <MpFrameworkProfile>OM</MpFrameworkProfile>
     <ProductVersion>1.1.0.0</ProductVersion>
@@ -13,53 +13,152 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
-    <GenerateSealed>false</GenerateSealed>
+    <GenerateSealed>True</GenerateSealed>
     <Company>MyCompany</Company>
     <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
-    <DelaySigning>false</DelaySigning>
-    <AssemblyOriginatorKeyFile />
+    <DelaySigning>False</DelaySigning>
+    <AssemblyOriginatorKeyFile>..\Build\AlertManagement.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>false</DebugSymbols>
     <OutputPath>bin\Release\</OutputPath>
-    <DelaySigning>false</DelaySigning>
+    <DelaySigning>False</DelaySigning>
     <Company>MyCompany</Company>
     <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>..\Build\AlertManagement.snk</AssemblyOriginatorKeyFile>
+    <GenerateSealed>True</GenerateSealed>
   </PropertyGroup>
   <ItemGroup>
     <ManagementPackReference Include="Microsoft.SystemCenter.Library">
+      <HintPath>C:\Program Files (x86)\System Center Visual Studio Authoring Extensions\References\OM2016\Microsoft.SystemCenter.Library.mp</HintPath>
       <Alias>SC</Alias>
-      <PackageToBundle>false</PackageToBundle>
+      <MinVersion>7.0.8437.0</MinVersion>
+      <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
     <ManagementPackReference Include="Microsoft.Windows.Library">
       <Alias>Windows</Alias>
-      <PackageToBundle>false</PackageToBundle>
+      <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
     <ManagementPackReference Include="System.Health.Library">
       <Alias>Health</Alias>
-      <PackageToBundle>false</PackageToBundle>
+      <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
     <ManagementPackReference Include="System.Library">
       <Alias>System</Alias>
-      <PackageToBundle>false</PackageToBundle>
+      <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
     <ManagementPackReference Include="Microsoft.SystemCenter.Visualization.Library">
       <Alias>Visualization</Alias>
-      <PackageToBundle>false</PackageToBundle>
+      <PackageToBundle>False</PackageToBundle>
     </ManagementPackReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Monitors" />
     <Folder Include="Discoveries" />
+    <Folder Include="DataSources" />
+    <Folder Include="Classes" />
+    <Folder Include="Resources" />
+    <Folder Include="Presentation" />
+    <Folder Include="Scripts" />
     <Folder Include="Tasks" />
     <Folder Include="Rules" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Rules\AlertAssignment.mpx">
+    <Compile Include="Classes\SCOM.Alert.Management.ManagementServer.mpx">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DataSources\SCOM.AlertManagement.Storm.Rule.DataSource.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Discoveries\SCOM.Alert.Management.ManagementServer.Discovery.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ManagementPack.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.AlertManagementAlerts.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.AlertsByStatus.Folder.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.AlertStorm.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.AssignedAlerts.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.AwaitingEvidence.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.Folder.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.NewAlerts.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.RootManagementServer.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.UnassignedAlerts.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\SCOM.Alert.Management.Verified.View.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\SCOM.Alert.Management.AssignAlertConfigSchema.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\SCOM.Alert.Management.EscalateAlertConfig.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\SCOM.Alert.Management.EscalateAlertConfigSchema.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rules\SCOM.Alert.Management.Assign.Rule.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rules\SCOM.Alert.Management.Error.Rule.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rules\SCOM.Alert.Management.Escalate.Rule.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rules\SCOM.Alert.Management.Storm.Rule.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rules\SCOM.Alert.Management.Unassigned.Rule.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tasks\SCOM.Alert.Management.AddResolutionStates.Task.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tasks\SCOM.Alert.Management.NewConfigurationFiles.Task.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\Add-ResolutionStates.ps1" />
+    <EmbeddedResource Include="Scripts\Assign-ScomAlert.ps1" />
+    <EmbeddedResource Include="Scripts\New-ConfigurationFiles.ps1" />
+    <EmbeddedResource Include="Scripts\Escalate-ScomAlert.ps1" />
+    <EmbeddedResource Include="Scripts\Invoke-ProcessStormEvent.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\escalate.alert.config">
+      <SubType>Content</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\assign.alert.config.xsd">
+      <SubType>Content</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\escalate.alert.config.xsd">
+      <SubType>Content</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
 </Project>

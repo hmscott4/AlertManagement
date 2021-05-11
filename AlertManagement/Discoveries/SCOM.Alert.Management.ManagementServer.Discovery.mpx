@@ -1,0 +1,81 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Monitoring>
+    <Discoveries>
+      <Discovery ID="SCOM.Alert.Management.ManagementServer.Discovery" Enabled="true" Target="SC!Microsoft.SystemCenter.ManagementServer" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+        <Category>Discovery</Category>
+        <DiscoveryTypes>
+          <DiscoveryClass TypeID="SCOM.Alert.Management.ManagementServer" />
+        </DiscoveryTypes>
+        <DataSource ID="DS" TypeID="Windows!Microsoft.Windows.FilteredRegistryDiscoveryProvider">
+          <ComputerName>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</ComputerName>
+          <RegistryAttributeDefinitions>
+            <RegistryAttributeDefinition>
+              <AttributeName>ServerRegKeyExists</AttributeName>
+              <Path>SOFTWARE\Microsoft\Microsoft Operations Manager\3.0\Server Management Groups</Path>
+              <PathType>0</PathType>
+              <!-- 0=regKey 1=regValue -->
+              <AttributeType>0</AttributeType>
+              <!-- 0=CheckIfExists (Boolean) 1=treat data as (String) 2=treat data as (Integer) -->
+            </RegistryAttributeDefinition>
+            <RegistryAttributeDefinition>
+              <AttributeName>OSName</AttributeName>
+              <Path>SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProductName</Path>
+              <PathType>1</PathType>
+              <!-- 0=regKey 1=regValue -->
+              <AttributeType>1</AttributeType>
+              <!-- 0=CheckIfExists (Boolean) 1=treat data as (String) 2=treat data as (Integer) -->
+            </RegistryAttributeDefinition>
+          </RegistryAttributeDefinitions>
+          <Frequency>172800</Frequency>
+          <ClassId>$MPElement[Name="SCOM.Alert.Management.ManagementServer"]$</ClassId>
+          <InstanceSettings>
+            <Settings>
+              <Setting>
+                <Name>$MPElement[Name="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Name>
+                <Value>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Value>
+              </Setting>
+              <Setting>
+                <Name>$MPElement[Name="System!System.Entity"]/DisplayName$</Name>
+                <Value>$Target/Host/Property[Type="Windows!Microsoft.Windows.Computer"]/PrincipalName$</Value>
+              </Setting>
+            </Settings>
+          </InstanceSettings>
+          <Expression>
+            <SimpleExpression>
+              <ValueExpression>
+                <XPathQuery Type="Boolean">Values/ServerRegKeyExists</XPathQuery>
+                <!-- Common options for XPathQuery Type are "Boolean" "String" "Integer" "Double" -->
+              </ValueExpression>
+              <Operator>Equal</Operator>
+              <!-- Common options for SimpleExpression Operator are "Equal" "NotEqual" "Greater" "Less" "GreaterEqual" "LessEqual" "Like" "NotLike" -->
+              <ValueExpression>
+                <Value Type="Boolean">true</Value>
+                <!-- Common options for XPathQuery Type are "Boolean" "String" "Integer" "Double" -->
+              </ValueExpression>
+            </SimpleExpression>
+          </Expression>
+        </DataSource>
+      </Discovery>
+    </Discoveries>
+  </Monitoring>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="SCOM.Alert.Management.ManagementServer.Discovery">
+          <Name>SCOM Alert Management Management Server Discovery</Name>
+          <Description>Discovers the computers which function as a SCOM management server.</Description>
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles>
+        <KnowledgeArticle ElementID="SCOM.Alert.Management.ManagementServer.Discovery" Visible="true">
+          <MamlContent>
+            <maml:section xmlns:maml="http://schemas.microsoft.com/maml/2004/10">
+              <maml:title>Summary</maml:title>
+              <maml:para>This discovers the computers which function as a SCOM management server.</maml:para>
+            </maml:section>
+          </MamlContent>
+        </KnowledgeArticle>
+      </KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>

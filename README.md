@@ -1,32 +1,31 @@
-# AlertManagement
+# Alert Management
 
-##Management Pack for Alert Workflow
+The **Alert Management** SCOM management pack is a tool for managing alerts throughout their lifecycle. This helps organizations automatically process alerts and allows them to ignore alerts which do not need looked at yet.
 
-1. Includes owner assignment of alert based on Management Pack and custom rules (configurable).
-2. Includes configuration for handling alert storms
+## Releases
 
-## Basic Workflow
-The following table summarizes the basic alert workflow using the management pack:
-------------------------------------------------------------------------
-| Old State | New State | Comment                                      |
-|:---------:|:---------:|:---------------------------------------------|
-| 0         | 5         | Owner assigned to alert; updated every minute|
-| 5         | 247       | Rule-based alerts updated to "Awaiting Evidence"|
-| 5         | 15        | Monitor-based alerts updated to "Verified"   |
-| 0,5       | 18        | Alerts updated to "Alert Storm" based on count.|
-| 247       | 15        | Rule-based alerts updated to "Verified" if repeat count increases.|
------------------------------------------------------------------------
+### Production Release
 
-0=New
-5=Owner Assigned
-15=Verified
-18=Alert Storm
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/hmscott4/AlertManagement?label=Alert%20Management)](../../../AlertManagement/releases/latest/download/AlertManagement.zip)
 
-## Custom Resolution States
-Requires the following custom Alert Resolution States:
-------------------------------------------------------------------------
-| State | Description    | Notes                                       |
-|:-----:|:---------------|:--------------------------------------------|
-|   5   | Owner Assigned | Transient Alert State; persists < 5 minutes |
-|  15   | Verified       | Persistent Alert State; the new "New"       |
-|  18   | Alert Storm    | Persistent Alert State                      |
+[![Alert Management](https://img.shields.io/badge/Alert%20Management-Documentation-blue)](../../../AlertManagement/wiki)
+
+### Preview Release
+
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/hmscott4/AlertManagement?include_prereleases&label=Alert%20Management%20Preview)](../../../AlertManagement/releases)
+
+[![Alert Management Preview](https://img.shields.io/badge/Alert%20Management%20Preview-Documentation-blue)](../../../AlertManagement/blob/dev/WikiSource/Home.md)
+
+### Current Build
+
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/hmscott4/AlertManagement/Build%20Management%20Pack?label=Current%20Build)](../../../AlertManagement/actions/workflows/build.yml)
+
+[![Current Build Documentation](https://img.shields.io/badge/Current%20Build-Documentation-blue)](WikiSource/Home.md)
+
+## Development
+
+The following tools were used to develop this solution:
+
+- [Visual Studio 2019](https://docs.microsoft.com/visualstudio/ide/?view=vs-2019)
+- [System Center Visual Studio Authoring Extensions](https://www.microsoft.com/download/details.aspx?id=30169)
+- [Visual Studio Code](https://code.visualstudio.com/)
