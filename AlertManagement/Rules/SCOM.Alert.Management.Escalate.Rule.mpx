@@ -99,8 +99,8 @@
           <WriteAction ID="WA" TypeID="SCOM.Alert.Management.Escalate.Rule.WriteAction">
             <TimeoutSeconds>240</TimeoutSeconds>
             <ConfigFile>ENTER PATH TO ESCALATE.ALERT.CONFIG FILE HERE</ConfigFile>
-            <StormTicketPrefix>STORM: </StormTicketPrefix>
-            <StormTicketDateFormat>yyyyMMddhhmm</StormTicketDateFormat>
+            <StormTicketPrefix>STORM:</StormTicketPrefix>
+            <StormTicketDateFormat>yyyyMMddHHmm</StormTicketDateFormat>
             <DebugLogging>false</DebugLogging>
           </WriteAction>
         </WriteActions>
