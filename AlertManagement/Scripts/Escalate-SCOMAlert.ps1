@@ -20,7 +20,7 @@ param
 
 # Gather the start time of the script
 $startTime = Get-Date
-$whoami = whoami
+$whoami = "$($env:USERDNSDOMAIN)\$($env:USERNAME)"
 
 $debug = [System.Boolean]::Parse($DebugLogging)
 $parameterString = $PSBoundParameters.GetEnumerator() | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" }
