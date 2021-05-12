@@ -5,12 +5,19 @@
         <ClassType ID="SCOM.Alert.Management.ManagementServer" Accessibility="Public" Abstract="false" Base="Windows!Microsoft.Windows.LocalApplication" Hosted="true" Singleton="false" Extension="false"></ClassType>
       </ClassTypes>
     </EntityTypes>
+    <SecureReferences>
+      <SecureReference ID="Microsoft.OpsMgr.AlertManagement.RunasProfile" Accessibility="Public" />
+    </SecureReferences>
   </TypeDefinitions>
   <LanguagePacks>
     <LanguagePack ID="ENU" IsDefault="true">
       <DisplayStrings>
         <DisplayString ElementID="SCOM.Alert.Management.ManagementServer">
           <Name>SCOM Alert Management Management Server</Name>
+        </DisplayString>
+        <DisplayString ElementID="Microsoft.OpsMgr.AlertManagement.RunasProfile">
+          <Name>SCOM Alert Management Run As Profile</Name>
+          <Description>Profile used in the Alert Management rules for Assigning Alerts and Routing Alerts through workflows.  Use a Windows account.  Account has been tested as SCOM Administrator, but should also work with Advanced Operator (with a global profile).  Account will also need read/write permissions to file share where configuraiton files are stored.</Description>
         </DisplayString>
       </DisplayStrings>
     </LanguagePack>

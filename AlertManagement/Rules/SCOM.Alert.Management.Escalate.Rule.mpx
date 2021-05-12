@@ -1,7 +1,7 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <TypeDefinitions>
     <ModuleTypes>
-      <DataSourceModuleType ID="SCOM.Alert.Management.Escalate.Rule.DataSource" Accessibility="Public" Batching="false">
+      <DataSourceModuleType ID="SCOM.Alert.Management.Escalate.Rule.DataSource" Accessibility="Public" Batching="false" RunAs="Microsoft.OpsMgr.AlertManagement.RunasProfile">
         <Configuration>
           <IncludeSchemaTypes>
             <SchemaType>System!System.ExpressionEvaluatorSchema</SchemaType>
@@ -99,8 +99,8 @@
           <WriteAction ID="WA" TypeID="SCOM.Alert.Management.Escalate.Rule.WriteAction">
             <TimeoutSeconds>240</TimeoutSeconds>
             <ConfigFile>ENTER PATH TO ESCALATE.ALERT.CONFIG FILE HERE</ConfigFile>
-            <StormTicketPrefix>STORM: </StormTicketPrefix>
-            <StormTicketDateFormat>yyyyMMddhhmm</StormTicketDateFormat>
+            <StormTicketPrefix>STORM:</StormTicketPrefix>
+            <StormTicketDateFormat>yyyyMMddHHmm</StormTicketDateFormat>
             <DebugLogging>false</DebugLogging>
           </WriteAction>
         </WriteActions>

@@ -1,7 +1,7 @@
 ﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <TypeDefinitions>
     <ModuleTypes>
-      <DataSourceModuleType ID="SCOM.Alert.Management.Assign.Rule.DataSource" Accessibility="Public" Batching="false">
+      <DataSourceModuleType ID="SCOM.Alert.Management.Assign.Rule.DataSource" Accessibility="Public" Batching="false" RunAs="Microsoft.OpsMgr.AlertManagement.RunasProfile">
         <Configuration>
           <IncludeSchemaTypes>
             <SchemaType>System!System.ExpressionEvaluatorSchema</SchemaType>

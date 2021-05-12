@@ -22,8 +22,15 @@ jobs:
       ( ( github.ref != 'refs/heads/main' ) && ( github.ref != 'refs/heads/dev' ) )
 
     steps:
-      # Checkout the repo  
-      - uses: actions/checkout@v2
+      - name: Checkout Repo for hmscott4
+        uses: actions/checkout@v2
+        if: github.repository == 'hmscott4/AlertManagement'
+        with:
+          github-token: ${{ secrets.AM_REPO_BUILD }}
+
+      - name: Checkout Repo for everybody else
+        uses: actions/checkout@v2
+        if: github.repository != 'hmscott4/AlertManagement'
       
       # Execute the build PowerShell script
       - name: Execute build script

@@ -3,8 +3,9 @@ name: Publish Wiki
 # Controls when the action will run. 
 on:
   # Triggers the workflow on pull request
-  #push:
-  pull_request:
+  push:
+    branches:
+      - main
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -15,9 +16,6 @@ jobs:
 
     # Specify the version of Windows
     runs-on: windows-latest
-
-    # Only publish wiki when "main" is updated
-    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout AlertManagement
