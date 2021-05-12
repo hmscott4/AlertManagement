@@ -52,9 +52,37 @@ if ( $debug )
 $assignAlertConfigXml = [System.Xml.XmlDocument] @'
 <?xml version="1.0" encoding="utf-8"?>
 <config version="2.0">
-	<exceptions>
-	</exceptions>
+    <exceptions>
+    <!-- Use exceptions to assign alerts to owners when more granular control is needed -->
+    <!-- Exceptions should be ordered with the most narrow criteria first -->
+    <!-- Exceptions are always processed before "assignments" -->
+    <!-- Below are some sample exceptions which are disabled by default -->
+    <!--   To use these examples, update the "AlertPropertyMatches" node and set "enabled" to "true" -->
+	    <exception ID="10" Name="ServerOffline" Owner="EFG Windows Team" enabled="false">
+	      <Alert Name="Health Service Heartbeat Failure" >
+		    <AlertProperty>MonitoringObjectDisplayName</AlertProperty>
+		    <AlertPropertyMatches>efg\.lcl</AlertPropertyMatches>
+	      </Alert>
+	    </exception>
+	    <exception ID="20" Name="ServerOffline" Owner="EFG Windows Team" enabled="false">
+	      <Alert Name="Failed to Connect to Computer" >
+		    <AlertProperty>MonitoringObjectDisplayName</AlertProperty>
+		    <AlertPropertyMatches>efg\.lcl</AlertPropertyMatches>
+	      </Alert>
+	    </exception>
+	    <exception ID="30" Name="ServerOffline" Owner="Windows Team" enabled="false">
+	      <Alert Name="Health Service Heartbeat Failure" />
+	    </exception>
+	    <exception ID="40" Name="Failed to Connect to Computer" Owner="Windows Team" enabled="false">
+	      <Alert Name="Failed to Connect to Computer" />
+	    </exception>
+    </exceptions>
 	<assignments>
+    <!-- Use assignments to update Alert Ownership based on Management Pack -->
+    <!-- A default configuration is prepared for you based on the management packs installed in your MG -->
+    <!-- To update an assignment rule, move the entry with the management pack name to another owner -->
+    <!-- To disable assignment for a particular group of management packs, set "enabled" to "false" -->
+    <!-- Assignments are processed after exceptions -->
 	</assignments>
 </config>
 '@
