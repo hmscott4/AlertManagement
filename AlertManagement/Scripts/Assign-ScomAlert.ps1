@@ -24,6 +24,7 @@ param
 
 # Gather the start time of the script
 $startTime = Get-Date
+$whoami = "$($env:USERDNSDOMAIN)\$($env:USERNAME)"
 
 $debug = [System.Boolean]::Parse($DebugLogging)
 $parameterString = $PSBoundParameters.GetEnumerator() | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" }
@@ -190,7 +191,7 @@ $scriptTime = ($EndTime - $StartTime).TotalSeconds
 
 if ( $debug )
 {
-    $message = "`n Script Completed. `n Script Runtime: ($scriptTime) seconds."
+    $message = "`n Script Completed. `n Script Runtime: ($scriptTime) seconds.`n Executed as: $whoami."
     $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
     Write-Debug -Message $message
 }
