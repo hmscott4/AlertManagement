@@ -50,7 +50,7 @@ trap
 # Log script event that we are starting task
 if ($debug)
 {
-    $message = "`nScript is starting. $parameterString"
+    $message = "`nScript is starting. `nExecuted as: $whoami. $parameterString"
     $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
     Write-Debug -Message $message
 }
