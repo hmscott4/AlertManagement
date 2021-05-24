@@ -1,75 +1,89 @@
 name: Build Management Pack
 
-# Controls when the action will run. 
+# Run when a pull request is closed
 on:
-  push:
+  pull_request:
     branches:
-      - '**'        # matches every branch
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    types: [closed]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
+    # Only run when a pull request is merged to dev or main
+    if: |
+      ( github.event.pull_request.merged == true ) &&
+      (
+         ( github.base_ref == 'main' ) ||
+         ( github.base_ref == 'dev' )
+      )
 
     # Specify the version of Windows
     runs-on: windows-latest
 
-    if: |
-      ( ( github.ref == 'refs/heads/main' ) && ( github.repository == 'hmscott4/AlertManagement' ) ) ||
-      ( ( github.ref == 'refs/heads/dev' ) && ( github.repository == 'hmscott4/AlertManagement' ) ) ||
-      ( ( github.ref != 'refs/heads/main' ) && ( github.ref != 'refs/heads/dev' ) )
-
     steps:
-      - name: Checkout Repo for hmscott4
+      # Check out the repository the pull request in merging into (dev/main)
+      - name: Checkout Base Repo
         uses: actions/checkout@v2
-        if: github.repository == 'hmscott4/AlertManagement'
         with:
-          github-token: ${{ secrets.AM_REPO_BUILD }}
+          ref: ${{ github.event.pull_request.base.ref }}
+          path: base
 
-      - name: Checkout Repo for everybody else
+      - name: Checkout Head Repo
         uses: actions/checkout@v2
-        if: github.repository != 'hmscott4/AlertManagement'
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          path: head
       
       # Execute the build PowerShell script
       - name: Execute build script
+        if: |
+          ( github.base_ref == 'main' ) ||  
+          ( ( github.base_ref == 'dev' ) && ( github.head_ref != 'main' ) )
         shell: powershell
-        run: .\Build\build.ps1
-
-      - name: Check In Version Updates
-        uses: EndBug/add-and-commit@v7
-        with:
-          message: 'Updated version'
-          add: './AlertManagement/*.mpproj*'
+        run: .\head\Build\build.ps1
 
       # Upload the management pack files as artifacts
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Alert Management
-          path: AlertManagement/bin/Release/*.mpb
+          name: ${{ env.ManagementPackName }}
+          path: ${{ env.ArtifactFileName }}
 
       # Create a release of the management pack
       - name: Generate Release
-        if: ( github.ref == 'refs/heads/main' ) && ( github.repository == 'hmscott4/AlertManagement' )
+        if: github.base_ref == 'main'
         uses: softprops/action-gh-release@v1
         with:
           name: v${{ env.Version }}
           tag_name: v${{ env.Version }}
           prerelease: false
-          files: AlertManagement.zip
+          files: ${{ env.ArtifactFileName }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Create a beta release of the management pack
       - name: Generate Beta Release
-        if: ( github.ref == 'refs/heads/dev' ) && ( github.repository == 'hmscott4/AlertManagement' )
+        if: github.base_ref == 'dev'
         uses: softprops/action-gh-release@v1
         with:
           name: v${{ env.Version }}
           tag_name: v${{ env.Version }}
           prerelease: true
-          files: AlertManagement.zip
+          files: ${{ env.ArtifactFileName }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Open a pull request for dev <- main
+      - name: Open pull to commit into dev from main
+        if: ( github.base_ref == 'main' ) && ( github.head_ref == 'dev' )
+        uses: peter-evans/create-pull-request@v3
+        with:
+          path: head
+          commit-message: Update dev version to v${{ env.Version }}
+          committer: GitHub Actions Bot <noreply@github.com>
+          author: GitHub Actions Bot <noreply@github.com>
+          branch: main
+          delete-branch: false
+          base: dev
+          title: Rebase dev
+          body: Update dev to v${{ env.Version }} from main.
