@@ -40,7 +40,7 @@ jobs:
           ( github.base_ref == 'main' ) ||  
           ( ( github.base_ref == 'dev' ) && ( github.head_ref != 'main' ) )
         shell: powershell
-        run: .\head\Build\build.ps1
+        run: .\base\Build\build.ps1
 
       # Upload the management pack files as artifacts
       - name: Upload Artifacts
