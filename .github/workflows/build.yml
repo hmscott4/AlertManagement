@@ -25,6 +25,7 @@ jobs:
       - name: Checkout Base Repo
         uses: actions/checkout@v2
         with:
+          github-token: ${{ secrets.AM_REPO_BUILD }}
           ref: ${{ github.event.pull_request.base.ref }}
           path: base
 
