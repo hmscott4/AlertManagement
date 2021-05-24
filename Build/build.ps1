@@ -133,7 +133,7 @@ foreach ( $solution in $solutions )
 
 	if ( -not $releaseFile )
 	{
-		throw 'No management pack files found in ".\base\*\*\bin\Release\*"'
+		throw 'No management pack files found in ".\base\*\bin\Release\*"'
 	}
 	else
 	{
