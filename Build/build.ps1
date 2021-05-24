@@ -114,7 +114,7 @@ foreach ( $solution in $solutions )
 	}
 
 	# Verify the management pack files were created
-	$buildFiles = Get-ChildItem -Path .\base\*\*\bin\Release\*
+	$buildFiles = Get-ChildItem -Path .\base\*\bin\Release\*
 	Write-Verbose -Message ( "Management Pack Files:`n  {0}" -f ( $buildFiles.FullName -join "`n  " ) )
 
 	# Find the relevant file to release
