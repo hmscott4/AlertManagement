@@ -22,18 +22,19 @@ jobs:
 
     steps:
       # Check out the repository the pull request in merging into (dev/main)
-      - name: Checkout Base Repo
-        uses: actions/checkout@v2
-        with:
-          github-token: ${{ secrets.AM_REPO_BUILD }}
-          ref: ${{ github.event.pull_request.base.ref }}
-          path: base
-
-      #- name: Checkout Head Repo
+      #- name: Checkout Base Repo
       #  uses: actions/checkout@v2
       #  with:
-      #    ref: ${{ github.event.pull_request.head.ref }}
-      #    path: head
+      #    github-token: ${{ secrets.AM_REPO_BUILD }}
+      #    ref: ${{ github.event.pull_request.base.sha }}
+      #    path: base
+
+      - name: Checkout Head Repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          path: head
       
       # Execute the build PowerShell script
       - name: Execute build script
@@ -41,7 +42,7 @@ jobs:
           ( github.base_ref == 'main' ) ||  
           ( ( github.base_ref == 'dev' ) && ( github.head_ref != 'main' ) )
         shell: powershell
-        run: .\base\Build\build.ps1
+        run: .\head\Build\build.ps1
 
       # Upload the management pack files as artifacts
       - name: Upload Artifacts
