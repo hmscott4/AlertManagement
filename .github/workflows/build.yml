@@ -28,11 +28,11 @@ jobs:
           ref: ${{ github.event.pull_request.base.ref }}
           path: base
 
-      - name: Checkout Head Repo
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          path: head
+      #- name: Checkout Head Repo
+      #  uses: actions/checkout@v2
+      #  with:
+      #    ref: ${{ github.event.pull_request.head.ref }}
+      #    path: head
       
       # Execute the build PowerShell script
       - name: Execute build script
