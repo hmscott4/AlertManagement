@@ -1,6 +1,9 @@
 # Set the verbose preference
 $VerbosePreference = 'Continue'
 
+Write-Verbose -Message "GITHUB_BASE_REF: $($env:GITHUB_BASE_REF)"
+Write-Verbose -Message "GITHUB_HEAD_REF: $($env:GITHUB_HEAD_REF)"
+
 # Download the System Center Visual Studio Authoring Extensions (VSAE)
 $invokeWebRequestParams = @{
 	Uri = 'https://download.microsoft.com/download/4/4/6/446B60D0-4409-4F94-9433-D83B3746A792/VisualStudioAuthoringConsole_x64.msi'
@@ -18,7 +21,10 @@ msiexec /quiet /i $vsaeMsiFile.FullName
 $vsWherePath = Join-Path -Path ( Join-Path -Path ( Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath 'Microsoft Visual Studio' ) -ChildPath Installer ) -ChildPath vswhere.exe
 Write-Verbose -Message "vswhere.exe path: $vsWherePath"
 
-foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
+$solutions = Get-ChildItem -Path head -Filter *.sln -Recurse
+Write-Verbose -Message ( "Solution Files: `n  {0}" -f ( $solutions.FullName -join "`n  " ) )
+
+foreach ( $solution in $solutions )
 {
 	# Get the Visual Studio version from the solution file
 	$solutionFileContent = $solution | Get-Content
@@ -41,8 +47,13 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 	$msBuildExe = Get-Item -Path ( Join-Path -Path $vsinfo.installationPath -ChildPath 'MSBuild\Current\Bin\MSBuild.exe' ) -ErrorAction Stop
 	Write-Verbose -Message "MSBuild.exe path: $($msBuildExe.FullName)"
 
-	foreach ( $projectFile in ( Get-ChildItem -Filter *.mpproj -Recurse ) )
+	foreach ( $projectFile in ( Get-ChildItem -Path $solution.Directory -Filter *.mpproj -Recurse ) )
 	{
+		$projectFileXml = [System.Xml.XmlDocument] ( $projectFile | Get-Content )
+		$managementPackName = $projectFileXml.Project.PropertyGroup | Where-Object -Property Name -NE 'PropertyGroup' | Select-Object -ExpandProperty Name
+		Write-Output -InputObject "ManagementPackName=$managementPackName" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+		Write-Verbose -Message "Management Pack Name: $managementPackName"
+		
 		# Get the next management pack version from the user file
 		$projectUserFile = Get-ChildItem -Path $projectFile.Directory -Filter *.mpproj.user
 		$projectUserFileXml = [System.Xml.XmlDocument] ( $projectUserFile | Get-Content )
@@ -55,18 +66,20 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 		$nextVersionBuild = $nextVersion.Build
 		$nextVersionRevision = $nextVersion.Revision
 
-		Write-Verbose -Message "Branch: $env:GITHUB_REF"
-		switch -Regex ( $env:GITHUB_REF )
+		Write-Verbose -Message "Branch: $env:GITHUB_BASE_REF"
+		switch -Regex ( $env:GITHUB_BASE_REF )
 		{
 			# Increment the minor version
-			'^refs/heads/dev'
+			'^dev'
 			{
+				$commitComment = 'Incrementing minor version'
 				$nextVersionMinor++
 			}
 
 			# Increment the major version
-			'^refs/heads/main'
+			'^main'
 			{
+				$commitComment = 'Incrementing major version'
 				$nextVersionMajor++
 				$nextVersionMinor = 0
 			}
@@ -101,17 +114,44 @@ foreach ( $solution in ( Get-ChildItem -Filter *.sln ) )
 	}
 
 	# Verify the management pack files were created
-	$releaseFiles = Get-ChildItem -Path .\AlertManagement\bin\Release | Where-Object -FilterScript { $_.Extension -match 'mpb' }
-	if ( -not $releaseFiles )
+	$buildFiles = Get-ChildItem -Path .\head\*\*\bin\Release\*
+	Write-Verbose -Message ( "Management Pack Files:`n  {0}" -f ( $buildFiles.FullName -join "`n  " ) )
+
+	# Find the relevant file to release
+	if ( $buildFiles.Extension -contains '.mpb' )
 	{
-		throw 'No management pack files found in ".\AlertManagement\bin\Release"'
+		$releaseFile = $buildFiles | Where-Object -Property Extension -EQ .mpb
+	}
+	elseif ( $buildFiles.Extension -contains '.mp' )
+	{
+		$releaseFile = $buildFiles | Where-Object -Property Extension -EQ .mp
+	}
+	else
+	{
+		$releaseFile = $buildFiles | Where-Object -Property Extension -EQ .xml
+	}
+
+	if ( -not $releaseFile )
+	{
+		throw 'No management pack files found in ".\head\*\*\bin\Release\*"'
 	}
 	else
 	{
 		# Return the version to GitHub
 		Write-Output -InputObject "Version=$($newVersion.ToString())" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-		# Zip up the management pack files
-		Compress-Archive -Path $releaseFiles.FullName -Destination AlertManagement.zip
+		# Create the file name
+		Write-Output -InputObject "ArtifactFileName=$($releaseFile.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 	}
+
+	# Commit the version update to the reference repo
+	Push-Location
+	Set-Location -Path head
+	git config user.name "GitHub Actions Bot"
+	git config user.email "<>"
+	git add $projectFile.FullName
+	git add $projectUserFile.FullName
+	git commit -m $commitComment
+	git push
+	Pop-Location
 }
