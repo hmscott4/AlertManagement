@@ -21,7 +21,7 @@ msiexec /quiet /i $vsaeMsiFile.FullName
 $vsWherePath = Join-Path -Path ( Join-Path -Path ( Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath 'Microsoft Visual Studio' ) -ChildPath Installer ) -ChildPath vswhere.exe
 Write-Verbose -Message "vswhere.exe path: $vsWherePath"
 
-$solutions = Get-ChildItem -Path base -Filter *.sln -Recurse
+$solutions = Get-ChildItem -Path Head -Filter *.sln -Recurse
 Write-Verbose -Message ( "Solution Files: `n  {0}" -f ( $solutions.FullName -join "`n  " ) )
 
 foreach ( $solution in $solutions )
@@ -114,7 +114,7 @@ foreach ( $solution in $solutions )
 	}
 
 	# Verify the management pack files were created
-	$buildFiles = Get-ChildItem -Path .\base\*\bin\Release\*
+	$buildFiles = Get-ChildItem -Path .\head\*\bin\Release\*
 	Write-Verbose -Message ( "Management Pack Files:`n  {0}" -f ( $buildFiles.FullName -join "`n  " ) )
 
 	# Find the relevant file to release
@@ -133,7 +133,7 @@ foreach ( $solution in $solutions )
 
 	if ( -not $releaseFile )
 	{
-		throw 'No management pack files found in ".\base\*\bin\Release\*"'
+		throw 'No management pack files found in ".\head\*\bin\Release\*"'
 	}
 	else
 	{
@@ -146,9 +146,9 @@ foreach ( $solution in $solutions )
 
 	# Commit the version update to the reference repo
 	Push-Location
-	Set-Location -Path base
+	Set-Location -Path head
 	git config user.name "GitHub Actions Bot"
-	git config user.email "<>"
+	git config user.email "<noreply@github.com>"
 	git add $projectFile.FullName
 	git add $projectUserFile.FullName
 	git commit -m $commitComment
