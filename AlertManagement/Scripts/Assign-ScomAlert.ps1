@@ -131,8 +131,10 @@ foreach ( $newAlert in $newAlerts )
 
 	#region Determine Alert Owner
 	$searchStrings = @(
-		"//config/exceptions/exception[@enabled='true']/Alert[@Name='$alertName']/parent::exception"
-		"//config/exceptions/exception[@enabled='true']/ManagementPack[@Name='$mpName']/parent::exception"
+		"//config/exceptions/exception[@enabled='true']/Alert[@Name='$alertName']/AlertProperty/ancestor::exception"
+		"//config/exceptions/exception[@enabled='true']/Alert[@Name='$alertName'][count(AlertProperty) = 0]/parent::exception"
+		"//config/exceptions/exception[@enabled='true']/ManagementPack[@Name='$mpName']/AlertProperty/ancestor::exception"
+		"//config/exceptions/exception[@enabled='true']/ManagementPack[@Name='$mpName'][count(AlertProperty) = 0]/parent::exception"
 		"//config/assignments/assignment[@enabled='true']/ManagementPack[@Name='$mpName']/parent::assignment"
 	)
 
