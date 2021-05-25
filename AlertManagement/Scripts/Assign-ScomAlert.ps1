@@ -145,7 +145,24 @@ foreach ( $newAlert in $newAlerts )
 
 		if ( $assignmentRule )
 		{
+            $ruleID = $assignmentRule.ID
+            $ruleName = $assignmentRule.Name
+            if($searchString -match "exception")
+            {
+                $assignmentType = "Exception"
+            }
+            else
+            {
+                $assignmentType = "Assignment"
+            }
 			$assignedTo = $assignmentRule.Owner
+
+            if ( $debug )
+            {
+	            $message = "Alert auto assigned to: $assignedTo. Type: $assignmentType; ID: $ruleID; Name: $ruleName."
+	            $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+	            Write-Debug -Message $message
+            }
 			break
 		}
 	}
@@ -153,6 +170,9 @@ foreach ( $newAlert in $newAlerts )
 	if ( -not $assignedTo )
 	{
 		$assignedTo = $DefaultOwner
+        $ruleID = ""
+        $ruleName = "None"
+        $assignmentType = "Default"
 		$message = "`nNo assignment rule found for an alert.`nManagement Pack: $mpName`nAlert: $alertName"
 		$momapi.LogScriptEvent($scriptName, $scriptEventID, 2, $message)
 		Write-Warning -Message $message
@@ -164,7 +184,7 @@ foreach ( $newAlert in $newAlerts )
 		Alert = $newAlert
 		Owner = $assignedTo
 		ResolutionState = $assignedResolutionState
-		Comment = "Alert automation assigned to: $assignedTo"
+		Comment = "Alert auto assigned to: $assignedTo. Type: $assignmentType; ID: $ruleID; Name: $ruleName."
 	}
 
 	# If the alert is assigned to the "default" owner, set the resolution state to the "Unassigned" value
