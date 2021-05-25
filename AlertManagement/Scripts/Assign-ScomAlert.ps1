@@ -102,7 +102,7 @@ if ($debug)
 }
 
 # Get all new alerts
-$newAlerts = Get-SCOMAlert -Criteria "ResolutionState <> 255 AND ( Owner IS NULL OR Owner = '$DefaultOwner')"
+$newAlerts = Get-SCOMAlert -Criteria "ResolutionState <> 255 AND ( Owner IS NULL OR Owner = '' OR Owner = '$DefaultOwner')"
 if ( $debug )
 {
 	$message = "$($newAlerts.Count) alert(s) found to process."
@@ -138,8 +138,8 @@ foreach ( $newAlert in $newAlerts )
 
 	foreach ( $searchString in $searchStrings )
 	{
-		$assignmentRule = $config.SelectSingleNode($searchString) |
-		Where-Object -FilterScript { $newAlert.($_.Alert.AlertProperty) -match "$($newAlert.($_.Alert.AlertPropertyMatches))" }
+		$assignmentRule = $config.SelectSingleNode($searchString) | 
+                        Where-Object -FilterScript { $newAlert.($_.Alert.AlertProperty) -match "$($_.Alert.AlertPropertyMatches)" }
 
 		if ( $assignmentRule )
 		{
