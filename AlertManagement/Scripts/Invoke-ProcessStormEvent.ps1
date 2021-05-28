@@ -81,11 +81,11 @@ $result = @{
 
 if ( $debug )
 {
-	$i = 0
-	$bagsString = $result | ForEach-Object -Process { $i++; $_.GetEnumerator() } | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" }
-	$message = "`nProperty bag values: $bagsString"
-	$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-	Write-Debug -Message $message
+    $i = 0
+    $bagsString = $result | ForEach-Object -Process { $i++; $_.GetEnumerator() } | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" }
+    $message = "`nProperty bag values: $bagsString"
+    $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+    Write-Debug -Message $message
 }
 
 # Create and fill the property bag
