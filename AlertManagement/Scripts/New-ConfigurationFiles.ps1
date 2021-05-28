@@ -58,32 +58,32 @@ $assignAlertConfigXml = [System.Xml.XmlDocument] @'
     <!-- Exceptions are always processed before "assignments" -->
     <!-- Below are some sample exceptions which are disabled by default -->
     <!--   To use these examples, update the "AlertPropertyMatches" node and set "enabled" to "true" -->
-	    <exception ID="10" Name="ServerOffline" Owner="EFG Windows Team" enabled="false">
-	      <Alert Name="Health Service Heartbeat Failure" >
-		    <AlertProperty>MonitoringObjectDisplayName</AlertProperty>
-		    <AlertPropertyMatches>efg\.lcl</AlertPropertyMatches>
-	      </Alert>
-	    </exception>
-	    <exception ID="20" Name="ServerOffline" Owner="EFG Windows Team" enabled="false">
-	      <Alert Name="Failed to Connect to Computer" >
-		    <AlertProperty>MonitoringObjectDisplayName</AlertProperty>
-		    <AlertPropertyMatches>efg\.lcl</AlertPropertyMatches>
-	      </Alert>
-	    </exception>
-	    <exception ID="30" Name="ServerOffline" Owner="Windows Team" enabled="false">
-	      <Alert Name="Health Service Heartbeat Failure" />
-	    </exception>
-	    <exception ID="40" Name="Failed to Connect to Computer" Owner="Windows Team" enabled="false">
-	      <Alert Name="Failed to Connect to Computer" />
-	    </exception>
+        <exception ID="10" Name="ServerOffline" Owner="EFG Windows Team" enabled="false">
+          <Alert Name="Health Service Heartbeat Failure" >
+            <AlertProperty>MonitoringObjectDisplayName</AlertProperty>
+            <AlertPropertyMatches>efg\.lcl</AlertPropertyMatches>
+          </Alert>
+        </exception>
+        <exception ID="20" Name="ServerOffline" Owner="EFG Windows Team" enabled="false">
+          <Alert Name="Failed to Connect to Computer" >
+            <AlertProperty>MonitoringObjectDisplayName</AlertProperty>
+            <AlertPropertyMatches>efg\.lcl</AlertPropertyMatches>
+          </Alert>
+        </exception>
+        <exception ID="30" Name="ServerOffline" Owner="Windows Team" enabled="false">
+          <Alert Name="Health Service Heartbeat Failure" />
+        </exception>
+        <exception ID="40" Name="Failed to Connect to Computer" Owner="Windows Team" enabled="false">
+          <Alert Name="Failed to Connect to Computer" />
+        </exception>
     </exceptions>
-	<assignments>
+    <assignments>
     <!-- Use assignments to update Alert Ownership based on Management Pack -->
     <!-- A default configuration is prepared for you based on the management packs installed in your MG -->
     <!-- To update an assignment rule, move the entry with the management pack name to another owner -->
     <!-- To disable assignment for a particular group of management packs, set "enabled" to "false" -->
     <!-- Assignments are processed after exceptions -->
-	</assignments>
+    </assignments>
 </config>
 '@
 
@@ -123,7 +123,7 @@ foreach ( $managementPack in $managementPacks)
     $mp = Get-SCOMManagementPack -Name $managementPack
     $monitorAlerts = Get-SCOMMonitor -ManagementPack $mp | Where-Object {$_.AlertSettings -ne $null}
     $ruleAlerts = Get-SCOMRule -ManagementPack $mp | Where-Object {$_.WriteActionCollection -match ""}
-    If(($monitorAlerts.Count) -gt 0 -and ($ruleAlerts.Count -gt 0))
+    If(($monitorAlerts.Count -gt 0) -and ($ruleAlerts.Count -gt 0))
     {
         foreach ( $assignmentGroup in $assignmentGroups )
         {
