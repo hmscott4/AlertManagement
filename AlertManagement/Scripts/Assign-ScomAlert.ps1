@@ -1,9 +1,9 @@
 [CmdletBinding()]
 param
 (
-    [Parameter(Mandatory = $true)]
-    [System.String]
-    $ConfigFile,
+	[Parameter(Mandatory = $true)]
+	[System.String]
+	$ConfigFile,
 
 	[Parameter()]
 	[System.String]
@@ -18,8 +18,8 @@ param
 	$DefaultOwner = 'Unassigned',
 
 	[Parameter()]
-    [System.String]
-    $DebugLogging = 'false'
+	[System.String]
+	$DebugLogging = 'false'
 )
 
 # Gather the start time of the script
@@ -32,7 +32,7 @@ $parameterString = $PSBoundParameters.GetEnumerator() | ForEach-Object -Process 
 # Enable Write-Debug without inquiry when debug is enabled
 if ($debug -or $DebugPreference -ne 'SilentlyContinue')
 {
-    $DebugPreference = 'Continue'
+	$DebugPreference = 'Continue'
 }
 
 $scriptName = 'Assign-ScomAlert.ps1'
@@ -43,17 +43,17 @@ $momapi = New-Object -comObject MOM.ScriptAPI
 
 trap
 {
-    $message = "`n $parameterString `n $($_.ToString())"
-    $momapi.LogScriptEvent($scriptName, $scriptEventID, 1, $message)
-    break
+	$message = "`n $parameterString `n $($_.ToString())"
+	$momapi.LogScriptEvent($scriptName, $scriptEventID, 1, $message)
+	break
 }
 
 # Log script event that we are starting task
 if ($debug)
 {
-    $message = "`nScript is starting. `nExecuted as: $whoami. $parameterString"
-    $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-    Write-Debug -Message $message
+	$message = "`nScript is starting. `nExecuted as: $whoami. $parameterString"
+	$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+	Write-Debug -Message $message
 }
 
 function Format-xPathExpression
@@ -75,7 +75,7 @@ function Format-xPathExpression
 		$Value = $Value.Replace($characterToReplace.Key, $characterToReplace.Value)
 	}
 
-    return $Value
+	return $Value
 }
 
 # Get the config file object to ensure it exists
@@ -96,9 +96,9 @@ $assignedResolutionState = Get-SCOMAlertResolutionState -Name $AssignedResolutio
 $unassignedResolutionState = Get-SCOMAlertResolutionState -Name $UnassignedResolutionStateName | Select-Object -ExpandProperty ResolutionState
 if ($debug)
 {
-    $message = "`nAssigned Resolution State: $assignedResolutionState `nUnassigned Resolution State: $unassignedResolutionState"
-    $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-    Write-Debug -Message $message
+	$message = "`nAssigned Resolution State: $assignedResolutionState `nUnassigned Resolution State: $unassignedResolutionState"
+	$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+	Write-Debug -Message $message
 }
 
 # Get all new alerts
@@ -130,39 +130,43 @@ foreach ( $newAlert in $newAlerts )
 	$alertName = Format-xPathExpression -Value $alertName
 
 	#region Determine Alert Owner
+	# Order of operation
+	# 1. Exception: Find by Alert Name with Alert Property
+	# 2. Exception: Find by Alert Name (without Property)
+	# 3. Exception: Find by Management Pack with Alert property
+	# 4. Assignment: Find by Management Pack
 	$searchStrings = @(
 		"//config/exceptions/exception[@enabled='true']/Alert[@Name='$alertName']/AlertProperty/ancestor::exception"
 		"//config/exceptions/exception[@enabled='true']/Alert[@Name='$alertName'][count(AlertProperty) = 0]/parent::exception"
 		"//config/exceptions/exception[@enabled='true']/ManagementPack[@Name='$mpName']/AlertProperty/ancestor::exception"
-		"//config/exceptions/exception[@enabled='true']/ManagementPack[@Name='$mpName'][count(AlertProperty) = 0]/parent::exception"
 		"//config/assignments/assignment[@enabled='true']/ManagementPack[@Name='$mpName']/parent::assignment"
 	)
 
 	foreach ( $searchString in $searchStrings )
 	{
 		$assignmentRule = $config.SelectSingleNode($searchString) | 
-                        Where-Object -FilterScript { $newAlert.($_.Alert.AlertProperty) -match "$($_.Alert.AlertPropertyMatches)" }
+						Where-Object -FilterScript { $newAlert.($_.Alert.AlertProperty) -match "$($_.Alert.AlertPropertyMatches)" }
 
 		if ( $assignmentRule )
 		{
-            $ruleID = $assignmentRule.ID
-            $ruleName = $assignmentRule.Name
-            if($searchString -match "exception")
-            {
-                $assignmentType = "Exception"
-            }
-            else
-            {
-                $assignmentType = "Assignment"
-            }
+			$ruleID = $assignmentRule.ID
+			$ruleName = $assignmentRule.Name
+			if($searchString -match 'exception')
+			{
+				$assignmentType = 'Exception'
+			}
+			else
+			{
+				$assignmentType = 'Assignment'
+			}
 			$assignedTo = $assignmentRule.Owner
 
-            if ( $debug )
-            {
-	            $message = "Alert auto assigned to: $assignedTo. Type: $assignmentType; ID: $ruleID; Name: $ruleName."
-	            $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-	            Write-Debug -Message $message
-            }
+			if ( $debug )
+			{
+				$message = "Alert auto assigned to: $assignedTo. Type: $assignmentType; ID: $ruleID; Name: $ruleName."
+				$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+				Write-Debug -Message $message
+			}
 			break
 		}
 	}
@@ -170,9 +174,9 @@ foreach ( $newAlert in $newAlerts )
 	if ( -not $assignedTo )
 	{
 		$assignedTo = $DefaultOwner
-        $ruleID = ""
-        $ruleName = "None"
-        $assignmentType = "Default"
+		$ruleID = ''
+		$ruleName = 'None'
+		$assignmentType = 'Default'
 		$message = "`nNo assignment rule found for an alert.`nManagement Pack: $mpName`nAlert: $alertName"
 		$momapi.LogScriptEvent($scriptName, $scriptEventID, 2, $message)
 		Write-Warning -Message $message
@@ -213,7 +217,7 @@ $scriptTime = ($EndTime - $StartTime).TotalSeconds
 
 if ( $debug )
 {
-    $message = "`n Script Completed. `n Script Runtime: ($scriptTime) seconds.`n Executed as: $whoami."
-    $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-    Write-Debug -Message $message
+	$message = "`n Script Completed. `n Script Runtime: ($scriptTime) seconds.`n Executed as: $whoami."
+	$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+	Write-Debug -Message $message
 }
