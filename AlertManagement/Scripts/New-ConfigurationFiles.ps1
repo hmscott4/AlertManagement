@@ -107,10 +107,10 @@ $assignmentGroups += [System.Tuple]::Create('Oracle','DBA Team','Oracle')
 $assignmentGroups += [System.Tuple]::Create('PKI','PKI Team','Certificate')
 $assignmentGroups += [System.Tuple]::Create('SharePoint','SharePoint Team','SharePoint')
 $assignmentGroups += [System.Tuple]::Create('SQL','DBA Team','SQL')
-$assignmentGroups += [System.Tuple]::Create('Unix','Linux Team','nix')
+$assignmentGroups += [System.Tuple]::Create('Unix','Linux Team','nix|Linux')
 $assignmentGroups += [System.Tuple]::Create('Virtualization','Virtualization Team','HyperV')
 $assignmentGroups += [System.Tuple]::Create('IIS','Web Team','InternetInformationServices')
-$assignmentGroups += [System.Tuple]::Create('Windows','Windows Team','Windows(\.Cluster|\.Server|Defender|\.MSDTC|\.FileServer|\.Library)|File\.Share')
+$assignmentGroups += [System.Tuple]::Create('Windows','Windows Team','Windows(\.Cluster|\.[2][0][0-9][0-9]\.Cluster|\.Server|Defender|\.MSDTC|\.FileServer|\.Library)|\.File|File\.Share')
 # Catch-all for unknown management packs
 $assignmentGroups += [System.Tuple]::Create('Unassigned','Monitoring Team','')
 
@@ -120,9 +120,11 @@ $managementPacks = Get-SCOMManagementPack | Select-Object -ExpandProperty Name |
 foreach ( $managementPack in $managementPacks)    
 {
     # Check if MP has any alerts; if not, skip
-    $monitorAlerts = Get-SCOMMonitor -ManagementPack $foo | Where-Object {$_.AlertSettings -ne $null}
-    $ruleAlerts = Get-SCOMRule -ManagementPack $foo | Where-Object {$_.WriteActionCollection -match ""}
+    $mp = Get-SCOMManagementPack -Name $managementPack
+    $monitorAlerts = Get-SCOMMonitor -ManagementPack $mp | Where-Object {$_.AlertSettings -ne $null}
+    $ruleAlerts = Get-SCOMRule -ManagementPack $mp | Where-Object {$_.WriteActionCollection -match ""}
     If(($monitorAlerts.Count) -gt 0 -and ($ruleAlerts.Count -gt 0))
+    {
         foreach ( $assignmentGroup in $assignmentGroups )
         {
             # Get the assignment node if it exists
