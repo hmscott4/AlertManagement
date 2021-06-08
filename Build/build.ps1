@@ -152,6 +152,6 @@ foreach ( $solution in $solutions )
 	git add $projectFile.FullName
 	git add $projectUserFile.FullName
 	git commit -m $commitComment
-	git push
+	git push origin HEAD:
 	Pop-Location
 }
