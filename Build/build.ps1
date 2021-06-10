@@ -142,6 +142,14 @@ foreach ( $solution in $solutions )
 		# Create the file name
 		Write-Output -InputObject "ArtifactFileName=$($releaseFile.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 	}
+	
+	if ( $env:GITHUB_REF -match 'main' )
+	{
+		$releaseHistoryFile = Get-Item -Path '.\base\WikiSource\Release History.md'
+		$releaseHistory = Get-Content -Path $releaseHistoryFile
+		$releaseHistory = $releaseHistory -replace '## Unreleased',"v$($newVersion.ToString())"
+		$releaseHistory | Set-Content -Path $releaseHistoryFile
+	}
 
 	# Commit the version update to the reference repo
 	Push-Location
