@@ -5,7 +5,7 @@
     <RootNamespace>SCOM.Alert.Management</RootNamespace>
     <Name>SCOM.Alert.Management</Name>
     <ManagementPackName>SCOM.Alert.Management</ManagementPackName>
-    <Version>2.0.69.156</Version>
+    <Version>2.6.78.165</Version>
     <MpFrameworkVersion>v7.0.2</MpFrameworkVersion>
     <MpFrameworkProfile>OM</MpFrameworkProfile>
     <ProductVersion>1.1.0.0</ProductVersion>
@@ -14,8 +14,8 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
     <GenerateSealed>True</GenerateSealed>
-    <Company>MyCompany</Company>
-    <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
+    <Company>Microsoft</Company>
+    <Copyright>Copyright (c) Microsoft. All rights reserved.</Copyright>
     <DelaySigning>False</DelaySigning>
     <AssemblyOriginatorKeyFile>..\Build\AlertManagement.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

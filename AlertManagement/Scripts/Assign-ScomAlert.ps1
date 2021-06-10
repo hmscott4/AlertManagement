@@ -5,25 +5,26 @@ param
     [System.String]
     $ConfigFile,
 
-	[Parameter()]
-	[System.String]
-	$AssignedResolutionStateName = 'Assigned',
+    [Parameter()]
+    [System.String]
+    $AssignedResolutionStateName = 'Assigned',
 
-	[Parameter()]
-	[System.String]
-	$UnassignedResolutionStateName = 'Assigned',
+    [Parameter()]
+    [System.String]
+    $UnassignedResolutionStateName = 'Assigned',
 
-	[Parameter()]
-	[System.String]
-	$DefaultOwner = 'Unassigned',
+    [Parameter()]
+    [System.String]
+    $DefaultOwner = 'Unassigned',
 
-	[Parameter()]
+    [Parameter()]
     [System.String]
     $DebugLogging = 'false'
 )
 
 # Gather the start time of the script
 $startTime = Get-Date
+$whoami = "$($env:USERDNSDOMAIN)\$($env:USERNAME)"
 
 $debug = [System.Boolean]::Parse($DebugLogging)
 $parameterString = $PSBoundParameters.GetEnumerator() | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" }
@@ -50,29 +51,29 @@ trap
 # Log script event that we are starting task
 if ($debug)
 {
-    $message = "`nScript is starting. $parameterString"
+    $message = "`nScript is starting. `nExecuted as: $whoami. $parameterString"
     $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
     Write-Debug -Message $message
 }
 
 function Format-xPathExpression
 {
-	param 
-	(
-		[Parameter(Mandatory = $true)]	
-		[System.String]
-		$Value
-	)
+    param 
+    (
+        [Parameter(Mandatory = $true)]    
+        [System.String]
+        $Value
+    )
 
-	$charactersToReplace = @{
-		"'" = '&quot;'
-		'\' = '\\'
-	}
+    $charactersToReplace = @{
+        "'" = '&quot;'
+        '\' = '\\'
+    }
 
-	foreach ( $characterToReplace in $charactersToReplace.GetEnumerator() )
-	{
-		$Value = $Value.Replace($characterToReplace.Key, $characterToReplace.Value)
-	}
+    foreach ( $characterToReplace in $charactersToReplace.GetEnumerator() )
+    {
+        $Value = $Value.Replace($characterToReplace.Key, $characterToReplace.Value)
+    }
 
     return $Value
 }
@@ -101,87 +102,113 @@ if ($debug)
 }
 
 # Get all new alerts
-$newAlerts = Get-SCOMAlert -Criteria "ResolutionState <> 255 AND ( Owner IS NULL OR Owner = '$DefaultOwner')"
+$newAlerts = Get-SCOMAlert -Criteria "ResolutionState <> 255 AND ( Owner IS NULL OR Owner = '' OR Owner = '$DefaultOwner')"
 if ( $debug )
 {
-	$message = "$($newAlerts.Count) alert(s) found to process."
-	$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-	Write-Debug -Message $message
+    $message = "$($newAlerts.Count) alert(s) found to process."
+    $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+    Write-Debug -Message $message
 }
 
 foreach ( $newAlert in $newAlerts )
 {
-	# Get the management pack the alert was generated from
-	if ( $newAlert.IsMonitorAlert )
-	{
-		$monitor = $newAlert.MonitoringRuleId | Get-SCOMMonitor
-		$mpName = $monitor.GetManagementPack().Name
-	}
-	else
-	{
-		$mpName = $newAlert.MonitoringRuleId | Get-SCOMRule | Select-Object -ExpandProperty ManagementPackName
-	}
+    # Get the management pack the alert was generated from
+    if ( $newAlert.IsMonitorAlert )
+    {
+        $monitor = $newAlert.MonitoringRuleId | Get-SCOMMonitor
+        $mpName = $monitor.GetManagementPack().Name
+    }
+    else
+    {
+        $mpName = $newAlert.MonitoringRuleId | Get-SCOMRule | Select-Object -ExpandProperty ManagementPackName
+    }
 
-	# Get the alert name
-	$alertName = $newAlert.Name
+    # Get the alert name
+    $alertName = $newAlert.Name
 
-	# Format the alert name for XPath
-	$alertName = Format-xPathExpression -Value $alertName
+    # Format the alert name for XPath
+    $alertName = Format-xPathExpression -Value $alertName
 
-	#region Determine Alert Owner
-	$searchStrings = @(
-		"//config/exceptions/exception[@enabled='true']/Alert[@Name='$alertName']/parent::exception"
-		"//config/exceptions/exception[@enabled='true']/ManagementPack[@Name='$mpName']/parent::exception"
-		"//config/assignments/assignment[@enabled='true']/ManagementPack[@Name='$mpName']/parent::assignment"
-	)
+    #region Determine Alert Owner
+    # Order of operation
+    # 1. Exception: Find by Alert Name with Alert Property
+    # 2. Exception: Find by Alert Name (without Property)
+    # 3. Exception: Find by Management Pack with Alert property
+    # 4. Assignment: Find by Management Pack
+    $searchStrings = @(
+        "//config/exceptions/exception[@enabled='true']/Alert[@Name='$alertName']/AlertProperty/ancestor::exception"
+        "//config/exceptions/exception[@enabled='true']/Alert[@Name='$alertName'][count(AlertProperty) = 0]/parent::exception"
+        "//config/exceptions/exception[@enabled='true']/ManagementPack[@Name='$mpName']/AlertProperty/ancestor::exception"
+        "//config/assignments/assignment[@enabled='true']/ManagementPack[@Name='$mpName']/parent::assignment"
+    )
 
-	foreach ( $searchString in $searchStrings )
-	{
-		$assignmentRule = $config.SelectSingleNode($searchString) |
-		Where-Object -FilterScript { $newAlert.($_.Alert.AlertProperty) -match "$($newAlert.($_.Alert.AlertPropertyMatches))" }
+    foreach ( $searchString in $searchStrings )
+    {
+        $assignmentRule = $config.SelectSingleNode($searchString) | 
+                        Where-Object -FilterScript { $newAlert.($_.Alert.AlertProperty) -match "$($_.Alert.AlertPropertyMatches)" }
 
-		if ( $assignmentRule )
-		{
-			$assignedTo = $assignmentRule.Owner
-			break
-		}
-	}
+        if ( $assignmentRule )
+        {
+            $ruleID = $assignmentRule.ID
+            $ruleName = $assignmentRule.Name
+            if($searchString -match 'exception')
+            {
+                $assignmentType = 'Exception'
+            }
+            else
+            {
+                $assignmentType = 'Assignment'
+            }
+            $assignedTo = $assignmentRule.Owner
 
-	if ( -not $assignedTo )
-	{
-		$assignedTo = $DefaultOwner
-		$message = "`nNo assignment rule found for an alert.`nManagement Pack: $mpName`nAlert: $alertName"
-		$momapi.LogScriptEvent($scriptName, $scriptEventID, 2, $message)
-		Write-Warning -Message $message
-	}
-	#endregion Determine Alert Owner
+            if ( $debug )
+            {
+                $message = "Alert auto assigned to: $assignedTo. Type: $assignmentType; ID: $ruleID; Name: $ruleName."
+                $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+                Write-Debug -Message $message
+            }
+            break
+        }
+    }
 
-	#region Assign Alert
-	$setScomAlertParams = @{
-		Alert = $newAlert
-		Owner = $assignedTo
-		ResolutionState = $assignedResolutionState
-		Comment = "Alert automation assigned to: $assignedTo"
-	}
+    if ( -not $assignedTo )
+    {
+        $assignedTo = $DefaultOwner
+        $ruleID = ''
+        $ruleName = 'None'
+        $assignmentType = 'Default'
+        $message = "`nNo assignment rule found for an alert.`nManagement Pack: $mpName`nAlert: $alertName"
+        $momapi.LogScriptEvent($scriptName, $scriptEventID, 2, $message)
+        Write-Warning -Message $message
+    }
+    #endregion Determine Alert Owner
 
-	# If the alert is assigned to the "default" owner, set the resolution state to the "Unassigned" value
-	if ( $assignedTo -eq $DefaultOwner )
-	{
-		$setScomAlertParams.ResolutionState = $unassignedResolutionState
-	}
+    #region Assign Alert
+    $setScomAlertParams = @{
+        Alert = $newAlert
+        Owner = $assignedTo
+        ResolutionState = $assignedResolutionState
+        Comment = "Alert auto assigned to: $assignedTo. Type: $assignmentType; ID: $ruleID; Name: $ruleName."
+    }
 
-	# Only set the owner if it is different
-	if ( $newAlert.Owner -ne $setScomAlertParams.Owner )
-	{
-		if ( $debug )
-		{
-			$setScomAlertParamsString = ( $setScomAlertParams.GetEnumerator() | ForEach-Object -Process { " -$($_.Key) '$($_.Value)'" } ) -join ''
-			$message = "Set the alert owner `nSet-SCOMAlert $setScomAlertParamsString"
-			$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-		}
-		Set-SCOMAlert @setScomAlertParams
-	}
-	#endregion Assign Alert
+    # If the alert is assigned to the "default" owner, set the resolution state to the "Unassigned" value
+    if ( $assignedTo -eq $DefaultOwner )
+    {
+        $setScomAlertParams.ResolutionState = $unassignedResolutionState
+    }
+
+    # Only set the owner if it is different
+    if ( $newAlert.Owner -ne $setScomAlertParams.Owner )
+    {
+        if ( $debug )
+        {
+            $setScomAlertParamsString = ( $setScomAlertParams.GetEnumerator() | ForEach-Object -Process { " -$($_.Key) '$($_.Value)'" } ) -join ''
+            $message = "Set the alert owner `nSet-SCOMAlert $setScomAlertParamsString"
+            $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+        }
+        Set-SCOMAlert @setScomAlertParams
+    }
+    #endregion Assign Alert
 }
 
 # Log an event for script ending and total execution time.
@@ -190,7 +217,7 @@ $scriptTime = ($EndTime - $StartTime).TotalSeconds
 
 if ( $debug )
 {
-    $message = "`n Script Completed. `n Script Runtime: ($scriptTime) seconds."
+    $message = "`n Script Completed. `n Script Runtime: ($scriptTime) seconds.`n Executed as: $whoami."
     $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
     Write-Debug -Message $message
 }

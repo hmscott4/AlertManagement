@@ -52,10 +52,49 @@ if ( $debug )
 $assignAlertConfigXml = [System.Xml.XmlDocument] @'
 <?xml version="1.0" encoding="utf-8"?>
 <config version="2.0">
-	<exceptions>
-	</exceptions>
-	<assignments>
-	</assignments>
+    <!-- INSTRUCTIONS -->
+    <!-- A default configuration is prepared for you based on the management packs installed in your MG -->
+    <!-- Customize by replacing default team names with names specific to your Organization. -->
+    <!-- For example, find "Windows Team" and replace with "Windows Admins" -->
+    <exceptions>
+        <!-- EXCEPTIONS -->
+        <!-- Use exceptions to assign alerts to owners when more granular control is needed -->
+        <!-- Exceptions should be ordered with the most narrow criteria first -->
+        <!-- Exceptions are always processed before "assignments" -->
+        <!-- Below are some sample exceptions which are disabled by default -->
+        <!-- To use these examples, update the "AlertPropertyMatches" node and set "enabled" to "true" -->
+        <exception ID="10" Name="Contoso Server Offline" Owner="Contoso Windows Team" enabled="false">
+            <Alert Name="Health Service Heartbeat Failure" >
+                <AlertProperty>MonitoringObjectDisplayName</AlertProperty>
+                <AlertPropertyMatches>contoso.com</AlertPropertyMatches>
+            </Alert>
+        </exception>
+        <exception ID="20" Name="Contoso Server Offline" Owner="Contoso Windows Team" enabled="false">
+            <Alert Name="Failed to Connect to Computer" >
+                <AlertProperty>MonitoringObjectDisplayName</AlertProperty>
+                <AlertPropertyMatches>contoso.com</AlertPropertyMatches>
+            </Alert>
+        </exception>
+        <exception ID="30" Name="Server Offline" Owner="Windows Team" enabled="false">
+            <Alert Name="Health Service Heartbeat Failure" />
+        </exception>
+        <exception ID="40" Name="Server Offline" Owner="Windows Team" enabled="false">
+            <Alert Name="Failed to Connect to Computer" />
+        </exception>
+        <exception ID="50" Name="Contoso Domain" Owner="Contoso Windows Team" enabled="false">
+            <ManagementPack Name="Microsoft.Windows.Server.2016.Monitoring">
+                <AlertProperty>MonitoringObjectDisplayName</AlertProperty>
+                <AlertPropertyMatches>contoso.com</AlertPropertyMatches>
+            </ManagementPack>
+        </exception>
+    </exceptions>
+    <assignments>
+        <!-- ASSIGNMENTS --> 
+        <!-- Use assignments to update Alert Ownership based on Management Pack -->
+        <!-- To update an assignment rule, move the entry with the management pack name to another owner -->
+        <!-- To disable assignment for a particular group of management packs, set "enabled" to "false" -->
+        <!-- Assignments are processed after exceptions -->
+    </assignments>
 </config>
 '@
 
@@ -79,10 +118,10 @@ $assignmentGroups += [System.Tuple]::Create('Oracle','DBA Team','Oracle')
 $assignmentGroups += [System.Tuple]::Create('PKI','PKI Team','Certificate')
 $assignmentGroups += [System.Tuple]::Create('SharePoint','SharePoint Team','SharePoint')
 $assignmentGroups += [System.Tuple]::Create('SQL','DBA Team','SQL')
-$assignmentGroups += [System.Tuple]::Create('Unix','Linux Team','nix')
+$assignmentGroups += [System.Tuple]::Create('Unix','Linux Team','nix|Linux')
 $assignmentGroups += [System.Tuple]::Create('Virtualization','Virtualization Team','HyperV')
 $assignmentGroups += [System.Tuple]::Create('IIS','Web Team','InternetInformationServices')
-$assignmentGroups += [System.Tuple]::Create('Windows','Windows Team','Windows(\.Cluster|\.Server|Defender|\.MSDTC|\.FileServer|\.Library)|File\.Share')
+$assignmentGroups += [System.Tuple]::Create('Windows','Windows Team','Windows(\.Cluster|\.[2][0][0-9][0-9]\.Cluster|\.Server|Defender|\.MSDTC|\.FileServer|\.Library)|\.File|File\.Share')
 # Catch-all for unknown management packs
 $assignmentGroups += [System.Tuple]::Create('Unassigned','Monitoring Team','')
 
@@ -91,39 +130,46 @@ $managementPacks = Get-SCOMManagementPack | Select-Object -ExpandProperty Name |
 
 foreach ( $managementPack in $managementPacks)    
 {
-    foreach ( $assignmentGroup in $assignmentGroups )
+    # Check if MP has any alerts; if not, skip
+    $mp = Get-SCOMManagementPack -Name $managementPack
+    $monitorAlerts = Get-SCOMMonitor -ManagementPack $mp | Where-Object {$_.AlertSettings -ne $null}
+    $ruleAlerts = Get-SCOMRule -ManagementPack $mp | Where-Object {$_.WriteActionCollection -match ""}
+    If(($monitorAlerts.Count -gt 0) -and ($ruleAlerts.Count -gt 0))
     {
-        # Get the assignment node if it exists
-        $nodeSelectionQuery = "//config/assignments/assignment[@Name='$($assignmentGroup.Item1)'][@Owner='$($assignmentGroup.Item2)']"
-        $assignmentNode = $assignAlertConfigXml.SelectSingleNode($nodeSelectionQuery)
-
-        if ( -not $assignmentNode )
+        foreach ( $assignmentGroup in $assignmentGroups )
         {
-            # Figure out the ID
-            $id = (
-                $assignAlertConfigXml.config.assignments.assignment.ID |
-                ForEach-Object -Process { if ( $_ ) { [System.Int32]::Parse($_) } } |
-                Sort-Object -Descending |
-                Select-Object -First 1
-            ) + 1
+            # Get the assignment node if it exists
+            $nodeSelectionQuery = "//config/assignments/assignment[@Name='$($assignmentGroup.Item1)'][@Owner='$($assignmentGroup.Item2)']"
+            $assignmentNode = $assignAlertConfigXml.SelectSingleNode($nodeSelectionQuery)
 
-            # Create the assignment node
-            $assignmentNode = $assignAlertConfigXml.CreateElement('assignment')
-            $assignmentNode.SetAttribute('ID',$id)
-            $assignmentNode.SetAttribute('Name',$assignmentGroup.Item1)
-            $assignmentNode.SetAttribute('Owner',$assignmentGroup.Item2)
-            $assignmentNode.SetAttribute('enabled','true')
-            $assignmentNode = $assignAlertConfigXml.SelectSingleNode('/config/assignments').AppendChild($assignmentNode)
-        }
+            if ( -not $assignmentNode )
+            {
+                # Figure out the ID
+                $id = (
+                    $assignAlertConfigXml.config.assignments.assignment.ID |
+                    ForEach-Object -Process { if ( $_ ) { [System.Int32]::Parse($_) } } |
+                    Sort-Object -Descending |
+                    Select-Object -First 1
+                ) + 1
+
+                # Create the assignment node
+                $assignmentNode = $assignAlertConfigXml.CreateElement('assignment')
+                $assignmentNode.SetAttribute('ID',$id)
+                $assignmentNode.SetAttribute('Name',$assignmentGroup.Item1)
+                $assignmentNode.SetAttribute('Owner',$assignmentGroup.Item2)
+                $assignmentNode.SetAttribute('enabled','true')
+                $assignmentNode = $assignAlertConfigXml.SelectSingleNode('/config/assignments').AppendChild($assignmentNode)
+            }
         
-        if ( $managementPack -match $assignmentGroup.Item3 )
-        {
-            $managementPackNode = $assignAlertConfigXml.CreateElement('ManagementPack')
-            $managementPackNode.SetAttribute('Name',$managementPack)
-            $managementPackNode = $assignAlertConfigXml.SelectSingleNode($nodeSelectionQuery).AppendChild($managementPackNode)
+            if ( $managementPack -match $assignmentGroup.Item3 )
+            {
+                $managementPackNode = $assignAlertConfigXml.CreateElement('ManagementPack')
+                $managementPackNode.SetAttribute('Name',$managementPack)
+                $managementPackNode = $assignAlertConfigXml.SelectSingleNode($nodeSelectionQuery).AppendChild($managementPackNode)
             
-            # Prevent assigning a management pack to more than one group
-            break
+                # Prevent assigning a management pack to more than one group
+                break
+            }
         }
     }
 }

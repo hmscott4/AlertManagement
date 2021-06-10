@@ -16,6 +16,7 @@ param
 
 # Gather the start time of the script
 $startTime = Get-Date
+$whoami = whoami
 
 $debug = [System.Boolean]::Parse($DebugLogging)
 $parameterString = $PSBoundParameters.GetEnumerator() | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" }
@@ -80,11 +81,11 @@ $result = @{
 
 if ( $debug )
 {
-	$i = 0
-	$bagsString = $result | ForEach-Object -Process { $i++; $_.GetEnumerator() } | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" }
-	$message = "`nProperty bag values: $bagsString"
-	$momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
-	Write-Debug -Message $message
+    $i = 0
+    $bagsString = $result | ForEach-Object -Process { $i++; $_.GetEnumerator() } | ForEach-Object -Process { "`n$($_.Key) => $($_.Value)" }
+    $message = "`nProperty bag values: $bagsString"
+    $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
+    Write-Debug -Message $message
 }
 
 # Create and fill the property bag
@@ -104,7 +105,7 @@ $ScriptTime = ($EndTime - $StartTime).TotalSeconds
 
 if ($debug)
 {
-    $message = "`n Script Completed. `n Script Runtime: ($ScriptTime) seconds."
+    $message = "`n Script Completed. `n Script Runtime: ($ScriptTime) seconds.`n Executed as: $whoami."
     $momapi.LogScriptEvent($scriptName, $scriptEventID, 0, $message)
     Write-Debug -Message $message
 }

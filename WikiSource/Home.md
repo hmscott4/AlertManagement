@@ -8,6 +8,6 @@ Please leave comments, feature requests, and bug reports for this management pac
 
 - [Release History](Release-History)
 - [Install management pack](Install-Management-Pack)
-- [Alert Assignment](Alert-Assignment)
-- [Alert Escalation](Alert-Escalation)
-- [Views](Views.md)
+- [Assign Alerts](Assign-Alerts)
+- [Escalate Alerts](Escalate-Alerts)
+- [Views](Views)
