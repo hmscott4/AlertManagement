@@ -1,7 +1,7 @@
 # Release History
 
 
-## Update June 2021
+## Unreleased
 
 ### Enhancements
 - Reduced number of entries in assign.alert.config file.
@@ -18,7 +18,7 @@
 ## Version 2.0.69.156
 - First production release
 
-## Unreleased
+## Version 0.0.0.0
 
 - Created the management pack
 - Created the Wiki
