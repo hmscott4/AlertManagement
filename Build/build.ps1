@@ -65,18 +65,18 @@ foreach ( $solution in $solutions )
 		$nextVersionBuild = $nextVersion.Build
 		$nextVersionRevision = $nextVersion.Revision
 
-		Write-Verbose -Message "Branch: $env:GITHUB_BASE_REF"
-		switch -Regex ( $env:GITHUB_BASE_REF )
+		Write-Verbose -Message "Branch: $env:GITHUB_REF"
+		switch -Regex ( $env:GITHUB_REF )
 		{
 			# Increment the minor version
-			'^dev'
+			'dev'
 			{
 				$commitComment = 'Incrementing minor version'
 				$nextVersionMinor++
 			}
 
 			# Increment the major version
-			'^main'
+			'main'
 			{
 				$commitComment = 'Incrementing major version'
 				$nextVersionMajor++
