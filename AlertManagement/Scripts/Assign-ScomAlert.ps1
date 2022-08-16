@@ -156,6 +156,10 @@ foreach ( $newAlert in $newAlerts )
                 {
                     $newAlert.($assignmentRule.AlertProperty) -match "$($assignmentRule.AlertPropertyMatches)"
                 }
+                elseif ( $assignemntRule | Get-Member -Name ManagementPack )
+                {
+                    $true
+                }
             }
 
         if ( $assignmentRule )
