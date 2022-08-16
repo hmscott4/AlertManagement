@@ -144,11 +144,19 @@ foreach ( $newAlert in $newAlerts )
 
     foreach ( $searchString in $searchStrings )
     {
-        $assignmentRule = $config.SelectSingleNode($searchString) | 
-                        Where-Object -FilterScript {
-                            ( $newAlert.($_.Alert.AlertProperty) -match "$($_.Alert.AlertPropertyMatches)" ) -or
-                            ( $newAlert.($_.AlertProperty) -match "$($_.AlertPropertyMatches)" )
-                        }
+        $assignmentRule = $config.SelectSingleNode($searchString) |
+            Where-Object -FilterScript {
+                $assignmentRule = $_
+
+                if ( $assignmentRule | Get-Member -Name Alert )
+                {
+                    $newAlert.($assignmentRule.Alert.AlertProperty) -match "$($assignmentRule.Alert.AlertPropertyMatches)"
+                }
+                elseif ( $assignmentRule | Get-Member -Name AlertProperty )
+                {
+                    $newAlert.($assignmentRule.AlertProperty) -match "$($assignmentRule.AlertPropertyMatches)"
+                }
+            }
 
         if ( $assignmentRule )
         {
