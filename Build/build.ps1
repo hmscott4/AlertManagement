@@ -35,7 +35,12 @@ foreach ( $solution in $solutions )
 	Write-Verbose -Message "Visual Studio solution version: $solutionFileVersion"
 
 	# Get the Visual Studio installation information
-	$vsInfo = & $vsWherePath -version $solutionFileVersion -latest -format json | ConvertFrom-Json
+	$vsInfoAllVersions = & $vsWherePath -version $solutionFileVersion -latest -format json | ConvertFrom-Json
+	$vsInfo = $vsInfoAllVersions | Where-Object -FilterScript { $_.catalog.productDisplayVersion.Split('.')[0] -eq $solutionFileVersion }
+	if ( -not $vsInfo )
+	{
+		throw "Could not find Visual Studio version $solutionFileVersion on this system."
+	}
 	Write-Verbose -Message "Visual Studio installation path: $($vsInfo.installationPath)"
 
 	# Get the path to devenv.exe
